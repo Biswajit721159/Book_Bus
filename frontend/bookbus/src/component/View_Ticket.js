@@ -32,7 +32,7 @@ const View_Ticket=()=>{
     function loaddata()
     {
         setload(true)
-        fetch(`https://book-bus-blue.vercel.app//getTicketByid/${_id}`,{
+        fetch(`https://book-bus-blue.vercel.app/getTicketByid/${_id}`,{
                 headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json',
@@ -41,7 +41,7 @@ const View_Ticket=()=>{
             }).then(responce=>responce.json()).then((res)=>{
                 if(res!=undefined && res.length!=0)
                 {
-                    fetch(`https://book-bus-blue.vercel.app//bus_detail/${res[0].bus_id}`,{
+                    fetch(`https://book-bus-blue.vercel.app/bus_detail/${res[0].bus_id}`,{
                         headers:{
                                 'Accept':'application/json',
                                 'Content-Type':'application/json',

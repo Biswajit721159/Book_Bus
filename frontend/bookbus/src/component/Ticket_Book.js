@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 
 const Ticket_Book=()=>{
 
-    const url='https://book-bus-blue.vercel.app/';
+    const url='https://book-bus-blue.vercel.app';
     const userinfo=JSON.parse(localStorage.getItem('user'))
     const history=useNavigate()
     const {src}=useParams()
@@ -85,7 +85,7 @@ const Ticket_Book=()=>{
     function show_seat(_id)
     {
         setload(true)
-        fetch('https://book-bus-blue.vercel.app//get_Seat',{
+        fetch('https://book-bus-blue.vercel.app/get_Seat',{
             method:'PATCH',
             headers:{
                 'Accept':'application/json',
@@ -100,7 +100,7 @@ const Ticket_Book=()=>{
         }).then(responce=>responce.json()).then((res)=>{
             if(res!=undefined)
             {
-                fetch(`https://book-bus-blue.vercel.app//MasterList/${userinfo.user.email}`,{
+                fetch(`https://book-bus-blue.vercel.app/MasterList/${userinfo.user.email}`,{
                     headers:{
                         'Accept':'application/json',
                         'Content-Type':'application/json',
@@ -204,7 +204,7 @@ const Ticket_Book=()=>{
                 {
                     if(checkAlreadyGetOrNot(comeres.BookingRecord)==false)
                     {
-                         fetch('https://book-bus-blue.vercel.app//Booking',{
+                         fetch('https://book-bus-blue.vercel.app/Booking',{
                             method:'POST',
                             headers:{
                                 'Accept':'application/json',
