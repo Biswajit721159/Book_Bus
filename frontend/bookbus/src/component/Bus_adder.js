@@ -59,7 +59,7 @@ const Bus_adder=()=>{
     {
         setdisabled(true)
         setbutton("Please Wait...")
-        fetch('http://localhost:5000/bus_detail',{
+        fetch('https://book-bus-blue.vercel.app//bus_detail',{
             method:'POST',
             headers:{
                 'Accept':'application/json',
