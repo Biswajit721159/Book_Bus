@@ -37,11 +37,11 @@ const Home=()=>{
     const [messerrordate,setmesserrordate]=useState("")
 
     useEffect(()=>{
-        fetch('https://book-bus-blue.vercel.app/get_station').then(responce=>responce.json()).then((res)=>{
+        fetch('http://localhost:5000/get_station').then(responce=>responce.json()).then((res)=>{
             if(res!=undefined)
             {
                 setdata(res)
-                fetch('https://book-bus-blue.vercel.app/FirstFiveBus/').then(responce=>responce.json()).then((result)=>{
+                fetch('http://localhost:5000/FirstFiveBus/').then(responce=>responce.json()).then((result)=>{
                     setload(false)
                     setbus(result)
                 },(error)=>{
@@ -88,7 +88,7 @@ const Home=()=>{
 
             setdisabled(true)
             setbutton("Wait Finding...")
-            fetch('https://book-bus-blue.vercel.app/get_bus',{
+            fetch('http://localhost:5000/get_bus',{
                 method:'PATCH',
                 headers:{
                     'Accept':'application/json',
@@ -122,7 +122,7 @@ const Home=()=>{
         setseat_res_come(false)
         setdisabled_showseat(true)
         setshow_seat_button("Loading....")
-        fetch('https://book-bus-blue.vercel.app/get_Seat',{
+        fetch('http://localhost:5000/get_Seat',{
             method:'PATCH',
             headers:{
                 'Accept':'application/json',
