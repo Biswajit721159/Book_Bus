@@ -11,7 +11,7 @@ const LastTransaction=()=>{
 
     function loadTicket()
     {
-        fetch(`http://localhost:5000/getTicket/${userinfo.user.email}`,{
+        fetch(`https://book-bus-api.vercel.app/getTicket/${userinfo.user.email}`,{
                 headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json',

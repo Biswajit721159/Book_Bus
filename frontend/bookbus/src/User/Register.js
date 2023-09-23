@@ -80,10 +80,10 @@ const [disabled,setdisabled]=useState(false)
     {
       setbutton("Please Wait....")
       setdisabled(true)
-      fetch(`http://localhost:5000/usermail/${email}`).then(response=>response.json()).then((res)=>{
+      fetch(`https://book-bus-api.vercel.app/usermail/${email}`).then(response=>response.json()).then((res)=>{
         if(res.message==false)
         {
-            fetch('http://localhost:5000/register',{
+            fetch('https://book-bus-api.vercel.app/register',{
                 method:'POST',
                 headers:{
                     'Accept':'application/json',

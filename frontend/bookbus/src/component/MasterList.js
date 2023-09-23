@@ -38,7 +38,7 @@ const MasterList=()=>{
     function loaddata()
     {
         setload(true)
-        fetch(`http://localhost:5000/MasterList/${userinfo.user.email}`,{
+        fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
                 headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json',
@@ -64,7 +64,7 @@ const MasterList=()=>{
     {
         setdisable(true)
         setSubmit("Please Wait....")
-        fetch(`http://localhost:5000/MasterList/${userinfo.user.email}`,{
+        fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
             method:'POST',
             headers:{
                 'Accept':'application/json',
@@ -94,7 +94,7 @@ const MasterList=()=>{
         settakeid(id)
         setDeleteButton("Please Wait...")
         setDeletedisable(true)
-        fetch(`http://localhost:5000/MasterList/${userinfo.user.email}`,{
+        fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
               method:'DELETE',
                 headers:{
                     'Accept':'application/json',
@@ -125,7 +125,7 @@ const MasterList=()=>{
     {
         setupdatebutton("Please Wait...")
         setdisableupdate(true)
-        fetch(`http://localhost:5000/MasterList/${userinfo.user.email}`,{
+        fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
                 method:'PUT',
                 headers:{
                     'Accept':'application/json',

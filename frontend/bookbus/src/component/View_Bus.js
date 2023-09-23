@@ -11,7 +11,7 @@ const View_Bus =()=>{
     function loaduser()
     {
         setload(true)
-        fetch(`http://localhost:5000/bus_detail/${_id}`,{
+        fetch(`https://book-bus-api.vercel.app/bus_detail/${_id}`,{
             headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json',
