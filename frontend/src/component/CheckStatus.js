@@ -11,6 +11,7 @@ const CheckStatus = () => {
     const [data, setdata] = useState([])
     const [key_value, setkey_value] = useState([])
     const [bus,setbus]=useState([])
+    const history=useNavigate()
 
     function set_data(nums) {
         let arr1 = nums[0].person;
@@ -33,6 +34,7 @@ const CheckStatus = () => {
         setmessidNumber("")
         setbutton("Please Wait ...")
         setdisabled(true)
+        
         fetch(`https://book-bus-api.vercel.app/getByid/${idNumber}`).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.length != 0) {
                 fetch(`https://book-bus-api.vercel.app/bus_detail/${res[0].bus_id}`, {
@@ -53,6 +55,7 @@ const CheckStatus = () => {
                     setmessidNumber("Invalid PNR.")
                     setbutton("Check")
                     setdisabled(false)
+                    history('*')
                 })
             }
             else {
@@ -66,6 +69,7 @@ const CheckStatus = () => {
             setmessidNumber("Invalid PNR.")
             setbutton("Check")
             setdisabled(false)
+            history('*')
         })
     }
 
@@ -109,7 +113,7 @@ const CheckStatus = () => {
                                     key_value.map((item,ind)=>(
                                         <tr key={ind}>
                                             <th scope="row">{ind+1}</th>
-                                            <td>{item.personName}</td>
+                                            <td>Passanger {ind+1}</td>
                                             <td>{item.personSeat}</td>
                                             <td>{data[0].date}</td>
                                         </tr>

@@ -53,9 +53,10 @@ const View_Ticket=()=>{
                                 setdata(res)
                                 set_data(res)
                                 setbusname(result[0].bus_name)
+                                console.log(res)
                             }
                         },(error)=>{
-                            console.log(error)
+                            history('*')
                     })
                 }
                 else
@@ -63,8 +64,8 @@ const View_Ticket=()=>{
                     history('*')
                 }
             },(error)=>{
-                console.log(error)
-        })
+                history('*')
+            })
     }
 
     useEffect(()=>{
@@ -88,11 +89,18 @@ const View_Ticket=()=>{
                     <table className="table">
                         <thead>
                             <tr>
-                                <td scope="col">Bus Name:-</td>
+                                <th scope="col">Bus Name:-</th>
                                 <th scope="col">{busname}</th>
-                                <td scope="col">Total Distance:-</td>
-                                <th scope="col">{data[0].total_distance} KM</th>
-                                <td scope="col">PNR NO - <Link  style={{textDecoration:"none"}}>{data[0]._id}</Link></td>
+                                <th scope="col">Total Distance:-</th>
+                                <th scope="col">{data[0].total_distance} km</th>
+                                <th scope="col">PNR NO - <Link  style={{textDecoration:"none"}}>{data[0]._id}</Link></th>
+                            </tr>
+                            <tr>
+                                <td scope="col">Date</td>
+                                <td scope="col">{data[0].date}</td>
+                                <td scope="col">Total Money:-</td>
+                                <td scope="col">₹{data[0].total_money}</td>
+                                <td scope="col">{data[0].src}  -  {data[0].dist}</td>
                             </tr>
                        </thead>
                        <thead >
@@ -100,7 +108,7 @@ const View_Ticket=()=>{
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Seat No.</th>
-                                <th scope="col">Date</th>
+                                <th scope="col">Money</th>
                                 <th scope="col">Action</th>
                             </tr>
                        </thead>
@@ -111,7 +119,7 @@ const View_Ticket=()=>{
                                         <th scope="row">{ind+1}</th>
                                         <td>{item.personName}</td>
                                         <td>{item.personSeat}</td>
-                                        <td>{data[0].date}</td>
+                                        <td>₹{parseInt (data[0].total_money)/parseInt (key_value.length)}</td>
                                         <td><button className='btn btn-danger btn-sm'>Cancil</button></td>
                                     </tr>
                                 ))

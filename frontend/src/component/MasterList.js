@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { json, useNavigate } from "react-router-dom";
 import loader from "../User/loader.gif"
 
-
 const MasterList=()=>{
     const [name,setname]=useState("")
     const [wrongname,setwrongname]=useState(false)
     const [messname,setmessname]=useState("")
+
+    const [updatename,setupdatename]=useState("")
+    const [wrongupdatename,setwrongupdatename]=useState(false)
+    const [messupdatename,setmessupdatename]=useState("")
+
     const [add,setadd]=useState(true)
     const [data,setdata]=useState([])
     const userinfo=JSON.parse(localStorage.getItem('user'))
@@ -16,8 +20,9 @@ const MasterList=()=>{
     const [load,setload]=useState(true)
     const [DeleteButton,setDeleteButton]=useState("Delete")
     const [Deletedisable,setDeletedisable]=useState(false)
+
     const [takeid,settakeid]=useState('')
-    // const [updatename,setupdatename]=useState("")
+   
     const [updateinput,setupdateinput]=useState(false)
     const [update_id,setupdate_id]=useState('')
 
@@ -60,33 +65,52 @@ const MasterList=()=>{
         setadd(false)
     }
 
+    function finderrorName(s)
+    {
+        var regex = /^[a-zA-Z ]{2,30}$/;
+        let a= regex.test(s);
+        return a;
+    }
+
     function submit()
     {
-        setdisable(true)
-        setSubmit("Please Wait....")
-        fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
-            method:'POST',
-            headers:{
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-                    auth:`bearer ${userinfo.auth}`
-            },
-            body:JSON.stringify({
-                email:userinfo.user.email,
-                name:name
+        let res=finderrorName(name)
+        if (res==true)
+        {
+            setwrongname(false)
+            setmessname("")
+
+            setdisable(true)
+            setSubmit("Please Wait....")
+            fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
+                method:'POST',
+                headers:{
+                    'Accept':'application/json',
+                    'Content-Type':'application/json',
+                        auth:`bearer ${userinfo.auth}`
+                },
+                body:JSON.stringify({
+                    email:userinfo.user.email,
+                    name:name
+                })
+            }).then(response=>response.json()).then((res)=>{
+                if(res!=undefined)
+                {
+                    setadd(true)
+                    setdisable(false)
+                    setSubmit("Submit")
+                    setname("")
+                    loaddata()
+                }
+            },(error)=>{
+                history('*')
             })
-        }).then(response=>response.json()).then((res)=>{
-            if(res!=undefined)
-            {
-                setadd(true)
-                setdisable(false)
-                setSubmit("Submit")
-                setname("")
-                loaddata()
-            }
-        },(error)=>{
-            console.log(error)
-        })
+        }
+        else
+        {
+            setwrongname(true)
+            setmessname("*Name must be only string and should not contain symbols or numbers and string length is less then 2")
+        }
     }
 
     function Delete_user(id)
@@ -118,35 +142,48 @@ const MasterList=()=>{
     {
         setupdate_id(id)
         setupdateinput(true)
-        setname(name)
+        setupdatename(name)
     }
     
     function ActualUpdate(id)
     {
-        setupdatebutton("Please Wait...")
-        setdisableupdate(true)
-        fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
-                method:'PUT',
-                headers:{
-                    'Accept':'application/json',
-                    'Content-Type':'application/json',
-                        auth:`bearer ${userinfo.auth}`
-                },
-                body:JSON.stringify({
-                    _id:id,
-                    name:name
-                })
-            }).then(responce=>responce.json()).then((res)=>{
-                if(res!=undefined)
-                {
-                    setdata(res)
-                    setupdatebutton("Update")
-                    setdisableupdate(false)
-                    setupdate_id('')
-                }
-            },(error)=>{
-                console.log(error)
-        })
+        let res=finderrorName(updatename)
+        if(res==true)
+        {
+            setwrongupdatename(false)
+            setmessupdatename("")
+
+
+            setupdatebutton("Please Wait...")
+            setdisableupdate(true)
+            fetch(`https://book-bus-api.vercel.app/MasterList/${userinfo.user.email}`,{
+                    method:'PUT',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json',
+                            auth:`bearer ${userinfo.auth}`
+                    },
+                    body:JSON.stringify({
+                        _id:id,
+                        name:updatename
+                    })
+                }).then(responce=>responce.json()).then((res)=>{
+                    if(res!=undefined)
+                    {
+                        setdata(res)
+                        setupdatebutton("Update")
+                        setdisableupdate(false)
+                        setupdate_id('')
+                    }
+                },(error)=>{
+                    history('*')
+            })
+        }
+        else
+        {
+            setwrongupdatename(true)
+            setmessupdatename("*Name must be only string and should not contain symbols or numbers and string length is less then 2")
+        }
     }
 
     return(
@@ -187,8 +224,8 @@ const MasterList=()=>{
                                         {
                                             updateinput==true && update_id==item._id?
                                             <div className="form-group">
-                                                <input type="text" style={{backgroundColor:"#BFC9CA"}} value={name} onChange={(e)=>{setname(e.target.value)}}  className="form-control" placeholder="Enter Full Name"  required/>
-                                                {wrongname?<label  style={{color:"red"}}>{messname}</label>:""}
+                                                <input type="text" style={{backgroundColor:"#BFC9CA"}} value={updatename} onChange={(e)=>{setupdatename(e.target.value)}}  className="form-control" placeholder="Enter Full Name"  required/>
+                                                {wrongupdatename?<label  style={{color:"red"}}>{messupdatename}</label>:""}
                                             </div>
                                             :<td>{item.name}</td>
                                         }

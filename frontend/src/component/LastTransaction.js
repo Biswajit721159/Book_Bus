@@ -24,8 +24,8 @@ const LastTransaction=()=>{
                     setdata(res)
                 }
             },(error)=>{
-                console.log(error)
-        })
+                history('*')
+            })
     }
 
     useEffect(()=>{
@@ -44,7 +44,7 @@ const LastTransaction=()=>{
            {
               load==false?
               <div className='container mt-5'>
-                <table class="table">
+                <table className="table">
                   <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -58,7 +58,7 @@ const LastTransaction=()=>{
                   <tbody>
                         {
                             data.map((item,ind)=>(
-                                <tr className=''>
+                                <tr className='' key={ind}>
                                     <th scope="row">{ind+1}</th>
                                     <td>{item.src}</td>
                                     <td>{item.dist}</td>

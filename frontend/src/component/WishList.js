@@ -2,7 +2,7 @@
 const WishList =()=>{
     return(
         <>
-        WishList
+        WishList wating...
         </>
     )
 }
