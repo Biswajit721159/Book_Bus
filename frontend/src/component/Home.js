@@ -259,7 +259,7 @@ const Home=()=>{
                         </form>
                     </div>
                     <div className="col-9 mt-5">
-                        <table className=" container table">
+                        <table className=" container table-bordered border-info">
                             <thead>
                                 <tr>
                                     <th scope="col">Bus Name</th>
@@ -279,21 +279,21 @@ const Home=()=>{
                                 bus.length!=0 ?
                                 bus.map((item,ind)=>(
                                     <tr key={ind}  style={{height: "75px"}}>
-                                        <td>{item.bus_name}</td>
-                                        <td>{item.start_station}</td>
-                                        <td>{item.start_arrived_time}</td>
-                                        <td>{item.total_distance}</td>
-                                        <td>₹{item.total_distance*5}</td>
-                                        <td>{item.total_time}</td>
-                                        <td>{item.end_arrive_time}</td>
-                                        <td>{item.end_station}</td>
-                                        <td><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-outline-primary btn-sm">view</button></Link></td>
+                                        <td className="text-center">{item.bus_name}</td>
+                                        <td className="text-center">{item.start_station}</td>
+                                        <td className="text-center"> {item.start_arrived_time}</td>
+                                        <td className="text-center">{item.total_distance}</td>
+                                        <td className="text-center">₹{item.total_distance*5}</td>
+                                        <td className="text-center">{item.total_time}</td>
+                                        <td className="text-center">{item.end_arrive_time}</td>
+                                        <td className="text-center">{item.end_station}</td>
+                                        <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-outline-primary btn-sm">view</button></Link></td>
                                         {
                                             item.bus_id!=bus__id?
-                                            <td><button className="btn btn-danger btn-sm" onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >Show Seat</button></td>
+                                            <td className="text-center"><button className="btn btn-danger btn-sm" onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >Show Seat</button></td>
                                             :
                                                 seat_res_come==true?
-                                                <td>
+                                                <td className="text-center">
                                                     <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
                                                     <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
                                                         <button className="btn btn-primary btn-sm  mt-1">
@@ -302,7 +302,7 @@ const Home=()=>{
                                                     </Link>
                                                 </td>
                                                 :
-                                                <td>
+                                                <td className="text-center">
                                                     <button className="btn btn-danger btn-sm" disabled={disabled_showseat} onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >
                                                         {show_seat_button}
                                                     </button>
