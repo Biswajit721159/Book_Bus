@@ -17,7 +17,7 @@ useEffect(()=>{
     const auth =localStorage.getItem('user')
     if(auth)
     {
-        history('/')
+        history('/BookBus')
     }
 },[])
 
@@ -39,7 +39,7 @@ function submit(){
         if(result.auth)
         {
             localStorage.setItem("user",JSON.stringify(result))
-            history('/')
+            history('/BookBus')
         }
         else{
             setbutton("Submit")

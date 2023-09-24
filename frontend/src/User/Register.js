@@ -27,7 +27,7 @@ const [disabled,setdisabled]=useState(false)
     const auth=localStorage.getItem('user')
     if(auth)
     {
-        history('/')
+        history('/BookBus')
     }
   },[])
   
@@ -99,7 +99,7 @@ const [disabled,setdisabled]=useState(false)
             .then(response=>response.json())
             .then((result)=>{
                 localStorage.setItem("user",JSON.stringify(result))
-                history('/')
+                history('/BookBus')
             })
         }
         else

@@ -62,6 +62,7 @@ const Navbar=()=>{
             <ul >
              <div className='container1'>
                 <li><Link to={'/'} style={{textDecoration:"none",color:"black"}}>Home</Link></li>
+                <li><Link to={'/BookBus'} style={{textDecoration:"none",color:"black"}}>Book Bus</Link></li>
                 <li><Link to={'/checkstatus'} style={{textDecoration:"none",color:"black"}}>check status</Link></li>
               {user ?
                 <>
