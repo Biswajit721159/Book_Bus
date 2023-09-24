@@ -23,13 +23,13 @@ function App() {
           <Routes>
             <Route path="/" element={<FrontPage/>}></Route>
             <Route path="/BookBus" element={<Home/>}></Route>
-            <Route path="Register" element={<Register/>}></Route>
-            <Route path="Login" element={<Login/>}></Route>
-            <Route path="Bus_adder" element={<Bus_adder/>}></Route>
-            <Route path="MasterList" element={<MasterList/>}></Route>
+            <Route path="/Register" element={<Register/>}></Route>
+            <Route path="/Login" element={<Login/>}></Route>
+            <Route path="/Bus_adder" element={<Bus_adder/>}></Route>
+            <Route path="/MasterList" element={<MasterList/>}></Route>
             <Route path="LastTransaction" element={<LastTransaction/>}></Route>
-            <Route path="WishList" element={<WishList/>}></Route>
-            <Route path="checkstatus" element={<CheckStatus/>}></Route>
+            <Route path="/WishList" element={<WishList/>}></Route>
+            <Route path="/checkstatus" element={<CheckStatus/>}></Route>
             <Route path="/:bus_id/:src/:dist/:date" element={<Ticket_Book/>}></Route>
             <Route path="/:_id" element={<View_Ticket/>}></Route>
             <Route path="/View_Bus/:_id" element={<View_Bus/>}></Route>

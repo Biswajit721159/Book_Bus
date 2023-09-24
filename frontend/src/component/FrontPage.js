@@ -84,11 +84,11 @@ export default function FrontPage() {
                 </div>
                 <div class="box">
                     <h3>Quick Links</h3>
-                    <li><Link to="/Product">Buy Product</Link></li>
-                    <li><Link to="/addproduct">Add Product</Link></li>
-                    <li><Link to="/wishList">wishList</Link></li>
-                    <li><Link to="/Cart">Cart</Link></li>
-                    <li><Link to="/Myorder">Myorder</Link></li>
+                    <li><Link to="/BookBus">Book Bus</Link></li>
+                    <li><Link to="/checkstatus">checkstatus</Link></li>
+                    <li><Link to="/wishList">WishList</Link></li>
+                    <li><Link to="/LastTransaction">LastTransaction</Link></li>
+                    <li><Link to="/MasterList">MasterList</Link></li>
                 </div>
                 <div class="box">
                   <h3>Contact Info</h3>
