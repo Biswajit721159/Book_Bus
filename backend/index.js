@@ -296,54 +296,56 @@ app.patch('/get_bus',async(req,res)=>{
 
   start_station=req.body.start_station;
   end_station=req.body.end_station;
+
   let data=await deconnect_bus_detail();
   let result=await data.find().toArray();
   let ans=[]
 
   for(let i=0;i<result.length;i++)
   {
-    let arr=result[i].station_data
-    k=0;
-    let x=0;
-    let total_distance=0;
-    let start_ind=-1;
-    let end_ind=-1;
-    for(k=0;k<arr.length;k++)
-    {
-      if(arr[k].station.toUpperCase()==start_station){
-        start_ind=k;
-        x++;
-        break;
+      let arr=result[i].station_data
+      k=0;
+      let x=0;
+      let total_distance=0;
+      let start_ind=-1;
+      let end_ind=-1;
+      for(k=0;k<arr.length;k++)
+      {
+          if(arr[k].station.toUpperCase()==start_station){
+            start_ind=k;
+            x++;
+            break;
+          }
+      }
+      if(x==1)
+      {
+          for(;k<arr.length;k++)
+          {
+              if(arr[k].station.toUpperCase()==end_station){
+                total_distance+=(parseInt(arr[k].Distance_from_Previous_Station))
+                end_ind=k;  x++; break;
+              }
+              else{
+                total_distance+=(parseInt(arr[k].Distance_from_Previous_Station))
+              }
+          }
+          if(x==2)
+          {
+            let obj={
+                bus_id:result[i]._id,
+                bus_name:result[i].bus_name,
+                start_station:start_station,
+                end_station:end_station,
+                start_arrived_time:arr[start_ind].arrived_time,
+                end_arrive_time:arr[end_ind].arrived_time,
+                total_time:findDifferTime(arr[start_ind].arrived_time,arr[end_ind].arrived_time),
+                total_distance:total_distance
+            }
+            ans.push(obj)
+        }
       }
     }
-    if(x==1)
-    {
-      for(;k<arr.length;k++)
-      {
-        if(arr[k].station.toUpperCase()==end_station){
-          total_distance+=(parseInt(arr[k].Distance_from_Previous_Station))
-          end_ind=k;  x++; break;
-        }
-        else{
-          total_distance+=(parseInt(arr[k].Distance_from_Previous_Station))
-        }
-      }
-      if(x==2)
-      {
-        let obj={
-            bus_id:result[i]._id,
-            bus_name:result[i].bus_name,
-            start_station:start_station,
-            end_station:end_station,
-            start_arrived_time:arr[start_ind].arrived_time,
-            end_arrive_time:arr[end_ind].arrived_time,
-            total_distance:total_distance
-        }
-        ans.push(obj)
-      }
-    }
-  }
-  res.send(ans)
+    res.send(ans)
 })
 
 app.get('/get_station',async(req,res)=>{

@@ -38,6 +38,12 @@ const Home=()=>{
     const [messerrordate,setmesserrordate]=useState("")
 
     useEffect(()=>{
+       loaduser()
+    },[])
+
+    function loaduser()
+    {
+        setload(true)
         fetch('https://book-bus-api.vercel.app/get_station').then(responce=>responce.json()).then((res)=>{
             if(res!=undefined)
             {
@@ -52,7 +58,7 @@ const Home=()=>{
         },(error)=>{
             history('*')
         })
-    },[])
+    }
 
     function FindError()
     {
@@ -153,6 +159,143 @@ const Home=()=>{
         return today;
     };
 
+    const [DurationEarlyFirst,setDurationEarlyFirst]=useState(false)
+    const [DurationLateFirst,setDurationLateFirst]=useState(false)
+    const [DepartureEarlyFirst,setDepartureEarlyFirst]=useState(false)
+    const [DepartureLateFirst,setDepartureLateFirst]=useState(false)
+    const [ArrivalEarlyFirst,setArrivalEarlyFirst]=useState(false)
+    const [ArrivalLateFirst,setArrivalLateFirst]=useState(false)
+
+
+    function removedRemainingChecked(s)
+    {
+        if (s!=="DurationEarlyFirst")
+            setDurationEarlyFirst(false)
+        if (s!=="DurationLateFirst")
+            setDurationLateFirst(false)
+        if(s!=="DepartureEarlyFirst")
+            setDepartureEarlyFirst(false)
+        if (s!=="DepartureLateFirst")
+            setDepartureLateFirst(false)
+        if(s!=="ArrivalEarlyFirst")
+            setArrivalEarlyFirst(false)
+        if(s!=="ArrivalLateFirst")
+                setArrivalLateFirst(false)
+
+    }
+
+    function ChangeChecked(e,s)
+    {
+        if (s==="DurationEarlyFirst")
+        {   setDurationEarlyFirst(e.target.checked)
+            removedRemainingChecked(s)
+        }
+        else if(s==="DurationLateFirst")
+        {
+            setDurationLateFirst(e.target.checked)
+            removedRemainingChecked(s)
+        } 
+        else if(s==="DepartureEarlyFirst")
+        {
+            setDepartureEarlyFirst(e.target.checked)
+            removedRemainingChecked(s)
+        }   
+        else if(s==="DepartureLateFirst")
+        {
+            setDepartureLateFirst(e.target.checked)
+            removedRemainingChecked(s)
+        }
+        else if (s==="ArrivalEarlyFirst")
+        {
+            setArrivalEarlyFirst(e.target.checked)
+            removedRemainingChecked(s)
+        }
+        else if(s==="ArrivalLateFirst")
+        {
+            setArrivalLateFirst(e.target.checked)
+            removedRemainingChecked(s)
+        }  
+    }
+
+    function HourToMin(s)
+    {
+        let count=0;
+        let ans=0;
+        let i=0;
+        let n=s.length
+        while(i<n && s[i]!='h')
+        {
+            count=count*10+(s[i]-'0');
+            i++;
+        }
+        ans+=(count*60);
+        i+=2;
+        count=0;
+        while(i<n && s[i]!='m')
+        {
+            count=count*10+(s[i]-'0');
+            i++;
+        }
+        ans+=count;
+        return ans;
+    }
+
+    function applyFilter()
+    {
+        if(DurationEarlyFirst)
+        {
+            bus.sort((a, b) => {
+                let fa =HourToMin(a.total_time)
+                let fb = HourToMin(b.total_time)
+            
+                if (fa < fb) {
+                    return -1;
+                }
+                if (fa > fb) {
+                    return 1;
+                }
+                return 0;
+            });
+            setbus([...bus])
+        }
+        else if(DurationLateFirst)
+        {
+            bus.sort((a, b) => {
+                let fa =HourToMin(a.total_time)
+                let fb = HourToMin(b.total_time)
+            
+                if (fa > fb) {
+                    return -1;
+                }
+                if (fa < fb) {
+                    return 1;
+                }
+                return 0;
+            });
+            setbus([...bus])
+        }
+        else if(DepartureEarlyFirst)
+        {
+
+        }
+        else if(DepartureLateFirst)
+        {
+
+        }
+        else if(ArrivalEarlyFirst)
+        {
+
+        }
+        else if(ArrivalLateFirst)
+        {
+
+        }
+        else
+        {
+            loaduser()
+        }
+    }
+
     return(
         <>
            {
@@ -204,11 +347,10 @@ const Home=()=>{
                 <div className="row justify-content-md-center">
 
                     <div className="col mt-5">
-                        <form>
                             <div className="card">
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" />
+                                        <input className="form-check-input" checked={DurationEarlyFirst} onChange={(e)=>ChangeChecked(e,"DurationEarlyFirst")} type="checkbox" />
                                         <label className="form-check-label">
                                             Duration(Early First)
                                         </label>
@@ -216,7 +358,7 @@ const Home=()=>{
                                 </div>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" />
+                                        <input className="form-check-input" checked={DurationLateFirst} onChange={(e)=>ChangeChecked(e,"DurationLateFirst")}  type="checkbox" />
                                         <label className="form-check-label">
                                             Duration(Late First) 
                                         </label>
@@ -224,7 +366,7 @@ const Home=()=>{
                                 </div>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" />
+                                        <input className="form-check-input"  checked={DepartureEarlyFirst} onChange={(e)=>ChangeChecked(e,"DepartureEarlyFirst")} type="checkbox" />
                                         <label className="form-check-label">
                                             Departure(Early First)
                                         </label>
@@ -232,7 +374,7 @@ const Home=()=>{
                                 </div>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" />
+                                        <input className="form-check-input" checked={DepartureLateFirst} onChange={(e)=>ChangeChecked(e,"DepartureLateFirst")}  type="checkbox" />
                                         <label className="form-check-label">
                                              Departure(Late First) 
                                         </label>
@@ -240,7 +382,7 @@ const Home=()=>{
                                 </div>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" />
+                                        <input className="form-check-input" checked={ArrivalEarlyFirst} onChange={(e)=>ChangeChecked(e,"ArrivalEarlyFirst")}  type="checkbox" />
                                         <label className="form-check-label">
                                            Arrival(Early First) 
                                         </label>
@@ -248,30 +390,29 @@ const Home=()=>{
                                 </div>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" />
+                                        <input className="form-check-input" checked={ArrivalLateFirst} onChange={(e)=>ChangeChecked(e,"ArrivalLateFirst")}  type="checkbox" />
                                         <label className="form-check-label">
                                            Arrival(Late First) 
                                         </label>
                                     </div>
                                 </div>
-                                <button type="submit" className="btn btn-success btn-sm">Apply Filter</button>
+                                <button type="submit" className="btn btn-success btn-sm" onClick={applyFilter}>Apply Filter</button>
                             </div>
-                        </form>
                     </div>
-                    <div className="col-9 mt-5">
+                    <div className="col-9 mt-5 my-5">
                         <table className=" container table-bordered border-info">
                             <thead>
                                 <tr>
-                                    <th scope="col">Bus Name</th>
-                                    <th scope="col">Starting Station</th>
-                                    <th scope="col">Arrived Time</th>
-                                    <th scope="col">Distance</th>
-                                    <th scope="col">Rupees</th>
-                                    <th scope="col">Time</th>
-                                    <th scope="col">Departure Time</th>
-                                    <th scope="col">Ending Station</th>
-                                    <th scope="col">View Bus</th>
-                                    <th scope="col"></th>
+                                    <th className="text-center" scope="col">Bus Name</th>
+                                    <th className="text-center" scope="col">Starting Station</th>
+                                    <th className="text-center" scope="col">Arrived Time</th>
+                                    <th className="text-center" scope="col">Distance</th>
+                                    <th className="text-center" scope="col">Rupees</th>
+                                    <th className="text-center" scope="col">Departure Time</th>
+                                    <th className="text-center" scope="col">Duration</th>
+                                    <th className="text-center" scope="col">Ending Station</th>
+                                    <th className="text-center" scope="col">View Bus</th>
+                                    <th className="text-center" scope="col"></th>
                                 </tr>
                             </thead>
                         <tbody >
@@ -284,10 +425,10 @@ const Home=()=>{
                                         <td className="text-center"> {item.start_arrived_time}</td>
                                         <td className="text-center">{item.total_distance}</td>
                                         <td className="text-center">₹{item.total_distance*5}</td>
-                                        <td className="text-center">{item.total_time}</td>
                                         <td className="text-center">{item.end_arrive_time}</td>
+                                        <td className="text-center">{item.total_time}</td>
                                         <td className="text-center">{item.end_station}</td>
-                                        <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-outline-primary btn-sm">view</button></Link></td>
+                                        <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-secondary btn-sm">view</button></Link></td>
                                         {
                                             item.bus_id!=bus__id?
                                             <td className="text-center"><button className="btn btn-danger btn-sm" onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >Show Seat</button></td>
