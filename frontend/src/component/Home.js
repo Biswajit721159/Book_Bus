@@ -12,6 +12,7 @@ const Home=()=>{
 
     today = yyyy + '-' + mm + '-' + dd;
 
+    const history=useNavigate()
     const [data,setdata]=useState([])
     const [load,setload]=useState(true)
     const [src,setsrc]=useState("");
@@ -45,11 +46,11 @@ const Home=()=>{
                     setload(false)
                     setbus(result)
                 },(error)=>{
-                    console.log(error)
+                    history('*')
                 })
             }
         },(error)=>{
-            console.log(error)
+            history('*')
         })
     },[])
 
@@ -106,7 +107,7 @@ const Home=()=>{
                     setbus(res)
                 }
             },(error)=>{
-                console.log(error)
+                history('*')
             })
         }
     }
@@ -143,7 +144,7 @@ const Home=()=>{
                 setseat_res_come(true)
             }
         },(error)=>{
-            console.log(error)
+            history('*')
         })
     }
 
@@ -198,66 +199,135 @@ const Home=()=>{
                 </form>
              :<div className='loader-container'><img src={loader} /></div>
            }
-            <table className=" container table mt-5">
-                <thead>
-                    <tr>
-                        <th scope="col">Bus Name</th>
-                        <th scope="col">Starting Station</th>
-                        <th scope="col">Arrived Time</th>
-                        <th scope="col">Distance</th>
-                        <th scope="col">Departure Time</th>
-                        <th scope="col">Ending Station</th>
-                        <th scope="col">View Bus</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-               <tbody >
-                {
-                    bus.length!=0 ?
-                    bus.map((item,ind)=>(
-                        <tr key={ind}  style={{height: "75px"}}>
-                            <td>{item.bus_name}</td>
-                            <td>{item.start_station}</td>
-                            <td>{item.start_arrived_time}</td>
-                            <td>{item.total_distance}</td>
-                            <td>{item.end_arrive_time}</td>
-                            <td>{item.end_station}</td>
-                            <td><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-outline-primary btn-sm">view</button></Link></td>
+            <div className="container">
+
+                <div className="row justify-content-md-center">
+
+                    <div className="col mt-5">
+                        <form>
+                            <div className="card">
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" />
+                                        <label className="form-check-label">
+                                            Duration(Early First)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" />
+                                        <label className="form-check-label">
+                                            Duration(Late First) 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" />
+                                        <label className="form-check-label">
+                                            Departure(Early First)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" />
+                                        <label className="form-check-label">
+                                             Departure(Late First) 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" />
+                                        <label className="form-check-label">
+                                           Arrival(Early First) 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" />
+                                        <label className="form-check-label">
+                                           Arrival(Late First) 
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" className="btn btn-success btn-sm">Apply Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div className="col-9 mt-5">
+                        <table className=" container table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Bus Name</th>
+                                    <th scope="col">Starting Station</th>
+                                    <th scope="col">Arrived Time</th>
+                                    <th scope="col">Distance</th>
+                                    <th scope="col">Rupees</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Departure Time</th>
+                                    <th scope="col">Ending Station</th>
+                                    <th scope="col">View Bus</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                        <tbody >
                             {
-                                item.bus_id!=bus__id?
-                                <td><button className="btn btn-danger btn-sm" onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >Show Seat</button></td>
-                                :
-                                    seat_res_come==true?
-                                    <td>
-                                        <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
-                                        <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
-                                            <button className="btn btn-primary btn-sm mx-2">
-                                                Book Now
-                                            </button>
-                                        </Link>
-                                    </td>
-                                    :
-                                    <td>
-                                        <button className="btn btn-danger btn-sm" disabled={disabled_showseat} onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >
-                                            {show_seat_button}
-                                        </button>
-                                    </td>
-                            }                      
-                        </tr>
-                    ))
-                    :<tr >
-                        <td>Na</td>
-                        <td>Na</td>
-                        <td>Na</td>
-                        <td>Na</td>
-                        <td>Na</td>
-                        <td>Na</td>
-                        <td>Na</td>
-                        <td></td>     
-                    </tr>
-                }
-               </tbody>
-            </table>
+                                bus.length!=0 ?
+                                bus.map((item,ind)=>(
+                                    <tr key={ind}  style={{height: "75px"}}>
+                                        <td>{item.bus_name}</td>
+                                        <td>{item.start_station}</td>
+                                        <td>{item.start_arrived_time}</td>
+                                        <td>{item.total_distance}</td>
+                                        <td>₹{item.total_distance*5}</td>
+                                        <td>{item.total_time}</td>
+                                        <td>{item.end_arrive_time}</td>
+                                        <td>{item.end_station}</td>
+                                        <td><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-outline-primary btn-sm">view</button></Link></td>
+                                        {
+                                            item.bus_id!=bus__id?
+                                            <td><button className="btn btn-danger btn-sm" onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >Show Seat</button></td>
+                                            :
+                                                seat_res_come==true?
+                                                <td>
+                                                    <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
+                                                    <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
+                                                        <button className="btn btn-primary btn-sm  mt-1">
+                                                            Book
+                                                        </button>
+                                                    </Link>
+                                                </td>
+                                                :
+                                                <td>
+                                                    <button className="btn btn-danger btn-sm" disabled={disabled_showseat} onClick={()=>{show_seat(item.bus_id,item.start_station,item.end_station)}} >
+                                                        {show_seat_button}
+                                                    </button>
+                                                </td>
+                                        }                      
+                                    </tr>
+                                ))
+                                :<tr >
+                                    <td>Na</td>
+                                    <td>Na</td>
+                                    <td>Na</td>
+                                    <td>Na</td>
+                                    <td>Na</td>
+                                    <td>Na</td>
+                                    <td>Na</td>
+                                    <td></td>     
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    </div>
+                    
+                </div>
+
+            </div>
         </>
     )
 }

@@ -231,30 +231,63 @@ app.put('/MasterList/:email',verifytoken,async(req,res)=>{
 
 
 //Bus Detail
+function findDifferTime(s1,s2)
+{
+   let hh1=s1.substr(0,2);
+   let mm1=s1.substr(3,2);
+   let hh2=s2.substr(0,2);
+   let mm2=s2.substr(3,2);
+   
+   hh1=(parseInt(hh1)+24)%24;
+   hh2=(parseInt(hh2)+24)%24;
+   
+   mm1=parseInt(mm1);
+   mm2=parseInt(mm2);
+
+   console.log(s1,s2)
+
+
+   
+   let hhDiff=hh1-hh2;
+   if(hhDiff<0) hhDiff=-1*hhDiff;
+   let mmDiff=mm1-mm2;
+   if(mmDiff<0)
+   {
+       mmDiff=-1*mmDiff;
+       hhDiff-=1;
+   }
+
+   let res=hhDiff+'h:'+mmDiff+'m'
+   return res;
+
+
+}
+
 
 app.get('/FirstFiveBus',async(req,res)=>{
   let data=await deconnect_bus_detail()
-  let result=await data.find().limit(5).toArray();
+  let result=await data.find().limit(10).toArray();
   let ans=[]
   for(let i=0;i<result.length;i++)
   {
-    let arr=result[i].station_data
-    let n=arr.length;
-    let total_distance=0
-    for(let k=0;k<n;k++)
-    {
-      total_distance+=parseInt(arr[k].Distance_from_Previous_Station);
-    }
-    let obj={
-      bus_id:result[i]._id,
-      bus_name:result[i].bus_name,
-      start_station:arr[0].station,
-      end_station:arr[n-1].station,
-      start_arrived_time:arr[0].arrived_time,
-      end_arrive_time:arr[n-1].arrived_time,
-      total_distance:total_distance
-    }
-    ans.push(obj)
+      let arr=result[i].station_data
+      let n=arr.length;
+      let total_distance=0
+      for(let k=0;k<n;k++)
+      {
+        total_distance+=parseInt(arr[k].Distance_from_Previous_Station);
+      }
+      let obj={
+        bus_id:result[i]._id,
+        bus_name:result[i].bus_name,
+        start_station:arr[0].station,
+        end_station:arr[n-1].station,
+        start_arrived_time:arr[0].arrived_time,
+        end_arrive_time:arr[n-1].arrived_time,
+        total_time:findDifferTime(arr[0].arrived_time,arr[n-1].arrived_time),
+        total_distance:total_distance
+      }
+      ans.push(obj)
   }
   res.send(ans)
 })
