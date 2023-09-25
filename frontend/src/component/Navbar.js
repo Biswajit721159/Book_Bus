@@ -9,52 +9,52 @@ const Navbar=()=>{
   const [mode,setmode]=useState(localStorage.getItem('mode'))
 
   function logout(){
-    localStorage.removeItem('user');
-    history('/')
+      localStorage.removeItem('user');
+      history('/')
   }
 
   useEffect(()=>{
-    givecolor(localStorage.getItem('mode'));
+     givecolor(localStorage.getItem('mode'));
   },[])
 
   function givecolor(color)
   {
-    if(color==null)
-    {
-      localStorage.setItem('mode','light')
-      setmode('light')
-      givecolor('light')
-    }
-    else if(color=='light')
-    {
-      document.body.style.backgroundColor = "white";
-    }
-    else
-    {
-      document.body.style.backgroundColor = "#BFC9CA";
-    }
+      if(color==null)
+      {
+        localStorage.setItem('mode','light')
+        setmode('light')
+        givecolor('light')
+      }
+      else if(color=='light')
+      {
+        document.body.style.backgroundColor = "white";
+      }
+      else
+      {
+        document.body.style.backgroundColor = "#BFC9CA";
+      }
   }
 
   function changecolor()
   {
-    if(mode==null)
-    {
-      localStorage.setItem('mode','light')
-      setmode('light')
-      givecolor('light')
-    }
-    else if(mode=='light')
-    {
-      localStorage.setItem('mode','dark')
-      setmode('dark')
-      givecolor('dark')
-    }
-    else
-    {
-      localStorage.setItem('mode','light')
-      setmode('light')
-      givecolor('light')
-    }
+      if(mode==null)
+      {
+        localStorage.setItem('mode','light')
+        setmode('light')
+        givecolor('light')
+      }
+      else if(mode=='light')
+      {
+        localStorage.setItem('mode','dark')
+        setmode('dark')
+        givecolor('dark')
+      }
+      else
+      {
+        localStorage.setItem('mode','light')
+        setmode('light')
+        givecolor('light')
+      }
   }
   
     return(
@@ -63,7 +63,7 @@ const Navbar=()=>{
              <div className='container1'>
                 <li><Link to={'/'} style={{textDecoration:"none",color:"black"}}>Home</Link></li>
                 <li><Link to={'/BookBus'} style={{textDecoration:"none",color:"black"}}>Book Bus</Link></li>
-                <li><Link to={'/checkstatus'} style={{textDecoration:"none",color:"black"}}>check status</Link></li>
+                <li><Link to={'/checkstatus'} style={{textDecoration:"none",color:"black"}}>Check Status</Link></li>
               {user ?
                 <>
                     <div className="dropdown">

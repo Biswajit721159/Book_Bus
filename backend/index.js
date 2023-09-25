@@ -231,35 +231,43 @@ app.put('/MasterList/:email',verifytoken,async(req,res)=>{
 
 
 //Bus Detail
-function findDifferTime(s1,s2)
+
+function FindInMinutes(s1,s2)
 {
    let hh1=s1.substr(0,2);
-   let mm1=s1.substr(3,2);
    let hh2=s2.substr(0,2);
+   let mm1=s1.substr(3,2);
    let mm2=s2.substr(3,2);
-   
-   hh1=(parseInt(hh1)+24)%24;
-   hh2=(parseInt(hh2)+24)%24;
-   
+
+   hh1=parseInt(hh1);
+   hh2=parseInt(hh2);
    mm1=parseInt(mm1);
    mm2=parseInt(mm2);
 
-   console.log(s1,s2)
-
-
-   
-   let hhDiff=hh1-hh2;
-   if(hhDiff<0) hhDiff=-1*hhDiff;
-   let mmDiff=mm1-mm2;
+   if(hh2<hh1) hh2+=23
+   let hhDiff=hh2-hh1;
+   let mmDiff=mm2-mm1;
    if(mmDiff<0)
    {
-       mmDiff=-1*mmDiff;
+       mmDiff+=60;
        hhDiff-=1;
    }
+   return hhDiff*60+mmDiff
+} 
 
+function findDifferTime(arr,a,b)
+{
+  let ans=0;
+  for(let i=a;i<b-1;i++)
+  {
+      let s1=arr[i].arrived_time;
+      let s2=arr[i+1].arrived_time;
+      ans+=FindInMinutes(s1,s2);
+  }
+   let hhDiff=parseInt(ans/60);
+   let mmDiff=parseInt(ans-hhDiff*60);
    let res=hhDiff+'h:'+mmDiff+'m'
    return res;
-
 
 }
 
@@ -284,7 +292,7 @@ app.get('/FirstFiveBus',async(req,res)=>{
         end_station:arr[n-1].station,
         start_arrived_time:arr[0].arrived_time,
         end_arrive_time:arr[n-1].arrived_time,
-        total_time:findDifferTime(arr[0].arrived_time,arr[n-1].arrived_time),
+        total_time:findDifferTime(arr,0,arr.length),
         total_distance:total_distance
       }
       ans.push(obj)
@@ -338,7 +346,7 @@ app.patch('/get_bus',async(req,res)=>{
                 end_station:end_station,
                 start_arrived_time:arr[start_ind].arrived_time,
                 end_arrive_time:arr[end_ind].arrived_time,
-                total_time:findDifferTime(arr[start_ind].arrived_time,arr[end_ind].arrived_time),
+                total_time:findDifferTime(arr,start_ind,end_ind+1),
                 total_distance:total_distance
             }
             ans.push(obj)
