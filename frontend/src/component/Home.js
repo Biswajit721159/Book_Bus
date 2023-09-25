@@ -240,6 +240,16 @@ const Home=()=>{
         return ans;
     }
 
+    function finMinutes(s)
+    {
+        let hh=s.substr(0,2);
+        let mm=s.substr(3,2);
+     
+        hh=parseInt(hh);
+        mm=parseInt(mm);
+        return (hh*60+mm)
+    }
+
     function applyFilter()
     {
         if(DurationEarlyFirst)
@@ -276,19 +286,67 @@ const Home=()=>{
         }
         else if(DepartureEarlyFirst)
         {
-
+            bus.sort((a, b) => {
+                let fa =finMinutes(a.end_arrive_time)
+                let fb =finMinutes(b.end_arrive_time)
+            
+                if (fa < fb) {
+                    return -1;
+                }
+                if (fa > fb) {
+                    return 1;
+                }
+                return 0;
+            });
+            setbus([...bus])
         }
         else if(DepartureLateFirst)
         {
-
+            bus.sort((a, b) => {
+                let fa =finMinutes(a.end_arrive_time)
+                let fb = finMinutes(b.end_arrive_time)
+            
+                if (fa > fb) {
+                    return -1;
+                }
+                if (fa < fb) {
+                    return 1;
+                }
+                return 0;
+            });
+            setbus([...bus])
         }
         else if(ArrivalEarlyFirst)
         {
-
+            bus.sort((a, b) => {
+                let fa =finMinutes(a.start_arrived_time)
+                let fb =finMinutes(b.start_arrived_time)
+            
+                if (fa < fb) {
+                    return -1;
+                }
+                if (fa > fb) {
+                    return 1;
+                }
+                return 0;
+            });
+            setbus([...bus])
         }
         else if(ArrivalLateFirst)
         {
-
+            bus.sort((a, b) => {
+                let fa =finMinutes(a.start_arrived_time)
+                let fb = finMinutes(b.start_arrived_time)
+            
+                if (fa > fb) {
+                    return -1;
+                }
+                if (fa < fb) {
+                    return 1;
+                }
+                return 0;
+            });
+            setbus([...bus])
         }
         else
         {
