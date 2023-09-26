@@ -12,19 +12,18 @@ const [disabled,setdisabled]=useState(false)
 
 
 
-
 useEffect(()=>{
     const auth =localStorage.getItem('user')
     if(auth)
     {
-        history('/BookBus')
+        history('/')
     }
 },[])
 
 function submit(){
     setbutton("Please Wait ...")
     setdisabled(true)
-    fetch('https://book-bus-api.vercel.app/login',{
+    fetch('https://book-bus-api.vercel.app/busowner/login',{
         method:'PATCH',
         headers:{
             'Accept':'application/json',
@@ -38,8 +37,9 @@ function submit(){
     .then((result)=>{
         if(result.auth)
         {
+            delete result.status
             localStorage.setItem("user",JSON.stringify(result))
-            history('/BookBus')
+            history('/')
         }
         else{
             setbutton("Submit")

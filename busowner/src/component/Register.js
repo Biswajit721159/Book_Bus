@@ -6,7 +6,6 @@ const Register=()=>{
 const [name,setname]=useState("")
 const [email,setemail]=useState("")
 const [password,setpassword]=useState("")
-const [address,setaddress]=useState("")
 const history=useNavigate();
 
 const [wrongname,setwrongname]=useState(false)
@@ -27,7 +26,7 @@ const [disabled,setdisabled]=useState(false)
     const auth=localStorage.getItem('user')
     if(auth)
     {
-        history('/BookBus')
+        history('/')
     }
   },[])
   
@@ -80,37 +79,42 @@ const [disabled,setdisabled]=useState(false)
     {
       setbutton("Please Wait....")
       setdisabled(true)
-      fetch(`https://book-bus-api.vercel.app/usermail/${email}`).then(response=>response.json()).then((res)=>{
-        if(res.message==false)
-        {
-            fetch('https://book-bus-api.vercel.app/register',{
-                method:'POST',
-                headers:{
-                    'Accept':'application/json',
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({
-                  name:name,
-                  email:email,
-                  password:password,
-                  address:address
-                })
-            })
-            .then(response=>response.json())
-            .then((result)=>{
-                localStorage.setItem("user",JSON.stringify(result))
-                history('/BookBus')
-            })
-        }
-        else
-        {
-          setbutton("Submit")
-          setdisabled(false)
-          setwrongemail(true)
-          setmessemail("*Email Already present")
-        }
-      })
-     }
+      fetch('https://book-bus-api.vercel.app/busowner/register',{
+              method:'POST',
+              headers:{
+                  'Accept':'application/json',
+                  'Content-Type':'application/json'
+              },
+              body:JSON.stringify({
+                name:name,
+                email:email,
+                password:password,
+              })
+          })
+          .then(response=>response.json())
+          .then((result)=>{
+              if(result!=undefined && result.status==200)
+              {
+                  delete result.status
+                  localStorage.setItem("user",JSON.stringify(result))
+                  history('/')
+              }
+              else
+              {
+                setbutton("Submit")
+                setdisabled(false)
+                setwrongemail(true)
+                setmessemail(result.message)
+              }
+          })
+    }
+    else
+    {
+      setbutton("Submit")
+      setdisabled(false)
+      setwrongemail(true)
+      setmessemail("*Email Already present")
+    }
   }
 
     return(
