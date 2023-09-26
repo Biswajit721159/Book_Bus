@@ -4,7 +4,6 @@ import Navbar from './component/Navbar';
 import Home from "./component/Home";
 import Register from "./User/Register";
 import Login from "./User/Login";
-import Bus_adder from "./component/Bus_adder";
 import MasterList from "./component/MasterList";
 import Ticket_Book from "./component/Ticket_Book";
 import LastTransaction from "./component/LastTransaction";
@@ -25,7 +24,7 @@ function App() {
             <Route path="/BookBus" element={<Home/>}></Route>
             <Route path="/Register" element={<Register/>}></Route>
             <Route path="/Login" element={<Login/>}></Route>
-            <Route path="/Bus_adder" element={<Bus_adder/>}></Route>
+            {/* <Route path="/Bus_adder" element={<Bus_adder/>}></Route> */}
             <Route path="/MasterList" element={<MasterList/>}></Route>
             <Route path="LastTransaction" element={<LastTransaction/>}></Route>
             <Route path="/WishList" element={<WishList/>}></Route>

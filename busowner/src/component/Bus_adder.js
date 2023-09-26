@@ -1,7 +1,5 @@
 import React, { useState,useEffect }  from "react";
 import { json, useNavigate } from "react-router-dom";
-import Register from "../User/Register";
-
 const Bus_adder=()=>{
 
     const history=useNavigate()
@@ -82,6 +80,8 @@ const Bus_adder=()=>{
         data.splice(ind,1)
         setdata([...data])
     }
+
+
     return(
         <div className="container" >
             <div className="col-md-4 mt-3">
@@ -144,8 +144,8 @@ const Bus_adder=()=>{
                 </div>
                 <div className="col-md-4 mt-2">
                     <div className="form-group">
-                        <label style={{color:"green"}}>*Enter Arrived Time</label>
-                        <input type="time" value={arrived_time} onChange={(e)=>{setarrived_time(e.target.value)}}  className="form-control" placeholder="Enter Arrived Time"  required/>
+                        <label style={{color:"green"}}>*Enter Arrived Time(24 Hour Format)</label>
+                        <input type="time" value={arrived_time} onChange={(e)=>{setarrived_time(e.target.value)}}  className="form-control mt-2" placeholder="Enter Arrived Time"  required/>
                         {wrongarrived_time?<label  style={{color:"red"}}>{messarrived_time}</label>:""}
                     </div>
                 </div>

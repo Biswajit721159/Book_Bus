@@ -59,7 +59,7 @@ const Navbar=()=>{
   
     return(
         <>
-            <ul >
+          <ul >
              <div className='container1'>
                 <li><Link to={'/'} style={{textDecoration:"none",color:"black"}}>Home</Link></li>
                 <li><Link to={'/BookBus'} style={{textDecoration:"none",color:"black"}}>Book Bus</Link></li>
@@ -82,6 +82,7 @@ const Navbar=()=>{
                 <>
                     <li><Link to={'/Login'} style={{textDecoration:"none",color:"black"}}>Login</Link></li>
                     <li><Link to={'/Register'}style={{textDecoration:"none",color:"black"}}>Register</Link></li>
+                    <li><a href='https://busowner.vercel.app/' style={{textDecoration:"none",color:"black"}} target="_blank" >Bus Owner</a></li>  
                 </>
                 }
                 {
@@ -89,7 +90,7 @@ const Navbar=()=>{
                   <li><button className='btn btn-light rounded-circle' onClick={changecolor}><MdOutlineDarkMode/></button></li>
                   :<li><button className='btn btn-dark rounded-circle' onClick={changecolor}><MdOutlineDarkMode/></button></li>
                 }
-            </div>   
+            </div> 
             </ul>
         </>
     )
