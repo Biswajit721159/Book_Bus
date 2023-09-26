@@ -19,6 +19,7 @@ let deconnect_bus_detail=require('./Busadder')
 let deconnect_MasterList=require('./MasterList')
 let dbconnect_Booking=require('./booking')
 let dbconnect_wishlist=require('./WishList')
+let dbconnect_BusOwner=require('./BusOwner')
 
 //wishlist
 
@@ -382,6 +383,91 @@ app.post('/bus_detail',async(req,res)=>{
   let result = await data.insertOne(req.body);
   res.send({'message':"added SuccessFully"});
 })
+//bus Owner section ---
+
+app.patch('/busowner/login',async(req,resp)=>{
+
+    if (req.body.email && req.body.password) 
+    {
+        console.log(req.body);
+        let data = await dbconnect_BusOwner();
+        let password=req.body.password
+        console.log(password)
+        
+        let user = await data.findOne({email:req.body.email});
+        console.log("user",user);
+        if(user==null) resp.send({'status':498,'message':"Invalid User"})
+        else
+        {
+            const isMatch = await bcrypt.compare(password, user.password);
+            if(isMatch==false)
+            {
+                resp.send({'status':498,'message':"Sorry Invalid User!"})
+            }
+            delete user.password
+            if (user) 
+            {
+                Jwt.sign({ user }, jwtKey, (error, token) => {
+                    if (error) 
+                    {
+                       resp.send({'status':498,'message':"Invalid User"})
+                    }
+                    resp.send({ user, auth: token });
+                });
+            } 
+            else 
+            {
+                resp.send({'status':498,'message':"Invalid User"})
+            }
+        } 
+    }
+    else
+    {
+        resp.send({'status':498,'message':"Invalid User"})
+    }
+})
+
+app.post('/busowner/register',async(req,resp)=>{
+    let  name=req.body.name;
+    let email=req.body.email;
+    let password=req.body.password;
+
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    let data = await dbconnect_BusOwner();
+    let res=await data.find({email:email}).toArray()
+   
+    if(res.length!=0)
+    {
+         resp.send({'status':498,'message':"This Email is Already used"})
+    }
+    else
+    {
+        let result = await data.insertOne({
+          name:name,
+          email:email,
+          password:passwordHash
+        });
+        delete req.body.password
+        let user=req.body
+    
+        if (result.acknowledged) 
+        {
+            Jwt.sign({ user }, jwtKey, (error, token) => {
+                if (error) 
+                {
+                   resp.send({'status':498, 'message': "We find some error" });
+                }
+                resp.send({ 'status':200, user, auth: token });
+            });
+        } 
+        else 
+        {
+            resp.send({'status':498, 'message': "We find some error" });
+        }
+    }
+})
 
 //user section
 //working
@@ -390,6 +476,7 @@ app.get("/",verifytoken, async (req, res) => {
   let result = await data.find().toArray();
   res.send(result);
 });
+
 //working
 app.get("/usermail/:email", async (req, res) => {
   let data = await dbconnect();
@@ -414,6 +501,7 @@ app.post("/register", async (req, resp) => {
     });
     delete req.body.password
     let user=req.body
+
     if (result.acknowledged) 
     {
         Jwt.sign({ user }, jwtKey, (error, token) => {
@@ -429,6 +517,7 @@ app.post("/register", async (req, resp) => {
       resp.send("user no found");
     }
 });
+
 //working
 app.patch("/login", async (req, resp) => {
   if (req.body.email && req.body.password) 
@@ -465,6 +554,7 @@ app.patch("/login", async (req, resp) => {
     resp.send("user not found");
   }
 });
+
 //normals
 function verifytoken(req, res, next) {
   let token = req.headers["auth"];
