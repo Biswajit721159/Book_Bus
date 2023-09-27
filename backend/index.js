@@ -20,6 +20,7 @@ let deconnect_MasterList=require('./MasterList')
 let dbconnect_Booking=require('./booking')
 let dbconnect_wishlist=require('./WishList')
 let dbconnect_BusOwner=require('./BusOwner')
+let BusOwner_dataBase=require('./BusOwner_dataBase')
 
 //wishlist
 
@@ -385,6 +386,19 @@ app.post('/bus_detail',async(req,res)=>{
 })
 //bus Owner section ---
 
+app.post('/busowner/addBus',async(req,resp)=>{
+  let data=await BusOwner_dataBase()
+  let result = await data.insertOne(req.body);
+  if(result.acknowledged==true)
+  {
+    resp.send({'status':200,'message':"added SuccessFully"});
+  }
+  else
+  {
+    resp.send({'status':498,'message':"Invalid Detail"});
+  }
+})
+
 app.patch('/busowner/login',async(req,resp)=>{
 
     if (req.body.email && req.body.password) 
@@ -468,6 +482,7 @@ app.post('/busowner/register',async(req,resp)=>{
         }
     }
 })
+
 
 //user section
 //working
