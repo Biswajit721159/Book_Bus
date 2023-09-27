@@ -65,7 +65,7 @@ const Bus_adder=()=>{
     {
         setdisabled(true)
         setbutton("Please Wait...")
-        fetch('https://book-bus-api.vercel.app/bus_detail',{
+        fetch('https://book-bus-api.vercel.app/busowner/addBus',{
             method:'POST',
             headers:{
                 'Accept':'application/json',
@@ -92,10 +92,10 @@ const Bus_adder=()=>{
 
 
     return(
-        <div className="container" >
-            <div className="col-md-4 mt-3">
-                <h3>Add Bus</h3>
-            </div>
+        <div className="container mt-3">
+        { 
+           data.length==0?
+          <>
             <div className="col-md-4 mt-2">
                 <div className="form-group">
                     <input type="text" value={name} onChange={(e)=>{setname(e.target.value)}}  className="form-control" placeholder="Enter Bus Name"  required/>
@@ -108,11 +108,21 @@ const Bus_adder=()=>{
                     {wrongseat?<label  style={{color:"red"}}>{messseat}</label>:""}
                 </div>
             </div>
-
+          </>
+          :""
+        }
         {
             data!=null && data.length!=0?
             <table className="table mt-3 table-primary">
                 <thead>
+                   <tr>
+                        <th className="col text-center">Bus Name - </th>
+                        <th className="col text-center">{name}</th>
+                        <th className="col text-center">Total Seat</th>
+                        <th className="col text-center">{seat}</th>
+                        <th className="col text-center">-</th>
+                        {/* <th className="col text-center">Update</th> */}
+                    </tr>
                     <tr>
                         <th className="col text-center">Station No.</th>
                         <th className="col text-center">Station Name</th>
@@ -138,7 +148,6 @@ const Bus_adder=()=>{
                 ))
             }
             </table>
-
             :""
         }
 
@@ -176,9 +185,12 @@ const Bus_adder=()=>{
             </>  
             :""
         }
+        {show_html==true?
             <div className="col-md-4 mt-3">
-                <button className="btn btn-primary" disabled={disabled} onClick={submit}>{button}</button>
+                 <button className="btn btn-primary" disabled={disabled} onClick={submit}>{button}</button>
             </div>
+        :""
+        }
         </div>
     )
 }
