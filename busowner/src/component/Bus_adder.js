@@ -1,7 +1,15 @@
 import React, { useState,useEffect }  from "react";
 import { json, useNavigate } from "react-router-dom";
 const Bus_adder=()=>{
+    const userinfo=JSON.parse(localStorage.getItem('user'))
 
+    useEffect(()=>{
+        console.log(userinfo.user.email)
+        if(userinfo==null)
+        {
+            history('/Login')
+        }
+    },[])
     const history=useNavigate()
     const [name,setname]=useState("")
     const [messname,setmessname]=useState("")
@@ -64,6 +72,7 @@ const Bus_adder=()=>{
                 'Content-Type':'application/json'
             },
             body:JSON.stringify({
+               email:userinfo.user.email,
                bus_name:name,
                Total_seat:seat,
                station_data:data
@@ -71,7 +80,7 @@ const Bus_adder=()=>{
         }).then(responce=>responce.json()).then((res)=>{
             history('/')
         },(error)=>{
-            console.log(error)
+            history('*')
         })
     }
 
