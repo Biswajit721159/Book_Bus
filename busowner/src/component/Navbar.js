@@ -7,8 +7,8 @@ const Navbar =()=>{
 
     function logout()
     {
-        localStorage.clear('user')
-        history('/Login')
+        localStorage.removeItem('user');
+        history('/Lonin')
     }
 
     return(
