@@ -62,48 +62,69 @@ app.patch('/adminpanel/login',async(req,resp)=>{
   }
 })
 
-// app.post('/adminpanel/register',async(req,resp)=>{
-//   let  name=req.body.name;
-//   let email=req.body.email;
-//   let password=req.body.password;
+app.get('/adminpanel/getdata',async(req,resp)=>{
+  let data = await BusOwner_dataBase();
+  let result=await data.find({}).toArray()
+  let ans=[]
+  for(let i=0;i<result.length;i++)
+  {
+      if(result[i].status=='pending')
+      {
+        ans.push(result[i])
+      }
+  }
+  for(let i=0;i<result.length;i++)
+  {
+      if(result[i].status!='pending')
+      {
+        ans.push(result[i])
+      }
+  }
+  resp.send(result)
+})
 
-//   const salt = await bcrypt.genSalt();
-//   const passwordHash = await bcrypt.hash(password, salt);
+app.post('/adminpanel/register',async(req,resp)=>{
+  // let  name=req.body.name;
+  // let email=req.body.email;
+  // let password=req.body.password;
 
-//   let data = await dbconnect_Adminpanel_user();
-//   let res=await data.find({email:email}).toArray()
+  // const salt = await bcrypt.genSalt();
+  // const passwordHash = await bcrypt.hash(password, salt);
+
+  // let data = await dbconnect_Adminpanel_user();
+  // let res=await data.find({email:email}).toArray()
  
-//   if(res.length!=0)
-//   {
-//        resp.send({'status':498,'message':"This Email is Already used"})
-//   }
-//   else
-//   {
-//       let result = await data.insertOne({
-//         name:name,
-//         email:email,
-//         password:passwordHash
-//       });
-//       delete req.body.password
-//       let user=req.body
+  // if(res.length!=0)
+  // {
+  //      resp.send({'status':498,'message':"This Email is Already used"})
+  // }
+  // else
+  // {
+  //     let result = await data.insertOne({
+  //       name:name,
+  //       email:email,
+  //       password:passwordHash
+  //     });
+  //     delete req.body.password
+  //     let user=req.body
   
-//       if (result.acknowledged) 
-//       {
-//           Jwt.sign({ user }, jwtKey, (error, token) => {
-//               if (error) 
-//               {
-//                  resp.send({'status':498, 'message': "We find some error" });
-//               }
-//               resp.send({ 'status':200, user, auth: token });
-//           });
-//       } 
-//       else 
-//       {
-//           resp.send({'status':498, 'message': "We find some error" });
-//       }
-//   }
+  //     if (result.acknowledged) 
+  //     {
+  //         Jwt.sign({ user }, jwtKey, (error, token) => {
+  //             if (error) 
+  //             {
+  //                resp.send({'status':498, 'message': "We find some error" });
+  //             }
+  //             resp.send({ 'status':200, user, auth: token });
+  //         });
+  //     } 
+  //     else 
+  //     {
+  //         resp.send({'status':498, 'message': "We find some error" });
+  //     }
+  // }
 
-// })
+})
 
 
 //wishlist
