@@ -21,6 +21,90 @@ let dbconnect_Booking=require('./booking')
 let dbconnect_wishlist=require('./WishList')
 let dbconnect_BusOwner=require('./BusOwner')
 let BusOwner_dataBase=require('./BusOwner_dataBase')
+let dbconnect_Adminpanel_user=require('./dbconnect_Adminpanel_user')
+
+
+//adminpanel
+
+app.patch('/adminpanel/login',async(req,resp)=>{
+  if (req.body.email && req.body.password) 
+  {
+    let data = await dbconnect_Adminpanel_user();
+    let password=req.body.password
+    
+    let user = await data.findOne({
+      email:req.body.email
+    });
+    if(user==null) resp.send("user no found");
+    else
+    {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(isMatch==false)
+        {
+          resp.send("user no found");
+        }
+        delete user.password
+        if (user) {
+            Jwt.sign({ user }, jwtKey, (error, token) => {
+                if (error) {
+                  resp.send({ message: "We find some error" });
+                }
+                resp.send({ user, auth: token });
+            });
+        } else {
+          resp.send("user no found");
+        }
+      } 
+    }
+  else
+  {
+    resp.send("user not found");
+  }
+})
+
+// app.post('/adminpanel/register',async(req,resp)=>{
+//   let  name=req.body.name;
+//   let email=req.body.email;
+//   let password=req.body.password;
+
+//   const salt = await bcrypt.genSalt();
+//   const passwordHash = await bcrypt.hash(password, salt);
+
+//   let data = await dbconnect_Adminpanel_user();
+//   let res=await data.find({email:email}).toArray()
+ 
+//   if(res.length!=0)
+//   {
+//        resp.send({'status':498,'message':"This Email is Already used"})
+//   }
+//   else
+//   {
+//       let result = await data.insertOne({
+//         name:name,
+//         email:email,
+//         password:passwordHash
+//       });
+//       delete req.body.password
+//       let user=req.body
+  
+//       if (result.acknowledged) 
+//       {
+//           Jwt.sign({ user }, jwtKey, (error, token) => {
+//               if (error) 
+//               {
+//                  resp.send({'status':498, 'message': "We find some error" });
+//               }
+//               resp.send({ 'status':200, user, auth: token });
+//           });
+//       } 
+//       else 
+//       {
+//           resp.send({'status':498, 'message': "We find some error" });
+//       }
+//   }
+
+// })
+
 
 //wishlist
 
