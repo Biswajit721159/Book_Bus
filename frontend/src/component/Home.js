@@ -517,6 +517,8 @@ const Home=()=>{
                                     <td>Na</td>
                                     <td>Na</td>
                                     <td>Na</td>
+                                    <td>Na</td>
+                                    <td>Na</td>
                                     <td></td>     
                                 </tr>
                             }

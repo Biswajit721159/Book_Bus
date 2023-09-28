@@ -6,6 +6,7 @@ import Login from './component/Login'
 import Register from './component/Register'
 import Error from './component/Error'
 import Home from "./component/Home";
+import View_Bus from "./component/View_Bus"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/Bus_adder" element={<Bus_adder/>}></Route>
         <Route path="/Login" element={<Login/>}></Route>
         <Route path="/Register" element={<Register/>}></Route>
+        <Route path="/View_Bus/:_id" element={<View_Bus/>}></Route>
         <Route path="*" element={<Error/>}></Route>
       </Routes>
     </Router>

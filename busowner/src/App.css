@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+
+
+
+
+
+
+
+.loader-container{
+  /* position: fixed; */
+  margin-left:0 ;
+  margin-right: 0;
+  top:0; left:0;
+  height:100vh; 
+  width:100%;
+  /* z-index: 10000; */
+  background:white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.loader-container img{
+  width:25rem;
+}
+
+.loader-container.fade-out{
+  top:-110%;
+  opacity:0;
+}

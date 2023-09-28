@@ -75,7 +75,8 @@ const Bus_adder=()=>{
                email:userinfo.user.email,
                bus_name:name,
                Total_seat:seat,
-               station_data:data
+               station_data:data,
+               status:'pending',
             })
         }).then(responce=>responce.json()).then((res)=>{
             history('/')
