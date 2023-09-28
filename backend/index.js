@@ -386,6 +386,13 @@ app.post('/bus_detail',async(req,res)=>{
 })
 //bus Owner section ---
 
+
+app.get('/busownerGetById/:_id',async(req,resp)=>{
+    let data=await BusOwner_dataBase()
+    let result=await data.find({'_id':new ObjectID(req.params._id)}).toArray()
+    resp.send(result)
+})
+
 app.get('/busowner/:email',verifytoken,async(req,resp)=>{
     let data=await BusOwner_dataBase()
     let result=await data.find({email:req.params.email}).toArray()
