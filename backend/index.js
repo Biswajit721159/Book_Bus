@@ -548,7 +548,7 @@ app.get('/busowner/:email',verifytoken,async(req,resp)=>{
     resp.send(result)
 })
 
-app.patch('/busowner/getBookingStatus',async(req,resp)=>{
+app.patch('/busowner/getBookingStatus',verifytoken,async(req,resp)=>{
     let date=req.body.date;
     let bus_id=req.body.bus_id;
     let data = await dbconnect_Booking();

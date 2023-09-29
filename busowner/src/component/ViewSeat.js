@@ -100,6 +100,7 @@ const ViewSeat=()=>{
             seterroInSrc(false)
             seterrordate(false)
             setdisabled(true)
+            let y=findBusId()
             setbutton("Wait Finding...")
             fetch('https://book-bus-api.vercel.app/busowner/getBookingStatus',{
                 method:'PATCH',
@@ -109,8 +110,8 @@ const ViewSeat=()=>{
                      auth:`bearer ${userinfo.auth}`
                 },
                 body:JSON.stringify({
-                    date:date,
-                    bus_id:findBusId()
+                    "date":date,
+                    "bus_id":y
                 })
             }).then(response=>response.json()).then((res)=>{
                 if(res!=undefined)
@@ -118,6 +119,9 @@ const ViewSeat=()=>{
                     setdisabled(false)
                     setbutton("Find Bus")
                     setbus(res)
+                    // console.log(date)
+                    // console.log(findBusId())
+                    console.log(res)
                 }
             },(error)=>{
                 history('*')
@@ -130,7 +134,7 @@ const ViewSeat=()=>{
         {
             load==false?
             <>
-             <form onSubmit={(e)=>{ e.preventDefault(); findbus()}}>
+               <form onSubmit={(e)=>{ e.preventDefault(); findbus()}}>
 
                 <div className="d-flex align-items-center justify-content-center mt-5">
                     <div className="d-flex ">
@@ -159,7 +163,7 @@ const ViewSeat=()=>{
                 <div className="container">
                     {
                         bus.length!=0 ?
-                        <table class="table">
+                        <table className="table">
                             <thead>
                                 <tr>
                                 <th scope="col">#</th>
