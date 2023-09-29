@@ -37,6 +37,7 @@ app.put('/updatebusdetail',verifytoken,async(req,resp)=>{
         );
         if (result.acknowledged) 
         {
+           delete req.body.data.status
             let data=await deconnect_bus_detail()
             let result = await data.insertOne(req.body.data);
             resp.send({'status':200,'message':"Added SuccessFully"});
