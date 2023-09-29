@@ -7,6 +7,7 @@ import Register from './component/Register'
 import Error from './component/Error'
 import Home from "./component/Home";
 import View_Bus from "./component/View_Bus"
+import ViewSeat from "./component/ViewSeat"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/Register" element={<Register/>}></Route>
         <Route path="/View_Bus/:_id" element={<View_Bus/>}></Route>
         <Route path="*" element={<Error/>}></Route>
+        <Route path="/ViewSeat" element={<ViewSeat/>}></Route>
       </Routes>
     </Router>
   );

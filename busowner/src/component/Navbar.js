@@ -8,7 +8,7 @@ const Navbar =()=>{
     function logout()
     {
         localStorage.removeItem('user');
-        history('/Lonin')
+        history('/Login')
     }
 
     return(
@@ -38,8 +38,11 @@ const Navbar =()=>{
                             :
                             <>
                                 <li className="nav-item">
-                                <Link className="nav-link" to={'/Bus_adder'}>AddBus</Link>
-                            </li>
+                                    <Link className="nav-link" to={'/Bus_adder'}>AddBus</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to={'/ViewSeat'}>View Seat</Link>
+                                </li>
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Welcome {userinfo.user.name}

@@ -548,6 +548,31 @@ app.get('/busowner/:email',verifytoken,async(req,resp)=>{
     resp.send(result)
 })
 
+app.patch('/busowner/getBookingStatus',async(req,resp)=>{
+    let date=req.body.date;
+    let bus_id=req.body.bus_id;
+    let data = await dbconnect_Booking();
+    let result = await data.find({bus_id:bus_id,date:date}).toArray();
+    let ans=[]
+    for(let i=0;i<result.length;i++)
+    {
+        for( let j=0 ; j<result[i].person.length ; j++)
+        {
+           let obj={
+               "src":result[i].src,
+               "dist":result[i].dist,
+               "Pay" :result[i].total_money/result[i].person.length,
+               "name":result[i].person[j],
+               "seat_no.":result[i].seat_record[j],
+               "total_distance":result[i].total_distance,
+               "PNR No.":result[i]._id,
+           }
+           ans.push(obj)
+        }
+    }
+    resp.send(ans)
+})
+
 app.post('/busowner/addBus',async(req,resp)=>{
   let data=await BusOwner_dataBase()
   let result = await data.insertOne(req.body);
