@@ -119,8 +119,6 @@ const ViewSeat=()=>{
                     setdisabled(false)
                     setbutton("Find Bus")
                     setbus(res)
-                    // console.log(date)
-                    // console.log(findBusId())
                     console.log(res)
                 }
             },(error)=>{
@@ -160,13 +158,13 @@ const ViewSeat=()=>{
                 </div>
 
                 </form>
-                <div className="container">
+                <div className="container mt-5">
                     {
                         bus.length!=0 ?
                         <table className="table">
                             <thead>
                                 <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">PNR No</th>
                                 <th scope="col">First</th>
                                 <th scope="col">Last</th>
                                 <th scope="col">Handle</th>
@@ -176,7 +174,7 @@ const ViewSeat=()=>{
                             {
                                 bus.map((item,ind)=>(
                                         <tr>
-                                            <th scope="row">1</th>
+                                            <th scope="row">{item.PNR_No}</th>
                                             <td>Mark</td>
                                             <td>Otto</td>
                                             <td>@mdo</td>

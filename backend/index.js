@@ -565,7 +565,7 @@ app.patch('/busowner/getBookingStatus',verifytoken,async(req,resp)=>{
                "name":result[i].person[j],
                "seat_no.":result[i].seat_record[j],
                "total_distance":result[i].total_distance,
-               "PNR No.":result[i]._id,
+               "PNR_No.":result[i]._id,
            }
            ans.push(obj)
         }
