@@ -26,6 +26,32 @@ let dbconnect_Adminpanel_user=require('./dbconnect_Adminpanel_user')
 
 //adminpanel
 
+
+app.put('/updatebusdetail',verifytoken,async(req,resp)=>{
+    let data=await BusOwner_dataBase()
+    try 
+    {
+        let result = await data.updateOne(
+          { _id: new ObjectID(req.body.data._id) },
+          { $set: { status: 'approved' } }
+        );
+        if (result.acknowledged) 
+        {
+            let data=await deconnect_bus_detail()
+            let result = await data.insertOne(req.body.data);
+            resp.send({'status':200,'message':"Added SuccessFully"});
+        } 
+        else 
+        {
+          resp.send({'status':498,'message': "We Find Some Error" });
+        }
+    } 
+    catch
+    {
+        console.log("Error");
+    }
+})
+
 app.patch('/adminpanel/login',async(req,resp)=>{
   if (req.body.email && req.body.password) 
   {
@@ -62,7 +88,7 @@ app.patch('/adminpanel/login',async(req,resp)=>{
   }
 })
 
-app.get('/adminpanel/getdata',async(req,resp)=>{
+app.get('/adminpanel/getdata',verifytoken,async(req,resp)=>{
   let data = await BusOwner_dataBase();
   let result=await data.find({}).toArray()
   let ans=[]
