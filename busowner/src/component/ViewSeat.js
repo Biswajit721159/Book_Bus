@@ -164,10 +164,13 @@ const ViewSeat=()=>{
                         <table className="table">
                             <thead>
                                 <tr>
-                                <th scope="col">PNR No</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                    <th scope="col">PNR No</th>
+                                    <th scope="col">Pay</th>
+                                    <th scope="col">src</th>
+                                    <th scope="col">dist</th>
+                                    <th scope="col">Passenger Name</th>
+                                    <th scope="col">seat_no</th>
+                                    <th scope="col">total_distance</th>
                                 </tr>
                             </thead>
                         <tbody>
@@ -175,9 +178,12 @@ const ViewSeat=()=>{
                                 bus.map((item,ind)=>(
                                         <tr>
                                             <th scope="row">{item.PNR_No}</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
+                                            <td>{item.Pay}</td>
+                                            <td>{item.src}</td>
+                                            <td>{item.dist}</td>
+                                            <td>{item.name}</td>
+                                            <td>{item.seat_no.}</td>
+                                            <td>{item.total_distance}</td>
                                         </tr>
                                 ))
                             }
