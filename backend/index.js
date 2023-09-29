@@ -516,7 +516,14 @@ app.get('/get_station',async(req,res)=>{
 
 app.get('/bus_detail/:_id',async(req,res)=>{
   let data=await deconnect_bus_detail()
-  let result=await data.find({_id:new ObjectID(req.params._id)}).toArray();
+  let res=await data.find({}).toArray();
+  let result=[]
+  for(let i=0;i<res.length;i++){
+     if(res[i]._id==req.params._id)
+     {
+      result.push(res[i])
+     }
+  }
   res.send(result)
 })
 
