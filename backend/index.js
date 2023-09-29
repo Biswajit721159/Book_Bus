@@ -516,12 +516,13 @@ app.get('/get_station',async(req,res)=>{
 
 app.get('/bus_detail/:_id',async(req,res)=>{
   let data=await deconnect_bus_detail()
-  let res=await data.find({}).toArray();
+  let nums=await data.find({}).toArray();
   let result=[]
-  for(let i=0;i<res.length;i++){
-     if(res[i]._id==req.params._id)
+  for(let i=0;i<nums.length;i++)
+  {
+     if(nums[i]._id==req.params._id)
      {
-      result.push(res[i])
+         result.push(nums[i])
      }
   }
   res.send(result)

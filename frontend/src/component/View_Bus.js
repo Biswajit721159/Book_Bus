@@ -24,6 +24,7 @@ const View_Bus =()=>{
                     setdata(res)
                 }
             },(error)=>{
+                console.log("come")
                 history('*')
             })
     }
