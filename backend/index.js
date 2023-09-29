@@ -37,7 +37,7 @@ app.put('/updatebusdetail',verifytoken,async(req,resp)=>{
         );
         if (result.acknowledged) 
         {
-           delete req.body.data.status
+            delete req.body.data.status
             let data=await deconnect_bus_detail()
             let result = await data.insertOne(req.body.data);
             resp.send({'status':200,'message':"Added SuccessFully"});
@@ -209,10 +209,19 @@ app.patch('/get_Seat',async(req,res)=>{
     let date=req.body.date
     let bus_id=req.body.bus_id
 
+
     let data = await dbconnect_Booking();
     let Booking =await data.find({bus_id:bus_id , date:date}).toArray();
     let data_bus=await deconnect_bus_detail()
-    let busData=await data_bus.find({_id:new ObjectID(bus_id)}).toArray();
+    let ffff=await data_bus.find({}).toArray();
+    let busData=[]
+    for(let i=0;i<ffff.length;i++)
+    {
+        if(ffff[i]._id==bus_id)
+        {
+          busData.push(ffff[i])
+        }
+    }
     let bus=busData[0].station_data
  
     let srcToDistStation=new Set()
