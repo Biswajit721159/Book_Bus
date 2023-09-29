@@ -182,7 +182,7 @@ const ViewSeat=()=>{
                                             <td>{item.src}</td>
                                             <td>{item.dist}</td>
                                             <td>{item.name}</td>
-                                            <td>{item.seat_no.}</td>
+                                            <td>{item.seat_no}</td>
                                             <td>{item.total_distance}</td>
                                         </tr>
                                 ))
