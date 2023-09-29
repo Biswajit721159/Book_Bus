@@ -158,7 +158,7 @@ const ViewSeat=()=>{
                 </div>
 
                 </form>
-                <div className="container mt-5">
+                <div className="container mt-5 my-5">
                     {
                         bus.length!=0 ?
                         <table className="table">

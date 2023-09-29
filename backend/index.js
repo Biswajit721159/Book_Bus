@@ -570,6 +570,20 @@ app.patch('/busowner/getBookingStatus',verifytoken,async(req,resp)=>{
            ans.push(obj)
         }
     }
+
+    ans.sort((a, b) => {
+      let fa =(a.seat_no)
+      let fb =(b.seat_no)
+  
+      if (fa < fb) {
+          return -1;
+      }
+      if (fa > fb) {
+          return 1;
+      }
+      return 0;
+    });
+
     resp.send(ans)
 })
 
