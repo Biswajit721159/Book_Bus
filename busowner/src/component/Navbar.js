@@ -15,7 +15,7 @@ const Navbar =()=>{
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid" >
-                    <Link className="navbar-brand" to={'/'}>BusOwner Adminpanel</Link>
+                    <p className="navbar-brand" >BusOwner Adminpanel</p>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                        <span className="navbar-toggler-icon"></span>
                     </button>
@@ -48,9 +48,9 @@ const Navbar =()=>{
                                         Welcome {userinfo.user.name}
                                     </a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a className="dropdown-item" href="#">Action</a></li>
+                                        {/* <li><a className="dropdown-item" href="#">Action</a></li>
                                         <li><a className="dropdown-item" href="#">Another action</a></li>
-                                        <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                        <li><a className="dropdown-item" href="#">Something else here</a></li> */}
                                     </ul>
                                 </li>
                             </>

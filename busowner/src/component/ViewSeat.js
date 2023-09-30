@@ -178,18 +178,18 @@ const ViewSeat=()=>{
                                 bus.map((item,ind)=>(
                                         <tr>
                                             <th scope="row">{item.PNR_No}</th>
-                                            <td>{item.Pay}</td>
+                                            <td>₹{item.Pay}</td>
                                             <td>{item.src}</td>
                                             <td>{item.dist}</td>
                                             <td>{item.name}</td>
                                             <td>{item.seat_no}</td>
-                                            <td>{item.total_distance}</td>
+                                            <td>{item.total_distance} km</td>
                                         </tr>
                                 ))
                             }
                            </tbody>
                         </table>
-                        :""
+                        :<p className="d-flex align-items-center justify-content-center mt-5">Result Not Found</p>
                     }
                 </div>
             </>
