@@ -332,7 +332,14 @@ function checkStationIsPresentOrNot(src,dist,set,bus)
 app.post('/Booking',verifytoken,async(req,res)=>{
   let data = await dbconnect_Booking();
   let result = await data.insertOne(req.body);
-  res.send({'status':200});
+  if(result.acknowledged==true)
+  {
+      res.send({'status':200});
+  }
+  else
+  {
+      res.send({'status':498});
+  }
 })
 
 

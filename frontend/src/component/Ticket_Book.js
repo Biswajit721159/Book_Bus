@@ -227,8 +227,12 @@ const Ticket_Book=()=>{
                             {
                                 history('/LastTransaction')
                             }
+                            else if(res!=undefined && res.status==498)
+                            {
+                                history('*');
+                            }
                         },(error)=>{
-                            history('/')
+                            history('*')
                         })
                     }
                     else
