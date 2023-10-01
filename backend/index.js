@@ -22,6 +22,7 @@ let dbconnect_wishlist=require('./WishList')
 let dbconnect_BusOwner=require('./BusOwner')
 let BusOwner_dataBase=require('./BusOwner_dataBase')
 let dbconnect_Adminpanel_user=require('./dbconnect_Adminpanel_user')
+let sendMessage=require('./defineFunction/sendMessage')
 
 
 //adminpanel
@@ -777,6 +778,12 @@ app.patch("/login", async (req, resp) => {
     resp.send("user not found");
   }
 });
+
+
+app.post('/sendMessage',verifytoken,async(req,resp)=>{
+   sendMessage(req,resp);
+})
+
 
 //normals
 function verifytoken(req, res, next) {
