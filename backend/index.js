@@ -22,7 +22,7 @@ let dbconnect_wishlist=require('./WishList')
 let dbconnect_BusOwner=require('./BusOwner')
 let BusOwner_dataBase=require('./BusOwner_dataBase')
 let dbconnect_Adminpanel_user=require('./dbconnect_Adminpanel_user')
-let sendMessage=require('./defineFunction/sendMessage')
+let dbconnect_sendMessage=require('./sendMessage')
 
 
 //adminpanel
@@ -34,15 +34,18 @@ app.put('/updatebusdetail',verifytoken,async(req,resp)=>{
     {
         let result = await data.updateOne(
           { _id: new ObjectID(req.body.data._id) },
-          { $set: { status: 'approved' } }
+          { $set: { status: req.body.status } }
         );
-        if (result.acknowledged) 
+        if (result.acknowledged && req.body.status=='approved') 
         {
             delete req.body.data.status
             let data=await deconnect_bus_detail()
             let result = await data.insertOne(req.body.data);
-            resp.send({'status':200,'message':"Added SuccessFully"});
         } 
+        else if(result.acknowledged)
+        {
+          resp.send({'status':200,'message':"Added SuccessFully"});
+        }
         else 
         {
           resp.send({'status':498,'message': "We Find Some Error" });
@@ -781,7 +784,16 @@ app.patch("/login", async (req, resp) => {
 
 
 app.post('/sendMessage',verifytoken,async(req,resp)=>{
-   sendMessage(req,resp);
+  let data=await dbconnect_sendMessage();
+  let result=await data.insertOne(req.body)
+  if(result.acknowledged==true)
+  {
+      return resp.send({'status':200});
+  }
+  else
+  {
+      return resp.send({'status':498})
+  }
 })
 
 
