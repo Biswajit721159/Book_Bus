@@ -82,7 +82,6 @@ const Navbar=()=>{
                 <>
                     <li><Link to={'/Login'} style={{textDecoration:"none",color:"black"}}>Login</Link></li>
                     <li><Link to={'/Register'}style={{textDecoration:"none",color:"black"}}>Register</Link></li>
-                    <li><a href='https://busowner.vercel.app/' style={{textDecoration:"none",color:"black"}} target="_blank" >Bus Owner</a></li>  
                 </>
                 }
                 {

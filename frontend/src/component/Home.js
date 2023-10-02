@@ -400,12 +400,12 @@ const Home=()=>{
                 </form>
              :<div className='loader-container'><img src={loader} /></div>
            }
-            <div className="container">
+            <div className="container-fluid">
 
                 <div className="row justify-content-md-center">
 
                     <div className="col mt-5">
-                            <div className="card">
+                            <div className="card" style={{width: "15rem"}}>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
                                         <input className="form-check-input" checked={DurationEarlyFirst} onChange={(e)=>ChangeChecked(e,"DurationEarlyFirst")} type="checkbox" />
@@ -477,7 +477,7 @@ const Home=()=>{
                             {
                                 bus.length!=0 ?
                                 bus.map((item,ind)=>(
-                                    <tr key={ind}  style={{height: "75px"}}>
+                                    <tr key={ind}  style={{height: "70px"}}>
                                         <td className="text-center">{item.bus_name}</td>
                                         <td className="text-center">{item.start_station}</td>
                                         <td className="text-center"> {item.start_arrived_time}</td>
@@ -495,7 +495,7 @@ const Home=()=>{
                                                 <td className="text-center">
                                                     <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
                                                     <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
-                                                        <button className="btn btn-primary btn-sm  mt-1">
+                                                        <button className="btn btn-primary btn-sm">
                                                             Book
                                                         </button>
                                                     </Link>

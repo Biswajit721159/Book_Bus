@@ -11,7 +11,7 @@ export default function FrontPage() {
 
 
   return (
-    <div className='container mt-3'>
+    <div className='container-xxl mt-3'>
 
 
 
@@ -86,9 +86,8 @@ export default function FrontPage() {
                     <h3>Quick Links</h3>
                     <li><Link to="/BookBus">Book Bus</Link></li>
                     <li><Link to="/checkstatus">checkstatus</Link></li>
-                    <li><Link to="/wishList">WishList</Link></li>
-                    <li><Link to="/LastTransaction">LastTransaction</Link></li>
-                    <li><Link to="/MasterList">MasterList</Link></li>
+                    <li><a href='https://busowner.vercel.app/'  target="_blank" >Bus Owner</a></li>  
+                    <li><a href='https://bus-booking-adminpanel.vercel.app/' target="_blank">adminpanel</a></li>
                 </div>
                 <div class="box">
                   <h3>Contact Info</h3>
