@@ -731,6 +731,20 @@ app.put("/usermail/:email",verifytoken,async(req,res)=>{
       }
 })
 
+app.delete("/user/:email",verifytoken,async(req,res)=>{
+    let data = await dbconnect();
+    let result =await data.deleteOne({email:req.params.email})
+    if(result.acknowledged)
+    {
+       res.send({status:200}) 
+    }
+    else
+    {
+       res.send({status:498})
+    }
+
+})
+
 //working
 app.post("/register", async (req, resp) => {
     let data = await dbconnect();
@@ -812,7 +826,6 @@ app.post('/sendMessage',verifytoken,async(req,resp)=>{
       return resp.send({'status':498})
   }
 })
-
 
 //normals
 function verifytoken(req, res, next) {
