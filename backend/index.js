@@ -709,7 +709,7 @@ app.get("/usermail/:email", async (req, res) => {
   let data = await dbconnect();
   let result = await data.find({ email: req.params.email }).toArray();
   if (result.length != 0) {
-    res.send({ message: true });
+    res.send({ message: true ,data:result });
   } else {
     res.send({ message: false });
   }
