@@ -714,6 +714,23 @@ app.get("/usermail/:email", async (req, res) => {
     res.send({ message: false });
   }
 });
+
+app.put("/usermail/:email",async(req,res)=>{
+      let data = await dbconnect();
+      let result = await data.updateOne(
+          { email: req.body.email },
+          { $set: { name: req.body.name} }
+      );
+      if (result.acknowledged) 
+      {
+          res.send({status:200})
+      } 
+      else 
+      {
+        res.send({status:498})
+      }
+})
+
 //working
 app.post("/register", async (req, resp) => {
     let data = await dbconnect();
