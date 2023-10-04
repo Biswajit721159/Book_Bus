@@ -715,7 +715,7 @@ app.get("/usermail/:email", async (req, res) => {
   }
 });
 
-app.put("/usermail/:email",async(req,res)=>{
+app.put("/usermail/:email",verifytoken,async(req,res)=>{
       let data = await dbconnect();
       let result = await data.updateOne(
           { email: req.body.email },
