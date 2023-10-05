@@ -830,14 +830,18 @@ app.post('/sendMessage',verifytoken,async(req,resp)=>{
 //normals
 function verifytoken(req, res, next) {
   let token = req.headers["auth"];
-  if (token) {
-    token = token.split(" ")[1];
-    Jwt.verify(token, jwtKey, (error, valid) => {
-      if (error) {
-        res.status(401).send({ status: "498", mess: "Invalid Token" });
-      } else {
-        next();
-      }
+  if (token) 
+  {
+      token = token.split(" ")[1];
+      Jwt.verify(token, jwtKey, (error, valid) => {
+          if (error && valid.user.email && valid.user._id && valid.user.name)
+          {
+              res.status(401).send({ status: "498", mess: "Invalid Token" });
+          } 
+          else
+          {
+              next();
+          }
     });
   } else {
     res.status(498).send({ status: 498, mess: "Invalid Token" });
