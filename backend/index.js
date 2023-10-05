@@ -834,13 +834,17 @@ function verifytoken(req, res, next) {
   {
       token = token.split(" ")[1];
       Jwt.verify(token, jwtKey, (error, valid) => {
-          if (error && valid.user.email && valid.user._id && valid.user.name)
+          if (error )
           {
               res.status(401).send({ status: "498", mess: "Invalid Token" });
           } 
-          else
+          else if(valid.user.email && valid.user._id && valid.user.name)
           {
               next();
+          }
+          else
+          {
+            res.status(401).send({ status: "498", mess: "Invalid Token" });
           }
     });
   } else {
