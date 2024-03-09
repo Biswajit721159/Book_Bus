@@ -11,29 +11,29 @@ export default function FrontPage() {
 
 
   return (
-    <div className='container-xxl mt-3'>
+    <div className='container-fluid mt-3'>
 
 
 
-            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                <img src={bus3} class="d-block w-100" style={{height:"400px", width:"140px"}} alt="..."/>
+            <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+            <div className="carousel-inner">
+                <div className="carousel-item active">
+                <img src={bus3} className="d-block w-100" style={{height:"400px", width:"140px"}} alt="..."/>
                 </div>
-                <div class="carousel-item">
-                <img src={bus2} class="d-block w-100" style={{height:"400px", width:"140px"}} alt="..."/>
+                <div className="carousel-item">
+                <img src={bus2} className="d-block w-100" style={{height:"400px", width:"140px"}} alt="..."/>
                 </div>
-                <div class="carousel-item">
-                <img src={bus1} class="d-block w-100" style={{height:"400px", width:"140px"}} alt="..."/>
+                <div className="carousel-item">
+                <img src={bus1} className="d-block w-100" style={{height:"400px", width:"140px"}} alt="..."/>
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" style={{backgroundColor:"black"}} aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+            <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span className="carousel-control-prev-icon" style={{backgroundColor:"black"}} aria-hidden="true"></span>
+                <span className="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                <span class="carousel-control-next-icon" style={{backgroundColor:"black"}} aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+            <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span className="carousel-control-next-icon" style={{backgroundColor:"black"}} aria-hidden="true"></span>
+                <span className="visually-hidden">Next</span>
             </button>
             </div>
 
@@ -45,23 +45,23 @@ export default function FrontPage() {
                 <h3 className='d-flex justify-content-center' style={{color:"green"}}>about us</h3>
                 <h1 className='d-flex justify-content-center'> WHY CHOOSE US? </h1>
                 <div > 
-                    <div class="image">
+                    <div className="image">
                         <img src={bus4} alt="" style={{width: "100%",height:"500px"}}/>
                     </div>
                     <div >
                         <h3>Best Quality Bus in the country</h3>
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, sequi corrupti corporis quaerat voluptatem ipsam neque labore modi autem, saepe numquam quod reprehenderit rem? Tempora aut soluta odio corporis nihil!</p>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam, nemo. Sit porro illo eos cumque deleniti iste alias, eum natus.</p>
-                        <div class="row d-flex justify-content-center-mt-3">
-                            <div class="col shadow p-3 mb-5 bg-white rounded" style={{border:"3px solid green" ,textAlign:"center"}}>
+                        <div className="row d-flex justify-content-center-mt-3">
+                            <div className="col shadow p-3 mb-5 bg-white rounded" style={{border:"3px solid green" ,textAlign:"center"}}>
                                 <AiFillCar/>
                                 <span>No Dealy</span>
                             </div>
-                            <div class="col shadow p-3 mb-5 bg-white rounded" style={{border:"3px solid green" ,textAlign:"center"}}>
+                            <div className="col shadow p-3 mb-5 bg-white rounded" style={{border:"3px solid green" ,textAlign:"center"}}>
                                 <AiOutlineCheckCircle/>
                                 <span>Easy Payments</span>
                             </div>
-                            <div class="col shadow p-3 mb-5 bg-white rounded" style={{border:"3px solid green" ,textAlign:"center"}}>
+                            <div className="col shadow p-3 mb-5 bg-white rounded" style={{border:"3px solid green" ,textAlign:"center"}}>
                                 <AiFillPhone/>
                                 <span>24/7 service</span>
                             </div>
@@ -82,14 +82,14 @@ export default function FrontPage() {
                     <li>USA</li>
                     <li>France</li>
                 </div>
-                <div class="box">
+                <div className="box">
                     <h3>Quick Links</h3>
                     <li><Link to="/BookBus">Book Bus</Link></li>
                     <li><Link to="/checkstatus">checkstatus</Link></li>
                     <li><a href='https://busowner.vercel.app/'  target="_blank" >Bus Owner</a></li>  
                     <li><a href='https://bus-booking-adminpanel.vercel.app/' target="_blank">adminpanel</a></li>
                 </div>
-                <div class="box">
+                <div className="box">
                   <h3>Contact Info</h3>
                   <li>+123-456-7890</li>
                   <li>+111-222-3333</li>
@@ -97,7 +97,7 @@ export default function FrontPage() {
                   <li>biswajit@riktamtech.com</li>
                   <li>Hyderabad , india - 500016</li>
                 </div>
-                <div class="box">
+                <div className="box">
                     <h3>Follow us</h3>
                     <li><a href="#">facebook</a></li>
                     <li><a href="#">twitter</a></li>

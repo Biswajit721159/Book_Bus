@@ -79,7 +79,7 @@ const [disabled,setdisabled]=useState(false)
     {
       setbutton("Please Wait....")
       setdisabled(true)
-      fetch('https://book-bus-api.vercel.app/busowner/register',{
+      fetch('/busowner/register',{
               method:'POST',
               headers:{
                   'Accept':'application/json',

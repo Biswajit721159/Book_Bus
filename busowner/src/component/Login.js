@@ -23,7 +23,7 @@ useEffect(()=>{
 function submit(){
     setbutton("Please Wait ...")
     setdisabled(true)
-    fetch('https://book-bus-api.vercel.app/busowner/login',{
+    fetch('/busowner/login',{
         method:'PATCH',
         headers:{
             'Accept':'application/json',

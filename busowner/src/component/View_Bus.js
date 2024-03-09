@@ -12,7 +12,7 @@ const View_Bus =()=>{
     function loaduser()
     {
         setload(true)
-        fetch(`https://book-bus-api.vercel.app/busownerGetById/${_id}`,{
+        fetch(`/busownerGetById/${_id}`,{
                 headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json',

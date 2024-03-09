@@ -24,7 +24,7 @@ const Home=()=>{
     function loadData()
     {
         setload(true)
-        fetch(`https://book-bus-api.vercel.app/busowner/${userinfo.user.email}`,{
+        fetch(`/busowner/${userinfo.user.email}`,{
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/json',

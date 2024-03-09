@@ -35,9 +35,9 @@ const CheckStatus = () => {
         setbutton("Please Wait ...")
         setdisabled(true)
         
-        fetch(`https://book-bus-api.vercel.app/getByid/${idNumber}`).then(responce => responce.json()).then((res) => {
+        fetch(`/getByid/${idNumber}`).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.length != 0) {
-                fetch(`https://book-bus-api.vercel.app/bus_detail/${res[0].bus_id}`, {
+                fetch(`/bus_detail/${res[0].bus_id}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',

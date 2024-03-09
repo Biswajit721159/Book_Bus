@@ -51,7 +51,7 @@ const ViewSeat=()=>{
     function loadproduct()
     {
         setload(true)
-        fetch(`https://book-bus-api.vercel.app/busowner/${userinfo.user.email}`,{
+        fetch(`/busowner/${userinfo.user.email}`,{
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/json',
@@ -102,7 +102,7 @@ const ViewSeat=()=>{
             setdisabled(true)
             let y=findBusId()
             setbutton("Wait Finding...")
-            fetch('https://book-bus-api.vercel.app/busowner/getBookingStatus',{
+            fetch('/busowner/getBookingStatus',{
                 method:'PATCH',
                 headers:{
                     'Accept':'application/json',
