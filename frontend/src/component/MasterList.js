@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { json, useNavigate } from "react-router-dom";
-import loader from "../User/loader.gif"
-import { PulseLoader, BeatLoader, ClipLoader } from 'react-spinners';
+import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
+
 const MasterList = () => {
     const [name, setname] = useState("")
     const [wrongname, setwrongname] = useState(false)
@@ -203,7 +203,7 @@ const MasterList = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data.length && data.map((item, ind) => (
+                                    data.length!==0 && data.map((item, ind) => (
                                         <tr key={ind}>
                                             <th >{ind + 1}</th>
                                             {
@@ -229,7 +229,7 @@ const MasterList = () => {
                             </tbody>
                         </table>
                     </div>
-                    : <div className='loader-container'><PulseLoader color="#36d7b7" /></div>
+                    : <Loader/>
             }
         </>
     )

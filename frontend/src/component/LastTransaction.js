@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import { PulseLoader } from 'react-spinners';
-
+import Loader from './Loader'
 const LastTransaction = () => {
 
     const userinfo = JSON.parse(localStorage.getItem('user'))
@@ -70,7 +69,7 @@ const LastTransaction = () => {
                             : "No Transaction Found"
                         }
                     </div>
-                    : <div className='loader-container'><PulseLoader color="#36d7b7" /></div>
+                    : <Loader/>
             }
         </>
     )

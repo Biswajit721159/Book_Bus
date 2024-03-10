@@ -13,11 +13,12 @@ import Error from "./component/Error";
 import View_Ticket from "./component/View_Ticket";
 import View_Bus from "./component/View_Bus";
 import FrontPage from "./component/FrontPage"
-
+import ResponsiveAppBar from './component/ResponsiveAppBar'
 function App() {
   return (
     <div>
       <Router>
+        {/* <ResponsiveAppBar/> */}
         <Navbar/>
           <Routes>
             <Route path="/" element={<FrontPage/>}></Route>

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Link, useNavigate } from 'react-router-dom';
-import { PulseLoader ,BeatLoader ,ClipLoader} from 'react-spinners';
+import Loader from './Loader'
 import Swal from 'sweetalert2'
 
 const Home = () => {
@@ -494,7 +494,7 @@ const Home = () => {
                             </div>
                         </div>
                     </>
-                    : <div className='loader-container'><PulseLoader color="#36d7b7" /></div>
+                    : <Loader />
             }
         </>
     )

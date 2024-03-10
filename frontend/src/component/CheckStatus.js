@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, json, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CheckStatus = () => {
 
@@ -10,8 +10,8 @@ const CheckStatus = () => {
     const [disabled, setdisabled] = useState(false)
     const [data, setdata] = useState([])
     const [key_value, setkey_value] = useState([])
-    const [bus,setbus]=useState([])
-    const history=useNavigate()
+    const [bus, setbus] = useState([])
+    const history = useNavigate()
 
     function set_data(nums) {
         let arr1 = nums[0].person;
@@ -34,7 +34,7 @@ const CheckStatus = () => {
         setmessidNumber("")
         setbutton("Please Wait ...")
         setdisabled(true)
-        
+
         fetch(`/getByid/${idNumber}`).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.length != 0) {
                 fetch(`/bus_detail/${res[0].bus_id}`, {
@@ -110,10 +110,10 @@ const CheckStatus = () => {
                             </thead>
                             <tbody>
                                 {
-                                    key_value.map((item,ind)=>(
+                                    key_value.map((item, ind) => (
                                         <tr key={ind}>
-                                            <th scope="row">{ind+1}</th>
-                                            <td>Passanger {ind+1}</td>
+                                            <th scope="row">{ind + 1}</th>
+                                            <td>Passanger {ind + 1}</td>
                                             <td>{item.personSeat}</td>
                                             <td>{data[0].date}</td>
                                         </tr>
