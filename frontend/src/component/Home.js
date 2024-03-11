@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Loader from './Loader'
 import Swal from 'sweetalert2'
 
@@ -38,10 +38,10 @@ const Home = () => {
     const [messerrordate, setmesserrordate] = useState("")
 
     useEffect(() => {
-        loaduser()
+        loadStation()
     }, [])
 
-    function loaduser() {
+    function loadStation() {
         setload(true)
         fetch('/get_station').then(responce => responce.json()).then((res) => {
             if (res != undefined) {
@@ -319,7 +319,7 @@ const Home = () => {
             setbus([...bus])
         }
         else {
-            loaduser()
+            loadStation()
         }
     }
 
@@ -368,8 +368,9 @@ const Home = () => {
                             </div>
 
                         </form>
+
                         <div className="container-fluid">
-                            <div className="row d-flex justify-content-center">
+                            <div className="row d-flex justify-content-around">
                                 <div className="col mt-5">
                                     <div className="card" style={{ width: "15rem" }}>
                                         <div className="mb-3 mx-2">
@@ -424,7 +425,7 @@ const Home = () => {
                                     </div>
                                 </div>
                                 <div className="col-9 mt-5">
-                                    <table className=" container table-bordered border-info">
+                                    <table className=" container table border-info">
                                         <thead>
                                             <tr>
                                                 <th className="text-center" scope="col">Bus Name</th>
@@ -476,15 +477,15 @@ const Home = () => {
                                                         </tr>
                                                     ))
                                                     : <tr >
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
-                                                        <td>Na</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
                                                         <td></td>
                                                     </tr>
                                             }

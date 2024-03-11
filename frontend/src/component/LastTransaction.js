@@ -60,7 +60,7 @@ const LastTransaction = () => {
                                             <td>{item.dist}</td>
                                             <td>{item.date}</td>
                                             <td>₹{item.total_money}</td>
-                                            <td><Link to={`/${item._id}`}><button className='btn btn-primary'>View more</button></Link></td>
+                                            <td><Link to={`/${item._id}`}><button className='btn btn-primary btn-sm'>View more</button></Link></td>
                                         </tr>
                                     ))
                                 }
