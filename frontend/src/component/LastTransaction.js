@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import Loader from './Loader'
+const api=process.env.REACT_APP_API
 const LastTransaction = () => {
 
     const userinfo = useSelector((state) => state.user)
@@ -13,7 +14,7 @@ const LastTransaction = () => {
         if (!userinfo?.user) {
             history('/Login')
         }
-        fetch(`/getTicket/${userinfo?.user?.user?.email}`, {
+        fetch(`${api}/getTicket/${userinfo?.user?.user?.email}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

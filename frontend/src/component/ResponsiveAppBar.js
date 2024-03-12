@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 const pages = ['Home', 'Book Bus', 'Check Status'];
 const settings = ['My Transaction', 'WishList', 'MasterList', 'Logout'];
 
+const api=process.env.REACT_APP_API
 function ResponsiveAppBar() {
 
   const user = useSelector((state) => state.user)

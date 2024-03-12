@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import Loader from "./Loader";
-
+const api=process.env.REACT_APP_API
 const MasterList = () => {
     const [name, setname] = useState("")
     const [wrongname, setwrongname] = useState(false)
@@ -42,7 +42,7 @@ const MasterList = () => {
 
     function loaddata() {
         setload(true)
-        fetch(`/MasterList/${userinfo?.user?.user.email}`, {
+        fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ const MasterList = () => {
 
             setdisable(true)
             setSubmit("Please Wait....")
-            fetch(`/MasterList/${userinfo.user.email}`, {
+            fetch(`${api}/MasterList/${userinfo.user.email}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -111,7 +111,7 @@ const MasterList = () => {
         settakeid(id)
         setDeleteButton("Please Wait...")
         setDeletedisable(true)
-        fetch(`/MasterList/${userinfo.user.email}`, {
+        fetch(`${api}/MasterList/${userinfo.user.email}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -145,7 +145,7 @@ const MasterList = () => {
 
             setupdatebutton("Please Wait...")
             setdisableupdate(true)
-            fetch(`/MasterList/${userinfo.user.email}`, {
+            fetch(`${api}/MasterList/${userinfo.user.email}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',

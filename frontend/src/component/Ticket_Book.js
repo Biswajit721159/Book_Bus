@@ -4,6 +4,7 @@ import loader from "../User/loader.gif"
 import Swal from 'sweetalert2'
 import Loader from './Loader';
 import { useSelector } from 'react-redux';
+const api=process.env.REACT_APP_API
 const Ticket_Book = () => {
 
     const url = '';
@@ -71,7 +72,7 @@ const Ticket_Book = () => {
 
     function show_seat(_id) {
         setload(true)
-        fetch('/get_Seat', {
+        fetch(`${api}/get_Seat`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
@@ -85,7 +86,7 @@ const Ticket_Book = () => {
             })
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined) {
-                fetch(`/MasterList/${userinfo?.user?.user?.email}`, {
+                fetch(`${api}/MasterList/${userinfo?.user?.user?.email}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
@@ -157,7 +158,7 @@ const Ticket_Book = () => {
         }
         if (checkAlreadyBoth() && checkbox.length == seatarr.length) {
             setsubmitload(true)
-            fetch(`${url}/get_Seat`, {
+            fetch(`${api}/get_Seat`, {
                 method: 'PATCH',
                 headers: {
                     'Accept': 'application/json',
@@ -172,7 +173,7 @@ const Ticket_Book = () => {
             }).then(responce => responce.json()).then((comeres) => {
                 if (comeres != undefined) {
                     if (checkAlreadyGetOrNot(comeres.BookingRecord) == false) {
-                        fetch('/Booking', {
+                        fetch(`${api}/Booking`, {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
