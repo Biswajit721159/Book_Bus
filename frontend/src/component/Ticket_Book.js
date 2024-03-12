@@ -3,10 +3,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import loader from "../User/loader.gif"
 import Swal from 'sweetalert2'
 import Loader from './Loader';
+import { useSelector } from 'react-redux';
 const Ticket_Book = () => {
 
     const url = '';
-    const userinfo = JSON.parse(localStorage.getItem('user'))
+    const userinfo = useSelector((state) => state.user)
     const history = useNavigate()
     const { src } = useParams()
     const { dist } = useParams()
@@ -84,11 +85,11 @@ const Ticket_Book = () => {
             })
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined) {
-                fetch(`/MasterList/${userinfo.user.email}`, {
+                fetch(`/MasterList/${userinfo?.user?.user?.email}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        auth: `bearer ${userinfo.auth}`
+                        auth: `bearer ${userinfo?.user?.auth}`
                     }
                 }).then(responce => responce.json()).then((result) => {
                     if (result != undefined) {
@@ -176,13 +177,13 @@ const Ticket_Book = () => {
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json',
-                                auth: `bearer ${userinfo.auth}`
+                                auth: `bearer ${userinfo?.user?.auth}`
                             },
                             body: JSON.stringify({
                                 bus_id: bus_id,
                                 src: src,
                                 dist: dist,
-                                useremail: userinfo.user.email,
+                                useremail: userinfo.user.user.email,
                                 total_money: pay,
                                 date: date,
                                 seat_record: seatarr,
@@ -225,7 +226,7 @@ const Ticket_Book = () => {
     }
 
     useEffect(() => {
-        if (userinfo == null) {
+        if (userinfo.user == null) {
             history('/Login')
         }
         else {
