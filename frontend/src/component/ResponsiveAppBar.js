@@ -13,14 +13,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { usermethod } from '../redux/UserSlice'
+import { useDispatch } from 'react-redux';
 
-const pages = ['BlueBus', 'Home', 'Book Bus', 'Check Status'];
+const pages = ['Home', 'Book Bus', 'Check Status'];
 const settings = ['My Transaction', 'WishList', 'MasterList', 'Logout'];
 
 function ResponsiveAppBar() {
 
   const user = useSelector((state) => state.user)
+  const history = useNavigate();
+  const dispatch = useDispatch()
   // console.log(user) 
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -40,6 +44,11 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  function logout() {
+    dispatch(usermethod.Logout_User())
+    history('/')
+  }
 
   return (
     <AppBar position="static">
@@ -92,11 +101,32 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {/* {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
+              {/* <Link to='/LastTransaction' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={settings[0]} >
+                  <Typography textAlign="center">{settings[0]}</Typography>
+                </MenuItem>
+              </Link> */}
+
+              <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={pages[0]} >
+                  <Typography textAlign="center">{pages[0]}</Typography>
+                </MenuItem>
+              </Link>
+              <Link to='/BookBus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={pages[1]} >
+                  <Typography textAlign="center">{pages[1]}</Typography>
+                </MenuItem>
+              </Link>
+              <Link to='/checkstatus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={pages[2]} >
+                  <Typography textAlign="center">{pages[2]}</Typography>
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>
 
@@ -121,7 +151,7 @@ function ResponsiveAppBar() {
           </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {/* {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
@@ -129,7 +159,23 @@ function ResponsiveAppBar() {
               >
                 {page}
               </Button>
-            ))}
+            ))} */}
+            <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+              <MenuItem key={pages[0]} >
+                <Typography textAlign="center">{pages[0]}</Typography>
+              </MenuItem>
+            </Link>
+            <Link to='/BookBus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+              <MenuItem key={pages[1]} >
+                <Typography textAlign="center">{pages[1]}</Typography>
+              </MenuItem>
+            </Link>
+            <Link to='/checkstatus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+              <MenuItem key={pages[2]} >
+                <Typography textAlign="center">{pages[2]}</Typography>
+              </MenuItem>
+            </Link>
+
           </Box>
 
           {user?.user?.auth && <Box sx={{ flexGrow: 0 }}>
@@ -154,18 +200,26 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key={settings[0]} >
-                <Link to='/LastTransaction' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}><Typography textAlign="center">{settings[0]}</Typography></Link>
-              </MenuItem>
-              <MenuItem key={settings[1]} >
-                <Link to='/WishList' style={{ textDecoration: 'none', color: 'black' }}><Typography textAlign="center">{settings[1]}</Typography></Link>
-              </MenuItem>
-              <MenuItem key={settings[2]} >
-                <Link to='/MasterList' style={{ textDecoration: 'none', color: 'black' }}><Typography textAlign="center">{settings[2]}</Typography></Link>
-              </MenuItem>
-              <MenuItem key={settings[3]} >
-                <Link to='' style={{ textDecoration: 'none', color: 'black' }}> <Typography textAlign="center">{settings[3]}</Typography></Link>
-              </MenuItem>
+              <Link to='/LastTransaction' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={settings[0]} >
+                  <Typography textAlign="center">{settings[0]}</Typography>
+                </MenuItem>
+              </Link>
+              <Link to='/WishList' style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={settings[1]} >
+                  <Typography textAlign="center">{settings[1]}</Typography>
+                </MenuItem>
+              </Link>
+              <Link to='/MasterList' style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={settings[2]} >
+                  <Typography textAlign="center">{settings[2]}</Typography>
+                </MenuItem>
+              </Link>
+              <Link to='' style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={settings[3]} >
+                  <Typography textAlign="center">{settings[3]}</Typography>
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>}
 

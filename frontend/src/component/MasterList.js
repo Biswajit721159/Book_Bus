@@ -179,7 +179,7 @@ const MasterList = () => {
                         <div className="row">
                             {
                                 add == true ?
-                                    <div className="col"><button className="btn btn-primary mt-2" onClick={addhtml}>Add+</button></div>
+                                    <div className="col"><button className="btn btn-primary mt-2 btn-sm" onClick={addhtml}>Add+</button></div>
                                     :
                                     <>
                                         <div className="col">
@@ -188,7 +188,7 @@ const MasterList = () => {
                                                 {wrongname ? <label style={{ color: "red" }}>{messname}</label> : ""}
                                             </div>
                                         </div>
-                                        <div className="col"><button className="btn btn-success mt-2" disabled={disable} onClick={submit}>{Submit}</button></div>
+                                        <div className="col"><button className="btn btn-success mt-2  btn-sm" disabled={disable} onClick={submit}>{Submit}</button></div>
                                     </>
                             }
                         </div>
@@ -216,12 +216,12 @@ const MasterList = () => {
                                             }
                                             {
                                                 updateinput == true && update_id == item._id ?
-                                                    <td><button className="btn btn-primary" disabled={disableupdate} onClick={() => ActualUpdate(item._id)}>{updatebutton}</button></td>
-                                                    : <td><button className="btn btn-primary" onClick={() => Update(item._id, item.name)}>Update</button></td>
+                                                    <td><button className="btn btn-primary  btn-sm" disabled={disableupdate} onClick={() => ActualUpdate(item._id)}>{updatebutton}</button></td>
+                                                    : <td><button className="btn btn-primary  btn-sm" onClick={() => Update(item._id, item.name)}>Update</button></td>
                                             }
                                             {
-                                                item._id == takeid ? <td><button className="btn btn-danger" disabled={Deletedisable} onClick={() => Delete_user(item._id)}>{DeleteButton}</button></td>
-                                                    : <td><button className="btn btn-danger" onClick={() => Delete_user(item._id)}>Delete</button></td>
+                                                item._id == takeid ? <td><button className="btn btn-danger  btn-sm" disabled={Deletedisable} onClick={() => Delete_user(item._id)}>{DeleteButton}</button></td>
+                                                    : <td><button className="btn btn-danger  btn-sm" onClick={() => Delete_user(item._id)}>Delete</button></td>
                                             }
                                         </tr>
                                     ))

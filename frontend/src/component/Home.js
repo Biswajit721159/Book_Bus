@@ -343,7 +343,7 @@ const Home = () => {
                                     {erroInSrc ? <label className="mt-0" style={{ color: "red" }}>{messerroInSrc}</label> : ""}
                                 </div>
                                 <div className="d-flex ">
-                                    <i className="fa fa-arrow-circle-right d-flex justify-content-center" style={{ fontSize: "38px", color: "green", textAlign: "center" }}></i>
+                                    <i className="fa fa-arrow-circle-right d-flex justify-content-center mx-2 my-2" style={{ fontSize: "38px", color: "green", textAlign: "center" }}></i>
                                 </div>
                                 <div className="d-flex ">
                                     <select className="form-select" aria-label="Default select example" required onChange={(e) => { setdist(e.target.value) }}>
@@ -363,7 +363,7 @@ const Home = () => {
                                     {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
                                 </div>
                                 <div className="d-flex d-flex justify-content-center mx-1">
-                                    <button type="submit" className="btn btn-primary btn-block " disabled={disabled}  >{button}</button>
+                                    <button type="submit" className="btn btn-primary btn-block btn-sm" disabled={disabled}  >{button}</button>
                                 </div>
                             </div>
 
