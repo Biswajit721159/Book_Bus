@@ -138,7 +138,7 @@ const [disabled,setdisabled]=useState(false)
               </div>
             </div>
             <div className="mt-3">
-                <button className="btn btn-primary" disabled={disabled} onClick={submit}>{button}</button>
+                <button className="btn btn-primary btn-sm" disabled={disabled} onClick={submit}>{button}</button>
             </div>
            </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux'
 import Loader from "./Loader";
 
 const MasterList = () => {
@@ -13,7 +14,7 @@ const MasterList = () => {
 
     const [add, setadd] = useState(true)
     const [data, setdata] = useState([])
-    const userinfo = JSON.parse(localStorage.getItem('user'))
+    const userinfo = useSelector((state) => state.user)
     const history = useNavigate();
     const [Submit, setSubmit] = useState("Submit")
     const [disable, setdisable] = useState(false)
@@ -29,8 +30,9 @@ const MasterList = () => {
     const [disableupdate, setdisableupdate] = useState(false)
     const [updatebutton, setupdatebutton] = useState("Update")
 
+
     useEffect(() => {
-        if (userinfo == null) {
+        if (!userinfo?.user) {
             history('/Login')
         }
         else {
@@ -40,11 +42,11 @@ const MasterList = () => {
 
     function loaddata() {
         setload(true)
-        fetch(`/MasterList/${userinfo.user.email}`, {
+        fetch(`/MasterList/${userinfo?.user?.user.email}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo.auth}`
+                auth: `bearer ${userinfo.user.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined) {
@@ -203,7 +205,7 @@ const MasterList = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data.length!==0 && data.map((item, ind) => (
+                                    data.length !== 0 && data.map((item, ind) => (
                                         <tr key={ind}>
                                             <th >{ind + 1}</th>
                                             {
@@ -229,7 +231,7 @@ const MasterList = () => {
                             </tbody>
                         </table>
                     </div>
-                    : <Loader/>
+                    : <Loader />
             }
         </>
     )

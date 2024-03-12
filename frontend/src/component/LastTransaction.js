@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux'
 import Loader from './Loader'
 const LastTransaction = () => {
 
-    const userinfo = JSON.parse(localStorage.getItem('user'))
+    const userinfo = useSelector((state) => state.user)
     const history = useNavigate();
     const [data, setdata] = useState([])
     const [load, setload] = useState(true)
 
     function loadTicket() {
-        fetch(`/getTicket/${userinfo.user.email}`, {
+        if (!userinfo?.user) {
+            history('/Login')
+        }
+        fetch(`/getTicket/${userinfo?.user?.user?.email}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo.auth}`
+                auth: `bearer ${userinfo.user.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined) {
@@ -69,7 +73,7 @@ const LastTransaction = () => {
                             : "No Transaction Found"
                         }
                     </div>
-                    : <Loader/>
+                    : <Loader />
             }
         </>
     )

@@ -215,7 +215,7 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">{settings[2]}</Typography>
                 </MenuItem>
               </Link>
-              <Link to='' style={{ textDecoration: 'none', color: 'black' }}>
+              <Link onClick={logout} style={{ textDecoration: 'none', color: 'black' }}>
                 <MenuItem key={settings[3]} >
                   <Typography textAlign="center">{settings[3]}</Typography>
                 </MenuItem>

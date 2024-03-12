@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Loader from './Loader';
 
 
 const View_Ticket = () => {
 
-    const userinfo = JSON.parse(localStorage.getItem('user'));
+    const userinfo = useSelector((state) => state.user)
     const { _id } = useParams();
     const history = useNavigate();
     const [load, setload] = useState(true)
@@ -33,7 +34,7 @@ const View_Ticket = () => {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo.auth}`
+                auth: `bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.length != 0) {
@@ -48,7 +49,7 @@ const View_Ticket = () => {
                         setdata(res)
                         set_data(res)
                         setbusname(result[0].bus_name)
-                        console.log(res)
+                        // console.log(res)
                     }
                 }, (error) => {
                     history('*')
@@ -63,7 +64,7 @@ const View_Ticket = () => {
     }
 
     useEffect(() => {
-        if (userinfo == null) {
+        if (!userinfo?.user) {
             history('/Login')
         }
         else {
