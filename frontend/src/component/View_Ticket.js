@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Loader from './Loader';
-
-
+import Button from '@mui/material/Button';
+const api=process.env.REACT_APP_API
 const View_Ticket = () => {
 
     const userinfo = useSelector((state) => state.user)
@@ -30,7 +30,7 @@ const View_Ticket = () => {
 
     function loaddata() {
         setload(true)
-        fetch(`/getTicketByid/${_id}`, {
+        fetch(`${api}/getTicketByid/${_id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const View_Ticket = () => {
             }
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.length != 0) {
-                fetch(`/bus_detail/${res[0].bus_id}`, {
+                fetch(`${api}/bus_detail/${res[0].bus_id}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
@@ -72,6 +72,9 @@ const View_Ticket = () => {
         }
     }, [])
 
+    function Downlode() {
+        console.log("downlode pdf ")
+    }
 
     return (
         <>
@@ -87,6 +90,11 @@ const View_Ticket = () => {
                                     <th scope="col">Total Distance:-</th>
                                     <th scope="col">{data[0].total_distance} km</th>
                                     <th scope="col">PNR NO - <Link style={{ textDecoration: "none" }}>{data[0]._id}</Link></th>
+                                    <th>
+                                        <Button variant="contained" color="primary" onClick={Downlode}>
+                                            Downlode
+                                        </Button>
+                                    </th>
                                 </tr>
                                 <tr>
                                     <td scope="col">Date</td>

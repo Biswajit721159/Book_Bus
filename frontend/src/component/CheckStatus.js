@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
+const api=process.env.REACT_APP_API
+
 const CheckStatus = () => {
 
     const [idNumber, setidNumber] = useState(0)
@@ -35,9 +37,9 @@ const CheckStatus = () => {
         setbutton("Please Wait ...")
         setdisabled(true)
 
-        fetch(`/getByid/${idNumber}`).then(responce => responce.json()).then((res) => {
+        fetch(`${api}/getByid/${idNumber}`).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.length != 0) {
-                fetch(`/bus_detail/${res[0].bus_id}`, {
+                fetch(`${api}/bus_detail/${res[0].bus_id}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
