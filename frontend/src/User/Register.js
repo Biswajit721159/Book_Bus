@@ -1,6 +1,6 @@
 import React, { useState,useEffect }  from "react";
 import { json, useNavigate } from "react-router-dom";
-
+const api=process.env.REACT_APP_API
 const Register=()=>{
 
 const [name,setname]=useState("")
@@ -80,10 +80,10 @@ const [disabled,setdisabled]=useState(false)
     {
       setbutton("Please Wait....")
       setdisabled(true)
-      fetch(`/usermail/${email}`).then(response=>response.json()).then((res)=>{
+      fetch(`${api}/usermail/${email}`).then(response=>response.json()).then((res)=>{
         if(res.message==false)
         {
-            fetch('/register',{
+            fetch(`${api}/register`,{
                 method:'POST',
                 headers:{
                     'Accept':'application/json',
