@@ -46,7 +46,7 @@ const MasterList = () => {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo.user.auth}`
+                auth: `bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined) {
@@ -76,19 +76,18 @@ const MasterList = () => {
 
             setdisable(true)
             setSubmit("Please Wait....")
-            fetch(`${api}/MasterList/${userinfo.user.email}`, {
+            fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    auth: `bearer ${userinfo.auth}`
+                    auth: `bearer ${userinfo?.user?.auth}`
                 },
                 body: JSON.stringify({
-                    email: userinfo.user.email,
+                    email: userinfo?.user?.user.email,
                     name: name
                 })
             }).then(response => response.json()).then((res) => {
-                console.log("result ", res)
                 if (res != undefined) {
                     setadd(true)
                     setdisable(false)
@@ -97,7 +96,6 @@ const MasterList = () => {
                     loaddata()
                 }
             }, (error) => {
-                console.log(error)
                 history('*')
             })
         }
@@ -111,12 +109,12 @@ const MasterList = () => {
         settakeid(id)
         setDeleteButton("Please Wait...")
         setDeletedisable(true)
-        fetch(`${api}/MasterList/${userinfo.user.email}`, {
+        fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo.auth}`
+                auth: `bearer ${userinfo?.user?.auth}`
             },
             body: JSON.stringify({
                 _id: id
@@ -126,7 +124,7 @@ const MasterList = () => {
                 setdata(res)
             }
         }, (error) => {
-            console.log(error)
+            history('*')
         })
     }
 
@@ -145,12 +143,12 @@ const MasterList = () => {
 
             setupdatebutton("Please Wait...")
             setdisableupdate(true)
-            fetch(`${api}/MasterList/${userinfo.user.email}`, {
+            fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    auth: `bearer ${userinfo.auth}`
+                    auth: `bearer ${userinfo?.user?.auth}`
                 },
                 body: JSON.stringify({
                     _id: id,
@@ -162,6 +160,8 @@ const MasterList = () => {
                     setupdatebutton("Update")
                     setdisableupdate(false)
                     setupdate_id('')
+                }else{
+                    history('*')
                 }
             }, (error) => {
                 history('*')
