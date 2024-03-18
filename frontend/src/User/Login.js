@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { usermethod } from '../redux/UserSlice'
+const api=process.env.REACT_APP_API
 export default function Login() {
 
     const [email, setemail] = useState("")
@@ -24,7 +25,7 @@ export default function Login() {
     function submit() {
         setbutton("Please Wait ...")
         setdisabled(true)
-        fetch('/login', {
+        fetch(`${api}/login`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',

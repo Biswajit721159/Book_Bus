@@ -19,8 +19,9 @@ import { useDispatch } from 'react-redux';
 
 const pages = ['Home', 'Book Bus', 'Check Status'];
 const settings = ['My Transaction', 'WishList', 'MasterList', 'Logout'];
+const loginRegisterPage = ['Login', 'Register'];
 
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 function ResponsiveAppBar() {
 
   const user = useSelector((state) => state.user)
@@ -102,18 +103,8 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {/* {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))} */}
-              {/* <Link to='/LastTransaction' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
-                <MenuItem key={settings[0]} >
-                  <Typography textAlign="center">{settings[0]}</Typography>
-                </MenuItem>
-              </Link> */}
 
-              <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+              <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'red' }}>
                 <MenuItem key={pages[0]} >
                   <Typography textAlign="center">{pages[0]}</Typography>
                 </MenuItem>
@@ -131,36 +122,8 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
 
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
-          {/* <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {/* {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))} */}
             <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
               <MenuItem key={pages[0]} >
                 <Typography textAlign="center">{pages[0]}</Typography>
@@ -179,52 +142,63 @@ function ResponsiveAppBar() {
 
           </Box>
 
-          {user?.user?.auth && <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              <Link to='/LastTransaction' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
-                <MenuItem key={settings[0]} >
-                  <Typography textAlign="center">{settings[0]}</Typography>
+          {user?.user?.auth ?
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <Link to='/LastTransaction' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+                  <MenuItem key={settings[0]} >
+                    <Typography textAlign="center">{settings[0]}</Typography>
+                  </MenuItem>
+                </Link>
+                <Link to='/WishList' style={{ textDecoration: 'none', color: 'black' }}>
+                  <MenuItem key={settings[1]} >
+                    <Typography textAlign="center">{settings[1]}</Typography>
+                  </MenuItem>
+                </Link>
+                <Link to='/MasterList' style={{ textDecoration: 'none', color: 'black' }}>
+                  <MenuItem key={settings[2]} >
+                    <Typography textAlign="center">{settings[2]}</Typography>
+                  </MenuItem>
+                </Link>
+                <Link onClick={logout} style={{ textDecoration: 'none', color: 'black' }}>
+                  <MenuItem key={settings[3]} >
+                    <Typography textAlign="center">{settings[3]}</Typography>
+                  </MenuItem>
+                </Link>
+              </Menu>
+            </Box> :
+            <Box sx={{ display:'flex' }}>
+              <Link to='/Login' style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={loginRegisterPage[0]} >
+                  <Typography textAlign="center">{loginRegisterPage[0]}</Typography>
                 </MenuItem>
               </Link>
-              <Link to='/WishList' style={{ textDecoration: 'none', color: 'black' }}>
-                <MenuItem key={settings[1]} >
-                  <Typography textAlign="center">{settings[1]}</Typography>
+              <Link to='/Register' style={{ textDecoration: 'none', color: 'black' }}>
+                <MenuItem key={loginRegisterPage[1]} >
+                  <Typography textAlign="center">{loginRegisterPage[1]}</Typography>
                 </MenuItem>
               </Link>
-              <Link to='/MasterList' style={{ textDecoration: 'none', color: 'black' }}>
-                <MenuItem key={settings[2]} >
-                  <Typography textAlign="center">{settings[2]}</Typography>
-                </MenuItem>
-              </Link>
-              <Link onClick={logout} style={{ textDecoration: 'none', color: 'black' }}>
-                <MenuItem key={settings[3]} >
-                  <Typography textAlign="center">{settings[3]}</Typography>
-                </MenuItem>
-              </Link>
-            </Menu>
-          </Box>}
-
-
+            </Box>}
         </Toolbar>
       </Container>
     </AppBar>
