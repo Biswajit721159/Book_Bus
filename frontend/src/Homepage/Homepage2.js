@@ -1,36 +1,44 @@
-import React from "react";
-import { AiFillCar, AiFillPhone, AiOutlineCheckCircle } from "react-icons/ai";
-import bus4 from '../images/bus-4.jpg'
-const Homepage2 = () => {
-    return (
+import React from 'react';
+import Table3 from '../images/bus-4.jpg'
+import {AiFillPhone } from "react-icons/ai";
+import { FaRupeeSign } from "react-icons/fa";
+import { FaBus } from "react-icons/fa";
+import '../stylesheet/Homepage2.css'
+const Homepage2=()=>{
+    return(
         <div className=' mt-1 shadow-none p-3 mb-5 bg-light rounded'>
-            <h3 className='d-flex justify-content-center' style={{ color: "green" }}>about us</h3>
-            <h1 className='d-flex justify-content-center'> WHY CHOOSE US? </h1>
-            <div >
-                <div className="image">
-                    <img src={bus4} alt="" style={{ width: "100%", height: "500px" }} />
-                </div>
-                <div >
-                    <h3>Best Quality Bus in the country</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, sequi corrupti corporis quaerat voluptatem ipsam neque labore modi autem, saepe numquam quod reprehenderit rem? Tempora aut soluta odio corporis nihil!</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam, nemo. Sit porro illo eos cumque deleniti iste alias, eum natus.</p>
-                    <div className="row d-flex justify-content-center-mt-3">
-                        <div className="col shadow p-3 mb-5 bg-white rounded" style={{ border: "3px solid green", textAlign: "center" }}>
-                            <AiFillCar />
-                            <span>No Dealy</span>
-                        </div>
-                        <div className="col shadow p-3 mb-5 bg-white rounded" style={{ border: "3px solid green", textAlign: "center" }}>
-                            <AiOutlineCheckCircle />
-                            <span>Easy Payments</span>
-                        </div>
-                        <div className="col shadow p-3 mb-5 bg-white rounded" style={{ border: "3px solid green", textAlign: "center" }}>
-                            <AiFillPhone />
-                            <span>24/7 service</span>
-                        </div>
-                    </div>
-                </div>
+        <h3 className='headline1' >About us</h3>
+        <h1 className='headline2'  > WHY CHOOSE US? </h1>
+        <div > 
+            <div className="imageitem">
+                <img src={Table3} className="imageitem" alt="Error"/>
             </div>
-        </div>
+            <div className='mt-2'>
+                <h3 className='headline2'>Best Quality Furniture in the country</h3>
+                <p className='headline1'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, sequi corrupti corporis quaerat voluptatem ipsam neque labore modi autem, saepe numquam quod reprehenderit rem? Tempora aut soluta odio corporis nihil!</p>
+                <p className='headline1'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam, nemo. Sit porro illo eos cumque deleniti iste alias, eum natus.</p>
+
+
+                <div className="row1 mt-5">
+                    <div className="col1 shadow p-2 mb-5 bg-white rounded" >
+                        <FaBus  className='icon' />
+                        <span className='headline1'>On Time </span>
+                    </div>
+                    <div className="col1 shadow p-2 mb-5 bg-white rounded" >
+                        <FaRupeeSign  className='icon'/>
+                        <span className='headline1'>Easy Payments</span>
+                    </div>
+                    <div className="col1 shadow p-2 mb-5 bg-white rounded" >
+                        <AiFillPhone  className='icon' />
+                        <span className='headline1'>24/7 Service</span>
+                    </div>
+                </div>    
+
+
+            </div>
+        </div> 
+    </div>
     )
 }
+
 export default Homepage2

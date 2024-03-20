@@ -96,9 +96,9 @@ const CheckStatus = () => {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Bus Name:- {bus[0].bus_name}</th>
-                                    <th scope="col">Date: {data[0].date}</th>
-                                    <th scope="col">Total Distance:- {data[0].total_distance} KM</th>
+                                    <th scope="col">Bus Name : {bus[0].bus_name}</th>
+                                    <th scope="col">Date : {data[0].date}</th>
+                                    <th scope="col">Total Distance : {data[0].total_distance} KM</th>
                                     <th scope="col">{data[0].src}  -  {data[0].dist}</th>
                                 </tr>
                             </thead>

@@ -6,10 +6,10 @@ import Homepage3 from '../Homepage/Homepage3';
 
 export default function FrontPage() {
     return (
-        <div className='container-fluid mt-3'>
+        <>
             <Homepage1 />
             <Homepage2 />
             <Homepage3 />
-        </div>
+        </>
     )
 }
