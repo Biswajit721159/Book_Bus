@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const userSlice = createSlice({
-    name: 'bus',
+const BusTableSlice = createSlice({
+    name: 'BusTable',
     initialState: {
         bus: []
     },
@@ -9,16 +9,11 @@ const userSlice = createSlice({
     reducers: {
         Add_Bus: (state, action) => {
             state.bus = action.payload;
-            Set_UserData(action.payload)
-        },
-        Logout_User: (state, action) => {
-            state.user = ""
-            Clear_User()
         }
     },
 })
 
 
-export const usermethod = userSlice.actions
-const userReducer = userSlice.reducer
-export default userReducer
+export const BusTablemethod = BusTableSlice.actions
+const BusTableReducer = BusTableSlice.reducer
+export default BusTableReducer
