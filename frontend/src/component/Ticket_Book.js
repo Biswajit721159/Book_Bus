@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import loader from "../User/loader.gif"
 import Swal from 'sweetalert2'
 import Loader from './Loader';
 import { useSelector } from 'react-redux';
@@ -239,7 +238,7 @@ const Ticket_Book = () => {
         <>
             {
                 submitload == true ?
-                    <div className='loader-container'><img src={loader} /></div>
+                    <Loader/>
                     :
                     load == false ?
                         <div className='container align-items-center mt-4'>

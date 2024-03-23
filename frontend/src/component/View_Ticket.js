@@ -121,7 +121,7 @@ const View_Ticket = () => {
                                             <td>{item.personName}</td>
                                             <td>{item.personSeat}</td>
                                             <td>₹{parseInt(data[0].total_money) / parseInt(key_value.length)}</td>
-                                            <td><button className='btn btn-danger btn-sm'>cancel</button></td>
+                                            <td><button className='btn btn-danger btn-sm'>Cancel Ticket</button></td>
                                         </tr>
                                     ))
                                 }
