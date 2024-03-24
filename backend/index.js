@@ -3,7 +3,6 @@ let express = require("express");
 let cors = require("cors");
 let bcrypt =require("bcryptjs");
 
-// var ObjectiD = require("bson-objectid");
 const  ObjectID = require('mongodb').ObjectId;
 let app = express();
 app.use(express.json({ limit: "50mb" }));
@@ -28,6 +27,9 @@ let BusOwner_dataBase=require('./BusOwner_dataBase')
 let dbconnect_Adminpanel_user=require('./dbconnect_Adminpanel_user')
 let dbconnect_sendMessage=require('./sendMessage')
 
+let mainRouter=require('./src/Router/mainRouter')
+
+app.use('/api',mainRouter)
 
 //adminpanel
 
@@ -349,8 +351,6 @@ app.post('/Booking',verifytoken,async(req,res)=>{
       res.send({'status':498});
   }
 })
-
-
 
 
 

@@ -21,12 +21,6 @@ const userSchema = new Schema(
             type: String,
             required: [true, 'Password is required']
         },
-        address: {
-            type: String,
-            required: true,
-            trim: true,
-            index: true
-        },
     },
     {
         timestamps: true
@@ -73,5 +67,5 @@ userSchema.methods.generateAccessToken = function () {
 //     return refreshToken;
 // }
 
-let User = model("user", userSchema);
+let User = model("User", userSchema);
 module.exports = User;
