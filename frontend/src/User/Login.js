@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { usermethod } from '../redux/UserSlice'
-const api=process.env.REACT_APP_API
+// const api=process.env.REACT_APP_API
+const api="http://localhost:5000"
 export default function Login() {
 
     const [email, setemail] = useState("")

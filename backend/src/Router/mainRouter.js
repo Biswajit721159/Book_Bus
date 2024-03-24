@@ -4,7 +4,6 @@ let user = require('./userRouter')
 let MasterList = require('./MasterListRouter')
 
 
-
 router.use('/user', user)
 router.use('/MasterList', MasterList)
 
