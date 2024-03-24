@@ -1,20 +1,17 @@
-const mongoose = require("mongoose");
 let express = require("express");
 let cors = require("cors");
 let bcrypt = require("bcryptjs");
-
-
-const ObjectID = require('mongodb').ObjectId;
 let app = express();
 app.use(express.json({ limit: "50mb" }));
-app.use(cors());
 app.use(cors({
   origin: '*',
   methods: 'GET, POST, PUT, DELETE, PATCH',
   allowedHeaders: 'Content-Type',
 }));
+app.use(express.static("public"))
 const dotenv = require('dotenv')
 dotenv.config();
+const ObjectID = require('mongodb').ObjectId;
 let connectDB = require("./src/DbConnection/connection");
 
 connectDB()
@@ -37,6 +34,7 @@ let mainRouter = require('./src/Router/mainRouter')
 
 
 
+app.use('/api', mainRouter)
 //adminpanel
 
 
@@ -777,7 +775,5 @@ function verifytoken(req, res, next) {
   }
 }
 
-
-// app.use('/api', mainRouter)
 
 app.listen(5000);
