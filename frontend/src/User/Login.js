@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { usermethod } from '../redux/UserSlice'
 const api=process.env.REACT_APP_API
+// const api = "http://localhost:5000"
 export default function Login() {
 
     const [email, setemail] = useState("")
@@ -11,7 +12,6 @@ export default function Login() {
     const [wronguser, setwronguser] = useState(false)
     const [button, setbutton] = useState("Submit")
     const [disabled, setdisabled] = useState(false)
-
 
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()

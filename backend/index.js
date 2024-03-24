@@ -773,6 +773,6 @@ function verifytoken(req, res, next) {
 }
 
 
-app.use('/api', mainRouter)
+// app.use('/api', mainRouter)
 
 app.listen(5000);
