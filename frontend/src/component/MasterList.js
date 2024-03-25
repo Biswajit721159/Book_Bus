@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import Loader from "./Loader";
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 const MasterList = () => {
     const [name, setname] = useState("")
     const [wrongname, setwrongname] = useState(false)
@@ -42,19 +42,22 @@ const MasterList = () => {
 
     function loaddata() {
         setload(true)
-        fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
+        fetch(`${api}/MasterList/${userinfo?.user?.user._id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo?.user?.auth}`
+                Authorization: `Bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
+            if (res.statusCode === 200) {
                 setload(false)
-                setdata(res)
+                setdata(res.data)
+            }
+            else {
+                history('*')
             }
         }, (error) => {
-            console.log(error)
+            history('*')
         })
     }
 
@@ -73,27 +76,28 @@ const MasterList = () => {
         if (res == true) {
             setwrongname(false)
             setmessname("")
-
             setdisable(true)
             setSubmit("Please Wait....")
-            fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
+            fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    auth: `bearer ${userinfo?.user?.auth}`
+                    Authorization: `Bearer ${userinfo?.user?.auth}`
                 },
                 body: JSON.stringify({
-                    email: userinfo?.user?.user.email,
+                    user_id: userinfo?.user?.user?._id,
                     name: name
                 })
             }).then(response => response.json()).then((res) => {
-                if (res != undefined) {
+                if (res.statusCode === 201) {
                     setadd(true)
                     setdisable(false)
                     setSubmit("Submit")
                     setname("")
                     loaddata()
+                } else {
+                    history('*')
                 }
             }, (error) => {
                 history('*')
@@ -109,19 +113,19 @@ const MasterList = () => {
         settakeid(id)
         setDeleteButton("Please Wait...")
         setDeletedisable(true)
-        fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
+        fetch(`${api}/MasterList/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo?.user?.auth}`
+                Authorization: `Bearer ${userinfo?.user?.auth}`
             },
-            body: JSON.stringify({
-                _id: id
-            })
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined) {
-                setdata(res)
+                setDeletedisable(false)
+                setDeleteButton("Delete")
+                settakeid('')
+                loaddata()
             }
         }, (error) => {
             history('*')
@@ -143,24 +147,23 @@ const MasterList = () => {
 
             setupdatebutton("Please Wait...")
             setdisableupdate(true)
-            fetch(`${api}/MasterList/${userinfo?.user?.user.email}`, {
+            fetch(`${api}/MasterList/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    auth: `bearer ${userinfo?.user?.auth}`
+                    Authorization: `Bearer ${userinfo?.user?.auth}`
                 },
                 body: JSON.stringify({
-                    _id: id,
                     name: updatename
                 })
             }).then(responce => responce.json()).then((res) => {
-                if (res != undefined) {
-                    setdata(res)
+                if (res.statusCode === 200) {
+                    loaddata()
                     setupdatebutton("Update")
                     setdisableupdate(false)
                     setupdate_id('')
-                }else{
+                } else {
                     history('*')
                 }
             }, (error) => {
@@ -205,7 +208,7 @@ const MasterList = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data.length !== 0 && data.map((item, ind) => (
+                                    data && data.length !== 0 && data.map((item, ind) => (
                                         <tr key={ind}>
                                             <th >{ind + 1}</th>
                                             {

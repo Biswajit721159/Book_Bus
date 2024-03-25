@@ -173,7 +173,7 @@ const login = async (req, res) => {
                     200,
                     {
                         user: loggedInUser,
-                        accessToken,
+                        auth: accessToken,
                     },
                     "User logged In Successfully"
                 )

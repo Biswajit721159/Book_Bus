@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { usermethod } from '../redux/UserSlice'
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 // const api = "http://localhost:5000"
 export default function Login() {
 
@@ -25,8 +25,8 @@ export default function Login() {
     function submit() {
         setbutton("Please Wait ...")
         setdisabled(true)
-        fetch(`${api}/login`, {
-            method: 'PATCH',
+        fetch(`${api}/user/login`, {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -37,8 +37,9 @@ export default function Login() {
         })
             .then(response => response.json())
             .then((result) => {
-                if (result.auth) {
-                    dispatch(usermethod.Add_User(result))
+                console.log(result)
+                if (result.statusCode === 200) {
+                    dispatch(usermethod.Add_User(result.data))
                     history('/BookBus')
                 }
                 else {

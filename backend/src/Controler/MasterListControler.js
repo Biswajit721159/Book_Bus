@@ -5,29 +5,22 @@ const ObjectID = require('mongodb').ObjectId;
 
 const DeleteMasterUser = async (req, res) => {
     try {
-        let _id = req.body.user_id
-        let result = await MasterList.deleteOne({ _id: new ObjectID(_id) })
+        let _id = req.params.user_id;
+        let result = await MasterList.deleteOne({ _id: _id });
         if (result.deletedCount) {
-            res
-                .status(200)
-                .json(new ApiResponse(200, null, "MasterList user deleted"));
+            res.status(200).json(new ApiResponse(200, null, "MasterList user deleted"));
+        } else {
+            res.status(404).json(new ApiResponse(404, null, "MasterUser not found !"));
         }
-        else {
-            res
-                .status(404)
-                .json(new ApiResponse(404, null, "MasterUser not found !"));
-        }
-    }
-    catch {
-        res
-            .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+    } catch (error) {
+        res.status(500).json(new ApiResponse(500, null, "Server down !"));
     }
 }
 
+
 const GetMasterUser = async (req, res) => {
     try {
-        let result = await MasterList.find({ email: req.params.user_id });
+        let result = await MasterList.find({ user_id: req.params.user_id });
         if (result) res
             .status(200)
             .json(new ApiResponse(200, result, "Success"));
@@ -67,7 +60,7 @@ const PostMasterUser = async (req, res) => {
 const UpdateMasterUser = async (req, res) => {
     try {
         let result = await MasterList.updateOne(
-            { user_id: new ObjectID(req.body.user_id) },
+            { _id: req.params.user_id },
             { $set: { name: req.body.name } }
         );
         if (result.modifiedCount) {

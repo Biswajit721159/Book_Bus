@@ -1,21 +1,21 @@
 let express = require("express");
 let cors = require("cors");
-let bcrypt = require("bcryptjs");
 let app = express();
 
 app.use(express.json({ limit: "50mb" }));
-const corsOptions = {
-  origin: '*',
-  methods: 'GET, POST, PUT, DELETE, PATCH',
-  allowedHeaders: 'Content-Type, auth',
-};
-app.use(cors(corsOptions));
-app.use(express.static("public"))
-
 const dotenv = require('dotenv')
 dotenv.config();
-const ObjectID = require('mongodb').ObjectId;
+
 let connectDB = require("./src/DbConnection/connection");
+app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE, PATCH',
+    allowedHeaders: 'Content-Type',
+}));
+
+app.use(express.static("public"))
+const ObjectID = require('mongodb').ObjectId;
 
 connectDB()
 
@@ -327,35 +327,35 @@ app.post('/Booking', verifytoken, async (req, res) => {
 
 // MasterList
 
-app.delete('/MasterList/:email', verifytoken, async (req, res) => {
-  let _id = req.body._id
-  let data = await deconnect_MasterList();
-  await data.deleteOne({ _id: new ObjectID(_id) })
-  let result = await data.find({ email: req.params.email }).toArray();
-  res.send(result)
-})
+// app.delete('/MasterList/:email', verifytoken, async (req, res) => {
+//   let _id = req.body._id
+//   let data = await deconnect_MasterList();
+//   await data.deleteOne({ _id: new ObjectID(_id) })
+//   let result = await data.find({ email: req.params.email }).toArray();
+//   res.send(result)
+// })
 
-app.get('/MasterList/:email', verifytoken, async (req, res) => {
-  let data = await deconnect_MasterList();
-  let result = await data.find({ email: req.params.email }).toArray();
-  res.send(result)
-})
+// app.get('/MasterList/:email', verifytoken, async (req, res) => {
+//   let data = await deconnect_MasterList();
+//   let result = await data.find({ email: req.params.email }).toArray();
+//   res.send(result)
+// })
 
-app.post('/MasterList/:email', verifytoken, async (req, res) => {
-  let data = await deconnect_MasterList();
-  let result = await data.insertOne(req.body);
-  res.send({ 'status': 200 });
-})
+// app.post('/MasterList/:email', verifytoken, async (req, res) => {
+//   let data = await deconnect_MasterList();
+//   let result = await data.insertOne(req.body);
+//   res.send({ 'status': 200 });
+// })
 
-app.put('/MasterList/:email', verifytoken, async (req, res) => {
-  let data = await deconnect_MasterList();
-  let result = await data.updateOne(
-    { _id: new ObjectID(req.body._id) },
-    { $set: { name: req.body.name } }
-  );
-  let ans = await data.find({ email: req.params.email }).toArray();
-  res.send(ans)
-})
+// app.put('/MasterList/:email', verifytoken, async (req, res) => {
+//   let data = await deconnect_MasterList();
+//   let result = await data.updateOne(
+//     { _id: new ObjectID(req.body._id) },
+//     { $set: { name: req.body.name } }
+//   );
+//   let ans = await data.find({ email: req.params.email }).toArray();
+//   res.send(ans)
+// })
 
 
 //Bus Detail
