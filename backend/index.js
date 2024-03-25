@@ -2,13 +2,16 @@ let express = require("express");
 let cors = require("cors");
 let bcrypt = require("bcryptjs");
 let app = express();
+
 app.use(express.json({ limit: "50mb" }));
-app.use(cors({
+const corsOptions = {
   origin: '*',
   methods: 'GET, POST, PUT, DELETE, PATCH',
-  allowedHeaders: 'Content-Type',
-}));
+  allowedHeaders: 'Content-Type, auth',
+};
+app.use(cors(corsOptions));
 app.use(express.static("public"))
+
 const dotenv = require('dotenv')
 dotenv.config();
 const ObjectID = require('mongodb').ObjectId;

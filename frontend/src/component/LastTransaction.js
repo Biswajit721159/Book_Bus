@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import Loader from './Loader'
-const api = process.env.REACT_APP_API
+// const api = process.env.REACT_APP_API
+const api="http://localhost:5000"
 const LastTransaction = () => {
 
     const userinfo = useSelector((state) => state.user)
