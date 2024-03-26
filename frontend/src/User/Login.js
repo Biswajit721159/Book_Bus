@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { usermethod } from '../redux/UserSlice'
 const api = process.env.REACT_APP_API
-// const api = "http://localhost:5000"
 export default function Login() {
 
     const [email, setemail] = useState("")
@@ -23,7 +22,8 @@ export default function Login() {
     }, [])
 
     function submit() {
-        setbutton("Please Wait ...")
+
+        setbutton("Please wait ...")
         setdisabled(true)
         fetch(`${api}/user/login`, {
             method: 'POST',
@@ -32,12 +32,11 @@ export default function Login() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email, password: password
+                email: email,
+                password: password
             })
-        })
-            .then(response => response.json())
+        }).then(response => response.json())
             .then((result) => {
-                console.log(result)
                 if (result.statusCode === 200) {
                     dispatch(usermethod.Add_User(result.data))
                     history('/BookBus')

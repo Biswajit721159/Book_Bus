@@ -32,13 +32,13 @@ const MasterList = () => {
 
 
     useEffect(() => {
-        if (!userinfo?.user) {
-            history('/Login')
-        }
-        else {
+        if (userinfo?.user?.auth) {
             loaddata()
         }
-    }, [])
+        else {
+            history('/Login')
+        }
+    }, [userinfo])
 
     function loaddata() {
         setload(true)

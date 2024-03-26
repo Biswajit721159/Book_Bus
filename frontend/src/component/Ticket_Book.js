@@ -232,7 +232,7 @@ const Ticket_Book = () => {
         else {
             show_seat()
         }
-    }, [])
+    }, [userinfo])
 
     return (
         <>
