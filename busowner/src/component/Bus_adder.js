@@ -1,10 +1,10 @@
 import React, { useState,useEffect }  from "react";
 import { json, useNavigate } from "react-router-dom";
+const api=process.env.REACT_APP_API
 const Bus_adder=()=>{
     const userinfo=JSON.parse(localStorage.getItem('user'))
 
     useEffect(()=>{
-        console.log(userinfo.user.email)
         if(userinfo==null)
         {
             history('/Login')
@@ -65,7 +65,7 @@ const Bus_adder=()=>{
     {
         setdisabled(true)
         setbutton("Please Wait...")
-        fetch('/busowner/addBus',{
+        fetch(`${api}/api/bus/bus_detail`,{
             method:'POST',
             headers:{
                 'Accept':'application/json',
@@ -76,7 +76,7 @@ const Bus_adder=()=>{
                bus_name:name,
                Total_seat:seat,
                station_data:data,
-               status:'pending',
+            //    status:'pending',
             })
         }).then(responce=>responce.json()).then((res)=>{
             history('/')

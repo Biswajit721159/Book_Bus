@@ -1,6 +1,7 @@
 import React, { useState,useEffect}  from "react";
 import { useNavigate } from "react-router-dom";
 
+const api=process.env.REACT_APP_API
 export default function Login() {
 
 const [email,setemail]=useState("")
@@ -23,7 +24,7 @@ useEffect(()=>{
 function submit(){
     setbutton("Please Wait ...")
     setdisabled(true)
-    fetch('/busowner/login',{
+    fetch(`${api}/busowner/login`,{
         method:'PATCH',
         headers:{
             'Accept':'application/json',

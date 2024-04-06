@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from './Loader'
 import Swal from 'sweetalert2'
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 const Home = () => {
 
     var today = new Date();
@@ -43,12 +43,14 @@ const Home = () => {
 
     function loadStation() {
         setload(true)
-        fetch(`${api}/get_station`).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
-                setdata(res)
-                fetch(`${api}/FirstFiveBus/`).then(responce => responce.json()).then((result) => {
-                    setload(false)
-                    setbus(result)
+        fetch(`${api}/bus/get_station`).then(responce => responce.json()).then((res) => {
+            if (res != undefined && res?.statusCode === 200) {
+                setdata(res.data)
+                fetch(`${api}/bus/getFirstTenBus/`).then(responce => responce.json()).then((result) => {
+                    if (res?.statusCode === 200) {
+                        setload(false)
+                        setbus(result.data)
+                    }
                 }, (error) => {
                     history('*')
                 })
@@ -87,7 +89,7 @@ const Home = () => {
 
             setdisabled(true)
             setbutton("Wait Finding...")
-            fetch(`${api}/get_bus`, {
+            fetch(`${api}/bus/get_bus`, {
                 method: 'PATCH',
                 headers: {
                     'Accept': 'application/json',
@@ -98,10 +100,10 @@ const Home = () => {
                     end_station: dist
                 })
             }).then(response => response.json()).then((res) => {
-                if (res != undefined) {
+                if (res != undefined && res.statusCode===200) {
                     setdisabled(false)
                     setbutton("Find Bus")
-                    setbus(res)
+                    setbus(res.data)
                 }
             }, (error) => {
                 history('*')
@@ -118,7 +120,7 @@ const Home = () => {
         setseat_res_come(false)
         setdisabled_showseat(true)
         setshow_seat_button("Loading....")
-        fetch(`${api}/get_Seat`, {
+        fetch(`${api}/bus/get_Seat`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',

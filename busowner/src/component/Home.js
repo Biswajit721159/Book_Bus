@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {Link, useNavigate } from "react-router-dom";
 import loader from "../images/loader.gif"
-
+const api=process.env.REACT_APP_API
 
 const Home=()=>{
     const [data,setdata]=useState([])
@@ -24,7 +24,7 @@ const Home=()=>{
     function loadData()
     {
         setload(true)
-        fetch(`/busowner/${userinfo.user.email}`,{
+        fetch(`${api}/busowner/${userinfo.user.email}`,{
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/json',
