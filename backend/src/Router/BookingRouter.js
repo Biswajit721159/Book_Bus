@@ -9,4 +9,5 @@ router.route('/getTicket/:email').get(verifytoken, getTicketByEmail);
 router.route('/get_Seat').patch(get_Seat);
 router.route('/').post(verifytoken, insertBooking);
 
+
 module.exports = router;

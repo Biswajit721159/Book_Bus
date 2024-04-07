@@ -184,4 +184,56 @@ const insertBooking = async (req, res) => {
     }
 }
 
-module.exports = { getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking }
+const getBookingDatabyDate = async (req, res) => {
+    try {
+        let date = req.body.date;
+        let bus_id = req.body.bus_id;
+        let result = await Booking.find({ bus_id: bus_id, date: date });
+        let ans = []
+        for (let i = 0; i < result.length; i++) {
+            for (let j = 0; j < result[i].person.length; j++) {
+                let obj = {
+                    "src": result[i].src,
+                    "dist": result[i].dist,
+                    "Pay": result[i].total_money / result[i].person.length,
+                    "name": result[i].person[j],
+                    "seat_no": result[i].seat_record[j],
+                    "total_distance": result[i].total_distance,
+                    "PNR_No": result[i]._id,
+                }
+                ans.push(obj)
+            }
+        }
+
+        ans.sort((a, b) => {
+            let fa = (a.seat_no)
+            let fb = (b.seat_no)
+
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
+
+        if (ans) {
+            return res
+                .status(200)
+                .json(new ApiResponse(200, ans, "success"));
+        }
+        else {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, null, "Result not found !"));
+        }
+    }
+    catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+module.exports = { getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking,getBookingDatabyDate }

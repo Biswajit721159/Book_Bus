@@ -1,8 +1,8 @@
-let mongoose, { Schema, model } = require("mongoose")
+let { Schema, model } = require("mongoose")
 let jwt = require("jsonwebtoken")
 let bcrypt = require("bcrypt")
 
-const userSchema = new Schema(
+const Adminpanel_userSchema = new Schema(
     {
         email: {
             type: String,
@@ -27,17 +27,17 @@ const userSchema = new Schema(
     }
 )
 
-userSchema.pre("save", async function (next) {
+Adminpanel_userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password, 10)
     next()
 })
 
-userSchema.methods.isPasswordCorrect = async function (password) {
+Adminpanel_userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = function () {
+Adminpanel_userSchema.methods.generateAccessToken = function () {
     let data = jwt.sign(
         {
             _id: (this._id),
@@ -53,5 +53,5 @@ userSchema.methods.generateAccessToken = function () {
 }
 
 
-let User = model("User", userSchema);
-module.exports = User;
+let Adminpanel_user = model("Adminpanel_user", Adminpanel_userSchema);
+module.exports = Adminpanel_user;
