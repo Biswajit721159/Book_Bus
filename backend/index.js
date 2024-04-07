@@ -20,7 +20,7 @@ connectDB()
 
 let mainRouter = require('./src/Router/mainRouter')
 
-app.get('/',async(req,res)=>{
+app.get('/', async (req, res) => {
   res.send("Server is Running clearly")
 })
 
