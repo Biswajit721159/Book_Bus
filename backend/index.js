@@ -18,13 +18,13 @@ app.use(express.static("public"))
 
 connectDB()
 
-let mainRouter = require('./src/Router/mainRouter')
+// let mainRouter = require('./src/Router/mainRouter')
 
 app.get('/',async(req,res)=>{
   res.send("Server is Running clearly")
 })
 
-app.use('/api', mainRouter)
+// app.use('/api', mainRouter)
 
 
 app.listen(5000);
