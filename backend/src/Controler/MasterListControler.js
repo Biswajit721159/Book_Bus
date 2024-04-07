@@ -1,6 +1,5 @@
 const MasterList = require('../models/MasterList_models')
 let { ApiResponse } = require("../utils/ApiResponce");
-const ObjectID = require('mongodb').ObjectId;
 
 
 const DeleteMasterUser = async (req, res) => {
