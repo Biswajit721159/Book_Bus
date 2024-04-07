@@ -120,7 +120,7 @@ const Home = () => {
         setseat_res_come(false)
         setdisabled_showseat(true)
         setshow_seat_button("Loading....")
-        fetch(`${api}/bus/get_Seat`, {
+        fetch(`${api}/Booking/get_Seat`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
@@ -133,8 +133,8 @@ const Home = () => {
                 bus_id: _id,
             })
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
-                setAvailable_seat(res.nowAvailable_seat)
+            if (res != undefined && res.statusCode==200) {
+                setAvailable_seat(res.data.nowAvailable_seat)
                 setdisabled_showseat(false)
                 setshow_seat_button("Show Seat")
                 setseat_res_come(true)

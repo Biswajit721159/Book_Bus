@@ -1,0 +1,187 @@
+const Booking = require('../models/Booking_models')
+const Bus_detail = require('../models/Bus_detail_models')
+let { ApiResponse } = require("../utils/ApiResponce");
+
+const getTicketByidFprAuthenticateUser = async (req, res) => {
+    try {
+        let id = req.params._id
+        let result = await Booking.find({ id: id })
+        if (result) return res
+            .status(200)
+            .json(new ApiResponse(200, result, "Success"));
+        else return res
+            .status(404)
+            .json(new ApiResponse(404, null, "Return Not Found"));
+    } catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+const getTicketByEmail = async (req, res) => {
+    try {
+        let result = await Booking.find({ useremail: req.params.email })
+        result.reverse()
+        if (result) {
+            return res.status(200).json(new ApiResponse(200, result, "success"))
+        } else {
+            return res.status(404).json(new ApiResponse(404, [], "Ticket not found !"))
+        }
+    } catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+const get_Seat = async (req, res) => {
+    try {
+        let src = req.body.start_station.toUpperCase()
+        let dist = req.body.end_station.toUpperCase()
+        let date = req.body.date
+        let bus_id = req.body.bus_id
+
+
+        let Bookingdata = await Booking.find({ bus_id: bus_id, date: date });
+        let ffff = await Bus_detail.find({});
+        let busData = []
+        for (let i = 0; i < ffff.length; i++) {
+            if (ffff[i]._id == bus_id) {
+                busData.push(ffff[i])
+            }
+        }
+        let bus = busData[0].station_data
+
+        let srcToDistStation = new Set()
+        let count = 0;
+        let total_distance = 0
+
+        for (let i = 0; i < bus.length; i++) {
+            let s = bus[i].station.toUpperCase()
+            if (s == src) {
+                count++;
+                srcToDistStation.add(src)
+                for (let j = i + 1; j < bus.length; j++) {
+                    let s1 = bus[j].station.toUpperCase()
+                    let distanceFromPreviousStation = parseInt(bus[j].Distance_from_Previous_Station)
+                    if (s1 == dist) {
+                        total_distance += distanceFromPreviousStation
+                        srcToDistStation.add(dist)
+                        count += 1;
+                        break;
+                    }
+                    else {
+                        total_distance += distanceFromPreviousStation
+                        srcToDistStation.add(s1);
+                    }
+                }
+                break;
+            }
+        }
+
+        let countBookingSeat = 0
+        let seat = new Set()
+        if (count == 0 || count == 1) {
+            // write some code hare for invalid test case .
+        }
+        else {
+            for (let i = 0; i < Bookingdata.length; i++) {
+                let srcStation = Bookingdata[i].src
+                let distStation = Bookingdata[i].dist
+                if (checkStationIsPresentOrNot(srcStation, distStation, srcToDistStation, bus) == true) {
+                    countBookingSeat += parseInt(Bookingdata[i].person.length)
+                    let arr = Bookingdata[i].seat_record
+                    for (let j = 0; j < arr.length; j++) {
+                        seat.add(arr[j])
+                    }
+                }
+            }
+        }
+        let totalSeat = parseInt(busData[0].Total_seat)
+        let ans = []
+        for (let i = 1; i <= totalSeat; i++) {
+            let obj = { isbooked: false }
+            if (seat.has(i) == true) {
+                obj.isbooked = true;
+            }
+            ans.push(obj)
+        }
+        let nowAvailable_seat = totalSeat - countBookingSeat;
+        res.status(200).json(new ApiResponse(200, { 'nowAvailable_seat': nowAvailable_seat, 'total_seat': totalSeat, 'BookingRecord': ans, 'total_distance': total_distance }, "Seat found"))
+
+    } catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+const GetTicketById = async (req, res) => {
+    try {
+        let result = await Booking.find({ id: req.params._id });
+        if (result) {
+            return res
+                .status(200)
+                .json(new ApiResponse(200, result, "Booking found"));
+        }
+        else {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, null, "Booking not found !"));
+        }
+    } catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+function checkStationIsPresentOrNot(src, dist, set, bus) {
+    src = src.toUpperCase()
+    dist = dist.toUpperCase()
+    for (let i = 0; i < bus.length; i++) {
+        let s = bus[i].station.toUpperCase()
+        if (s == src) {
+            for (let j = i; j < bus.length; j++) {
+                let s1 = bus[j].station.toUpperCase()
+                if (s1 == dist) {
+                    if (set.has(s1)) {
+                        return true;
+                    }
+                    break;
+                }
+                else {
+                    if (set.has(s1)) {
+                        return true;
+                    }
+                }
+            }
+            break;
+        }
+    }
+    return -1;
+}
+
+const insertBooking = async (req, res) => {
+    try {
+        let result = await Booking.create(req.body);
+        if (result) {
+            return res
+                .status(201)
+                .json(new ApiResponse(201, null, "Booking Successfull"));
+        }
+        else {
+            return res
+                .status(500)
+                .json(new ApiResponse(500, null, "Server down !"));
+        }
+    }
+    catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+module.exports = { getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking }

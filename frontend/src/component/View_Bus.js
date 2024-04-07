@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Loader from './Loader';
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 const View_Bus = () => {
 
     const [data, setdata] = useState()
@@ -11,18 +11,17 @@ const View_Bus = () => {
 
     function loaduser() {
         setload(true)
-        fetch(`${api}/bus_detail/${_id}`, {
+        fetch(`${api}/bus/bus_detail/${_id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             }
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
+            if (res != undefined && res.statusCode === 200) {
                 setload(false)
-                setdata(res)
+                setdata(res.data)
             }
         }, (error) => {
-            console.log("come")
             history('*')
         })
     }

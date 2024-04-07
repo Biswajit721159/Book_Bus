@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import Loader from './Loader'
-// const api = process.env.REACT_APP_API
-const api="http://localhost:5000"
+const api = process.env.REACT_APP_API
 const LastTransaction = () => {
 
     const userinfo = useSelector((state) => state.user)
@@ -12,16 +11,16 @@ const LastTransaction = () => {
     const [load, setload] = useState(true)
 
     function loadTicket() {
-        fetch(`${api}/getTicket/${userinfo?.user?.user?.email}`, {
+        fetch(`${api}/Booking/getTicket/${userinfo?.user?.user?.email}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo.user.auth}`
+                Authorization: `Bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
+            if (res != undefined && res.statusCode===200) {
                 setload(false)
-                setdata(res)
+                setdata(res.data)
             }
         }, (error) => {
             console.log(error)

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import Loader from './Loader';
 import { useSelector } from 'react-redux';
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 const Ticket_Book = () => {
 
     const url = '';
@@ -71,7 +71,7 @@ const Ticket_Book = () => {
 
     function show_seat(_id) {
         setload(true)
-        fetch(`${api}/get_Seat`, {
+        fetch(`${api}/Booking/get_Seat`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
@@ -84,20 +84,21 @@ const Ticket_Book = () => {
                 bus_id: bus_id,
             })
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
-                fetch(`${api}/MasterList/${userinfo?.user?.user?.email}`, {
+            if (res != undefined && res.statusCode === 200) {
+                fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        auth: `bearer ${userinfo?.user?.auth}`
+                        Authorization: `Bearer ${userinfo?.user?.auth}`
                     }
                 }).then(responce => responce.json()).then((result) => {
-                    if (result != undefined) {
-                        setMasterList(result)
+                    if (result != undefined && result.statusCode === 200) {
+                        console.log(result)
+                        setMasterList(result?.data)
                         setload(false)
-                        settotal_seat(res.total_seat)
-                        setdata(res.BookingRecord)
-                        settotal_distance(res.total_distance)
+                        settotal_seat(res.data.total_seat)
+                        setdata(res.data.BookingRecord)
+                        settotal_distance(res.data.total_distance)
                     }
                 }, (error) => {
                     console.log(error)
@@ -157,7 +158,7 @@ const Ticket_Book = () => {
         }
         if (checkAlreadyBoth() && checkbox.length == seatarr.length) {
             setsubmitload(true)
-            fetch(`${api}/get_Seat`, {
+            fetch(`${api}/Booking/get_Seat`, {
                 method: 'PATCH',
                 headers: {
                     'Accept': 'application/json',
@@ -170,14 +171,14 @@ const Ticket_Book = () => {
                     bus_id: bus_id,
                 })
             }).then(responce => responce.json()).then((comeres) => {
-                if (comeres != undefined) {
-                    if (checkAlreadyGetOrNot(comeres.BookingRecord) == false) {
+                if (comeres != undefined && comeres.statusCode === 200) {
+                    if (checkAlreadyGetOrNot(comeres.data.BookingRecord) == false) {
                         fetch(`${api}/Booking`, {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json',
-                                auth: `bearer ${userinfo?.user?.auth}`
+                                Authorization: `Bearer ${userinfo?.user?.auth}`
                             },
                             body: JSON.stringify({
                                 bus_id: bus_id,
@@ -238,7 +239,7 @@ const Ticket_Book = () => {
         <>
             {
                 submitload == true ?
-                    <Loader/>
+                    <Loader />
                     :
                     load == false ?
                         <div className='container align-items-center mt-4'>

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Loader from './Loader';
 import Button from '@mui/material/Button';
-const api=process.env.REACT_APP_API
+const api = process.env.REACT_APP_API
 const View_Ticket = () => {
 
     const userinfo = useSelector((state) => state.user)
@@ -30,26 +30,25 @@ const View_Ticket = () => {
 
     function loaddata() {
         setload(true)
-        fetch(`${api}/getTicketByid/${_id}`, {
+        fetch(`${api}/Booking/getTicketByid/${_id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                auth: `bearer ${userinfo?.user?.auth}`
+                Authorization: `Bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res.length != 0) {
-                fetch(`${api}/bus_detail/${res[0].bus_id}`, {
+            if (res != undefined && res.statusCode === 200 && res.length != 0) {
+                fetch(`${api}/bus/bus_detail/${res.data[0].bus_id}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                     }
                 }).then(responce => responce.json()).then((result) => {
-                    if (res != undefined) {
+                    if (res != undefined && res.statusCode === 200) {
                         setload(false)
-                        setdata(res)
-                        set_data(res)
-                        setbusname(result[0].bus_name)
-                        // console.log(res)
+                        setdata(res.data)
+                        set_data(res.data)
+                        setbusname(result.data[0].bus_name)
                     }
                 }, (error) => {
                     history('*')

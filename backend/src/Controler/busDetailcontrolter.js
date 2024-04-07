@@ -175,7 +175,7 @@ const GetAllStation = async (req, res) => {
 const GetBusDetailById = async (req, res) => {
     try {
         let bus_id = req.params._id
-        let nums = await Bus_detail.find({ id: bus_id }).toArray();
+        let nums = await Bus_detail.find({ _id: bus_id })
         if (nums) {
             return res.status(200).json(new ApiResponse(200, nums, "Bus successfully found"))
         } else {
