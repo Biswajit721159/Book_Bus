@@ -281,7 +281,7 @@ const Ticket_Book = () => {
                             }
                             {
                                 seatarr.length >= 1 ?
-                                    <button className='btn btn-primary mt-3 my-5' data-bs-toggle="modal" data-bs-target="#exampleModal">Process To Next Step</button>
+                                    <button className='btn btn-primary btn-sm mt-3 my-5' data-bs-toggle="modal" data-bs-target="#exampleModal">Process To Next Step</button>
                                     : ""
                             }
                             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
