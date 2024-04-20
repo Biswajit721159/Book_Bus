@@ -1,5 +1,5 @@
 let BusOwnerUser = require('../models/BusOwnerUser_models')
-let { ApiResponse } = require("../utils/ApiResponce");
+let { ApiResponse } = require("../utils/ApiResponse.js");
 
 
 let register = async (req, res) => {

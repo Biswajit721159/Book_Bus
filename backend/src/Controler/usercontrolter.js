@@ -1,5 +1,5 @@
 let User = require('../models/user_models')
-let { ApiResponse } = require("../utils/ApiResponce");
+let { ApiResponse } = require("../utils/ApiResponse.js");
 
 const getByEmail = async (req, res) => {
     try {

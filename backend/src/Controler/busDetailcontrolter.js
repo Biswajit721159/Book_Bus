@@ -1,5 +1,5 @@
 const Bus_detail = require('../models/Bus_detail_models')
-let { ApiResponse } = require("../utils/ApiResponce");
+let { ApiResponse } = require("../utils/ApiResponse.js");
 
 const AddBus = async (req, res) => {
     try {

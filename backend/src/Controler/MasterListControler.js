@@ -1,5 +1,5 @@
 const MasterList = require('../models/MasterList_models')
-let { ApiResponse } = require("../utils/ApiResponce");
+let { ApiResponse } = require("../utils/ApiResponse.js");
 
 
 const DeleteMasterUser = async (req, res) => {

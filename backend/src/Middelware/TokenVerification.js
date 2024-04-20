@@ -1,4 +1,4 @@
-let { ApiResponse } = require("../utils/ApiResponce");
+let { ApiResponse } = require("../utils/ApiResponse.js");
 let jwt = require("jsonwebtoken");
 
 function verifytoken(req, res, next) {

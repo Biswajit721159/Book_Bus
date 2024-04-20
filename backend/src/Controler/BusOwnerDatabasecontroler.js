@@ -1,6 +1,5 @@
 let BusOwnerDataBase = require('../models/BusOwnerDataBase')
-let { ApiResponse } = require("../utils/ApiResponce")
-
+let { ApiResponse } = require("../utils/ApiResponse.js");
 
 const getBusById = async (req, res) => {
     try {
