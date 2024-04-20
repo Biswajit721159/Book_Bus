@@ -31,7 +31,7 @@ export const loadBus = createAsyncThunk(
 
 export const fetchBusData = createAsyncThunk(
     'busTable/fetchBusData',
-    async ({ src, dist }, { rejectWithValue }) => {
+    async (station) => {
         try {
             const response = await fetch(`${api}/bus/get_bus`, {
                 method: 'PATCH',
@@ -40,15 +40,15 @@ export const fetchBusData = createAsyncThunk(
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    start_station: src,
-                    end_station: dist
+                    start_station: station.src,
+                    end_station: station.dist
                 })
             });
             const data = await response.json();
             return data.data
         } catch (error) {
             console.log(error)
-            return rejectWithValue(error.response.data);
+            throw error;
         }
     }
 );
@@ -105,7 +105,7 @@ const busTableSlice = createSlice({
             .addCase(fetchBusData.rejected, (state, action) => {
                 state.loadingBus = false;
                 state.loadingStation = false;
-                state.error = action.payload.errorMessage;
+                state.error = action?.payload?.errorMessage;
             });;
 
     }

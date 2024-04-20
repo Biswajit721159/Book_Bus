@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import { HiOutlineCheckCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { loadStation, loadBus, fetchBusData } from '../redux/BusSlice'
+import { BusSearchmethod } from '../redux/BusSearchSlice'
 const api = process.env.REACT_APP_API
 const Home = () => {
 
@@ -15,10 +16,10 @@ const Home = () => {
     today = yyyy + '-' + mm + '-' + dd;
 
     const history = useNavigate()
-    const [src, setsrc] = useState("");
-    const [dist, setdist] = useState("")
+    let src = useSelector((state) => state.BusSearch.src);
+    let dist = useSelector((state) => state.BusSearch.dist);
     const [date, setdate] = useState(today)
-    const [disabled, setdisabled] = useState(true)
+    const [disabled, setdisabled] = useState(false)
     const [button, setbutton] = useState("Find Bus")
     const [bus__id, setbus__id] = useState('')
     const [show_seat_button, setshow_seat_button] = useState("Show Seat")
@@ -40,11 +41,11 @@ const Home = () => {
     const [errordate, seterrordate] = useState(false)
     const [messerrordate, setmesserrordate] = useState("")
 
-    // console.log("Bus ", Bus)
 
     useEffect(() => {
+        if (Bus.length === 0 && src.length !== 0 && dist.length !== 0) dispatch(fetchBusData({ src, dist }))
+        else if (Bus?.length === 0) dispatch(loadBus());
         if (station?.length === 0) dispatch(loadStation());
-        if (Bus?.length === 0) dispatch(loadBus());
     }, [dispatch]);
 
     function FindError() {
@@ -73,31 +74,9 @@ const Home = () => {
             seterroInSrc(false)
             seterrordist(false)
             seterrordate(false)
-
             setdisabled(true)
-            // setbutton("Wait Finding...")
-            dispatch(fetchBusData())
-
-            // fetch(`${api}/bus/get_bus`, {
-            //     method: 'PATCH',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         start_station: src,
-            //         end_station: dist
-            //     })
-            // }).then(response => response.json()).then((res) => {
-            //     if (res != undefined && res.statusCode === 200) {
-            //         setdisabled(false)
-            //         setbutton("Find Bus")
-            //         setbus(res.data)
-            //     }
-            // }, (error) => {
-            //     history('*')
-            // })
-
+            dispatch(fetchBusData({ src, dist }))
+            setdisabled(false)
         }
     }
 
@@ -138,6 +117,7 @@ const Home = () => {
         const today = new Date().toISOString().split('T')[0];
         return today;
     };
+
 
     const [DurationEarlyFirst, setDurationEarlyFirst] = useState(false)
     const [DurationLateFirst, setDurationLateFirst] = useState(false)
@@ -321,10 +301,9 @@ const Home = () => {
                     <Loader /> :
                     <>
                         <form onSubmit={(e) => { e.preventDefault(); Findbus() }}>
-
                             <div className="d-flex align-items-center justify-content-center mt-5">
                                 <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setsrc(e.target.value) }} style={{ backgroundColor: "#7DBCFA" }}>
+                                    <select className="form-select" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
                                         <option style={{ textAlign: "center" }} selected>Select Your Source Station</option>
                                         {
                                             station.map((item, ind) => (
@@ -338,7 +317,7 @@ const Home = () => {
                                     <i className="fa fa-arrow-circle-right d-flex justify-content-center mx-2 my-2" style={{ fontSize: "38px", color: "green", textAlign: "center" }}></i>
                                 </div>
                                 <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setdist(e.target.value) }} style={{ backgroundColor: "#7DBCFA" }}>
+                                    <select className="form-select" aria-label="Default select example" value={dist} required onChange={(e) => { dispatch(BusSearchmethod.adddist(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
                                         <option style={{ textAlign: "center" }} selected>Select Your Distination Station</option>
                                         {
                                             station.map((item, ind) => (
@@ -348,7 +327,7 @@ const Home = () => {
                                     </select>
                                     {errordist ? <label className="mt-0" style={{ color: "red" }}>{messerrordist}</label> : ""}
                                 </div>
-                                <div className="d-flex ">
+                                <div className="d-flex mx-1">
                                     <div className="input-group date" id="datepicker">
                                         <input type="date" className="form-control" value={date} min={minDate()} onChange={(e) => { setdate(e.target.value) }} required id="date" />
                                     </div>
@@ -358,8 +337,8 @@ const Home = () => {
                                     <button type="submit" className="btn btn-primary btn-block btn-sm" disabled={disabled} >{button}</button>
                                 </div>
                             </div>
-
                         </form>
+
 
                         <div className="container-fluid">
                             <div className="mt-5" style={{ display: "flex", flexDirection: 'row', justifyContent: 'center' }}>
@@ -413,6 +392,8 @@ const Home = () => {
                                 </div>
                                 {/* <button type="submit" className="btn btn-success btn-sm" onClick={applyFilter}>Apply Filter</button> */}
                             </div>
+
+
                             <div className="row d-flex justify-content-around">
                                 <div className="col-9 mt-5">
                                     <table className=" container table border-info">
@@ -467,16 +448,16 @@ const Home = () => {
                                                         </tr>
                                                     ))
                                                     : <tr >
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td></td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center"></td>
                                                     </tr>
                                             }
                                         </tbody>

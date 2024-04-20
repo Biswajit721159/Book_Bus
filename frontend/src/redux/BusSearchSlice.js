@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 function getSourceStation() {
-    let src=localStorage.getItem('src')
+    let src = localStorage.getItem('src')
     if (src === null) {
         localStorage.setItem('src', JSON.stringify(''));
         return ''
@@ -14,7 +14,7 @@ function getSourceStation() {
 function getDistinationStation() {
     let dist = localStorage.getItem('dist');
     if (dist === null) {
-        localStorage.setItem('dist',JSON.stringify(''));
+        localStorage.setItem('dist', JSON.stringify(''));
         return ''
     }
     else {
@@ -32,9 +32,11 @@ const BusSearchSlice = createSlice({
     reducers: {
         Addsrc: (state, action) => {
             state.src = action.payload;
+            localStorage.setItem('src', JSON.stringify(action.payload))
         },
         adddist: (state, action) => {
             state.dist = action.payload
+            localStorage.setItem('dist', JSON.stringify(action.payload))
         }
     },
 })
