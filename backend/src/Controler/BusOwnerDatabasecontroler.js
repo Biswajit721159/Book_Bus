@@ -12,12 +12,12 @@ const getBusById = async (req, res) => {
         } else {
             res
                 .status(404)
-                .json(new ApiResponse(404, null, "Bus Not Found"));
+                .json(new ApiResponse(404, [], "Bus Not Found"));
         }
     } catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -31,12 +31,12 @@ const getBusByEmail = async (req, res) => {
         } else {
             res
                 .status(404)
-                .json(new ApiResponse(404, null, "Bus Not Found"));
+                .json(new ApiResponse(404, [], "Bus Not Found"));
         }
     } catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -44,14 +44,14 @@ const AddBusInBusOwnerDataBase = async (req, res) => {
     try {
         let result = await BusOwnerDataBase.create(req.body);
         if (result) {
-            return res.status(201).json(new ApiResponse(201, null, "Bus added sucessfully"));
+            return res.status(201).json(new ApiResponse(201, [], "Bus added sucessfully"));
         } else {
-            return res.status(500).json(new ApiResponse(500, null, "server down !"))
+            return res.status(500).json(new ApiResponse(500, [], "server down !"))
         }
     } catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 

@@ -27,7 +27,7 @@ const Homepage1 = () => {
                     data.map((item, ind) => (
                         ind == index ?
                             <div className="carousel-item active" key={ind}>
-                                <img className="d-block w-100" id="image" src={item} alt="slide" />
+                                <img className="d-block w-100" id="image" src={item} alt="" />
                                 <a className="carousel-control-prev" onClick={prev} role="button" data-slide="prev">
                                     <span className="carousel-control-prev-icon" style={{ backgroundColor: "black", borderRadius: "10px",width:'20px',height:'20px' }} aria-hidden="true"></span>
                                 </a>

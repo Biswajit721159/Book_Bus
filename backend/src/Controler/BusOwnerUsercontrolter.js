@@ -12,7 +12,7 @@ let register = async (req, res) => {
         ) {
             return res
                 .status(204)
-                .json(new ApiResponse(204, null, "All fields are required"));
+                .json(new ApiResponse(204, [], "All fields are required"));
         }
 
         const existedUser = await BusOwnerUser.findOne({
@@ -22,7 +22,7 @@ let register = async (req, res) => {
         if (existedUser) {
             return res
                 .status(409)
-                .json(new ApiResponse(409, null, `User already exists`));
+                .json(new ApiResponse(409, [], `User already exists`));
         }
 
         const user = await BusOwnerUser.create({
@@ -39,7 +39,7 @@ let register = async (req, res) => {
                 .json(
                     new ApiResponse(
                         500,
-                        null,
+                        [],
                         "Something went wrong while registering the user"
                     )
                 );
@@ -50,7 +50,7 @@ let register = async (req, res) => {
     } catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
         return;
     }
 };
@@ -66,7 +66,7 @@ const generateAccessAndRefereshTokens = async (userId, res) => {
             .json(
                 new ApiResponse(
                     500,
-                    null,
+                    [],
                     "Something went wrong while generating referesh and access token"
                 )
             );
@@ -79,20 +79,20 @@ const login = async (req, res) => {
         if (!password && !email) {
             res
                 .status(204)
-                .json(new ApiResponse(204, null, "Password and email is required"));
+                .json(new ApiResponse(204, [], "Password and email is required"));
         }
         const user = await BusOwnerUser.findOne({
             $or: [{ email }],
         }).select(["-createdAt", "-updatedAt", "-__v"]);
         if (!user) {
-            res.status(404).json(new ApiResponse(404, null, "User does not exist"));
+            res.status(404).json(new ApiResponse(404, [], "User does not exist"));
             return;
         }
         const isPasswordValid = await user.isPasswordCorrect(password);
         if (!isPasswordValid) {
             res
                 .status(401)
-                .json(new ApiResponse(401, null, "Invalid user credentials"));
+                .json(new ApiResponse(401, [], "Invalid user credentials"));
             return;
         }
         const accessToken = await generateAccessAndRefereshTokens(user._id, res);
@@ -117,7 +117,7 @@ const login = async (req, res) => {
     } catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 

@@ -5,14 +5,14 @@ const AddBus = async (req, res) => {
     try {
         let result = await Bus_detail.create(req.body);
         if (result) {
-            return res.status(201).json(new ApiResponse(201, null, "Bus added sucessfully"));
+            return res.status(201).json(new ApiResponse(201, [], "Bus added sucessfully"));
         } else {
-            return res.status(500).json(new ApiResponse(500, null, "server down !"))
+            return res.status(500).json(new ApiResponse(500, [], "server down !"))
         }
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -42,13 +42,13 @@ const getFirstTenBus = async (req, res) => {
         if (ans) return res.status(200).json(new ApiResponse(200, ans, "Bus is found"))
         else {
             return res.status(404)
-                .json(new ApiResponse(404, null, "Bus not found"))
+                .json(new ApiResponse(404, [], "Bus not found"))
         }
     }
     catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -137,12 +137,12 @@ const GetBusBySrcDist = async (req, res) => {
         if (ans) {
             res.status(200).json(new ApiResponse(200, ans, "Bus found successFully"))
         } else {
-            res.status(404).json(new ApiResponse(404, null, "Bus not found"))
+            res.status(404).json(new ApiResponse(404, [], "Bus not found"))
         }
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -168,7 +168,7 @@ const GetAllStation = async (req, res) => {
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -179,13 +179,13 @@ const GetBusDetailById = async (req, res) => {
         if (nums) {
             return res.status(200).json(new ApiResponse(200, nums, "Bus successfully found"))
         } else {
-            return res.status(404).json(new ApiResponse(404, null, "Bus Not Found"))
+            return res.status(404).json(new ApiResponse(404, [], "Bus Not Found"))
         }
     }
     catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 

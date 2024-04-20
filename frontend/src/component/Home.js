@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from './Loader'
 import Swal from 'sweetalert2'
+import { HiOutlineCheckCircle } from "react-icons/hi";
+import { useDispatch, useSelector } from 'react-redux';
+import { loadStation, loadBus, fetchBusData } from '../redux/BusSlice'
 const api = process.env.REACT_APP_API
 const Home = () => {
 
@@ -9,24 +12,24 @@ const Home = () => {
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
-
     today = yyyy + '-' + mm + '-' + dd;
 
     const history = useNavigate()
-    const [data, setdata] = useState([])
-    const [load, setload] = useState(true)
     const [src, setsrc] = useState("");
     const [dist, setdist] = useState("")
     const [date, setdate] = useState(today)
     const [disabled, setdisabled] = useState(false)
     const [button, setbutton] = useState("Find Bus")
-    const [bus, setbus] = useState([])
     const [bus__id, setbus__id] = useState('')
     const [show_seat_button, setshow_seat_button] = useState("Show Seat")
     const [disabled_showseat, setdisabled_showseat] = useState(false)
     const [Available_seat, setAvailable_seat] = useState(0)
     const [seat_res_come, setseat_res_come] = useState(false)
 
+    const dispatch = useDispatch();
+    const { Bus, station, loadingBus, loadingStation, error } = useSelector(state => state.Bus);
+
+    const [bus, setbus] = useState(Bus)
 
     const [erroInSrc, seterroInSrc] = useState(false)
     const [messerroInSrc, setmesserroInSrc] = useState("")
@@ -37,28 +40,12 @@ const Home = () => {
     const [errordate, seterrordate] = useState(false)
     const [messerrordate, setmesserrordate] = useState("")
 
-    useEffect(() => {
-        loadStation()
-    }, [])
+    console.log("Bus ", Bus)
 
-    function loadStation() {
-        setload(true)
-        fetch(`${api}/bus/get_station`).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res?.statusCode === 200) {
-                setdata(res.data)
-                fetch(`${api}/bus/getFirstTenBus/`).then(responce => responce.json()).then((result) => {
-                    if (res?.statusCode === 200) {
-                        setload(false)
-                        setbus(result.data)
-                    }
-                }, (error) => {
-                    history('*')
-                })
-            }
-        }, (error) => {
-            history('*')
-        })
-    }
+    useEffect(() => {
+        if (station?.length === 0) dispatch(loadStation());
+        if (Bus?.length === 0) dispatch(loadBus());
+    }, [dispatch]);
 
     function FindError() {
         let x = true
@@ -80,7 +67,7 @@ const Home = () => {
         return x;
     }
 
-    function findbus() {
+    function Findbus() {
         let ans = FindError();
         if (ans == true) {
             seterroInSrc(false)
@@ -88,26 +75,29 @@ const Home = () => {
             seterrordate(false)
 
             setdisabled(true)
-            setbutton("Wait Finding...")
-            fetch(`${api}/bus/get_bus`, {
-                method: 'PATCH',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    start_station: src,
-                    end_station: dist
-                })
-            }).then(response => response.json()).then((res) => {
-                if (res != undefined && res.statusCode===200) {
-                    setdisabled(false)
-                    setbutton("Find Bus")
-                    setbus(res.data)
-                }
-            }, (error) => {
-                history('*')
-            })
+            // setbutton("Wait Finding...")
+            dispatch(fetchBusData())
+
+            // fetch(`${api}/bus/get_bus`, {
+            //     method: 'PATCH',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         start_station: src,
+            //         end_station: dist
+            //     })
+            // }).then(response => response.json()).then((res) => {
+            //     if (res != undefined && res.statusCode === 200) {
+            //         setdisabled(false)
+            //         setbutton("Find Bus")
+            //         setbus(res.data)
+            //     }
+            // }, (error) => {
+            //     history('*')
+            // })
+
         }
     }
 
@@ -133,7 +123,7 @@ const Home = () => {
                 bus_id: _id,
             })
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res.statusCode==200) {
+            if (res != undefined && res.statusCode == 200) {
                 setAvailable_seat(res.data.nowAvailable_seat)
                 setdisabled_showseat(false)
                 setshow_seat_button("Show Seat")
@@ -324,20 +314,20 @@ const Home = () => {
             loadStation()
         }
     }
-
     return (
         <>
             {
-                load == false ?
+                loadingBus === true || loadingStation === true ?
+                    <Loader /> :
                     <>
-                        <form onSubmit={(e) => { e.preventDefault(); findbus() }}>
+                        <form onSubmit={(e) => { e.preventDefault(); Findbus() }}>
 
                             <div className="d-flex align-items-center justify-content-center mt-5">
                                 <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setsrc(e.target.value) }} style={{ backgroundColor: "white" }}>
+                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setsrc(e.target.value) }} style={{ backgroundColor: "#7DBCFA" }}>
                                         <option style={{ textAlign: "center" }} selected>Select Your Source Station</option>
                                         {
-                                            data.map((item, ind) => (
+                                            station.map((item, ind) => (
                                                 <option key={ind} style={{ textAlign: "center" }} >{item}</option>
                                             ))
                                         }
@@ -348,10 +338,10 @@ const Home = () => {
                                     <i className="fa fa-arrow-circle-right d-flex justify-content-center mx-2 my-2" style={{ fontSize: "38px", color: "green", textAlign: "center" }}></i>
                                 </div>
                                 <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setdist(e.target.value) }}>
+                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setdist(e.target.value) }} style={{ backgroundColor: "#7DBCFA" }}>
                                         <option style={{ textAlign: "center" }} selected>Select Your Distination Station</option>
                                         {
-                                            data.map((item, ind) => (
+                                            station.map((item, ind) => (
                                                 <option key={ind} style={{ textAlign: "center" }} >{item}</option>
                                             ))
                                         }
@@ -372,60 +362,58 @@ const Home = () => {
                         </form>
 
                         <div className="container-fluid">
-                            <div className="row d-flex justify-content-around">
-                                <div className="col mt-5">
-                                    <div className="card" style={{ width: "15rem" }}>
-                                        <div className="mb-3 mx-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" checked={DurationEarlyFirst} onChange={(e) => ChangeChecked(e, "DurationEarlyFirst")} type="checkbox" />
-                                                <label className="form-check-label">
-                                                    Duration(Early First)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div className="mb-3 mx-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" checked={DurationLateFirst} onChange={(e) => ChangeChecked(e, "DurationLateFirst")} type="checkbox" />
-                                                <label className="form-check-label">
-                                                    Duration(Late First)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div className="mb-3 mx-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" checked={DepartureEarlyFirst} onChange={(e) => ChangeChecked(e, "DepartureEarlyFirst")} type="checkbox" />
-                                                <label className="form-check-label">
-                                                    Departure(Early First)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div className="mb-3 mx-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" checked={DepartureLateFirst} onChange={(e) => ChangeChecked(e, "DepartureLateFirst")} type="checkbox" />
-                                                <label className="form-check-label">
-                                                    Departure(Late First)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div className="mb-3 mx-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" checked={ArrivalEarlyFirst} onChange={(e) => ChangeChecked(e, "ArrivalEarlyFirst")} type="checkbox" />
-                                                <label className="form-check-label">
-                                                    Arrival(Early First)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div className="mb-3 mx-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" checked={ArrivalLateFirst} onChange={(e) => ChangeChecked(e, "ArrivalLateFirst")} type="checkbox" />
-                                                <label className="form-check-label">
-                                                    Arrival(Late First)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" className="btn btn-success btn-sm" onClick={applyFilter}>Apply Filter</button>
+                            <div className="mt-5" style={{ display: "flex", flexDirection: 'row', justifyContent: 'center' }}>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" checked={DurationEarlyFirst} onChange={(e) => ChangeChecked(e, "DurationEarlyFirst")} type="checkbox" />
+                                        <label className="form-check-label">
+                                            Duration(Early First)
+                                        </label>
                                     </div>
                                 </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" checked={DurationLateFirst} onChange={(e) => ChangeChecked(e, "DurationLateFirst")} type="checkbox" />
+                                        <label className="form-check-label">
+                                            Duration(Late First)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" checked={DepartureEarlyFirst} onChange={(e) => ChangeChecked(e, "DepartureEarlyFirst")} type="checkbox" />
+                                        <label className="form-check-label">
+                                            Departure(Early First)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" checked={DepartureLateFirst} onChange={(e) => ChangeChecked(e, "DepartureLateFirst")} type="checkbox" />
+                                        <label className="form-check-label">
+                                            Departure(Late First)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" checked={ArrivalEarlyFirst} onChange={(e) => ChangeChecked(e, "ArrivalEarlyFirst")} type="checkbox" />
+                                        <label className="form-check-label">
+                                            Arrival(Early First)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="mb-3 mx-2">
+                                    <div className="form-check">
+                                        <input className="form-check-input" checked={ArrivalLateFirst} onChange={(e) => ChangeChecked(e, "ArrivalLateFirst")} type="checkbox" />
+                                        <label className="form-check-label">
+                                            Arrival(Late First)
+                                        </label>
+                                    </div>
+                                </div>
+                                {/* <button type="submit" className="btn btn-success btn-sm" onClick={applyFilter}>Apply Filter</button> */}
+                            </div>
+                            <div className="row d-flex justify-content-around">
                                 <div className="col-9 mt-5">
                                     <table className=" container table border-info">
                                         <thead>
@@ -444,10 +432,10 @@ const Home = () => {
                                         </thead>
                                         <tbody >
                                             {
-                                                bus.length != 0 ?
-                                                    bus.map((item, ind) => (
+                                                Bus?.length != 0 ?
+                                                    Bus?.map((item, ind) => (
                                                         <tr key={ind} style={{ height: "70px" }}>
-                                                            <td className="text-center">{item.bus_name}</td>
+                                                            <td className="text-center">{item.bus_name} <HiOutlineCheckCircle style={{ color: 'green' }} /></td>
                                                             <td className="text-center">{item.start_station}</td>
                                                             <td className="text-center"> {item.start_arrived_time}</td>
                                                             <td className="text-center">{item.total_distance}</td>
@@ -458,7 +446,7 @@ const Home = () => {
                                                             <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-secondary btn-sm">view</button></Link></td>
                                                             {
                                                                 item.bus_id != bus__id ?
-                                                                    <td className="text-center"><button className="btn btn-danger btn-sm" onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >Show Seat</button></td>
+                                                                    <td className="text-center"><button className="btn btn-danger btn-sm" onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >Show</button></td>
                                                                     :
                                                                     seat_res_come == true ?
                                                                         <td className="text-center">
@@ -497,7 +485,6 @@ const Home = () => {
                             </div>
                         </div>
                     </>
-                    : <Loader />
             }
         </>
     )

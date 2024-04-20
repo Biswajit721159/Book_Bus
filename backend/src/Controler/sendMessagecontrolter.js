@@ -7,17 +7,17 @@ const insertSendMessage = async (req, res) => {
         if (result.acknowledged == true) {
             return res
                 .status(201)
-                .json(new ApiResponse(201, null, "Successfully added"));
+                .json(new ApiResponse(201, [], "Successfully added"));
         }
         else {
             return res
                 .status(500)
-                .json(new ApiResponse(500, null, "Server down !"));
+                .json(new ApiResponse(500, [], "Server down !"));
         }
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 

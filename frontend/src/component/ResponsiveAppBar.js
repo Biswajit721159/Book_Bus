@@ -73,7 +73,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            <img src="https://static.vecteezy.com/system/resources/previews/008/442/189/original/blue-bus-free-vector.jpg" style={{ width: '50px', height: '50px' }} alt="wait" />
+            <img src="https://static.vecteezy.com/system/resources/previews/008/442/189/original/blue-bus-free-vector.jpg" style={{ width: '50px', height: '50px' }} alt="" />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

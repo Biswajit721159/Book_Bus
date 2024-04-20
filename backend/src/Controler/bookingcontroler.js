@@ -11,11 +11,11 @@ const getTicketByidFprAuthenticateUser = async (req, res) => {
             .json(new ApiResponse(200, result, "Success"));
         else return res
             .status(404)
-            .json(new ApiResponse(404, null, "Return Not Found"));
+            .json(new ApiResponse(404, [], "Return Not Found"));
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -31,7 +31,7 @@ const getTicketByEmail = async (req, res) => {
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -113,7 +113,7 @@ const get_Seat = async (req, res) => {
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -128,12 +128,12 @@ const GetTicketById = async (req, res) => {
         else {
             return res
                 .status(404)
-                .json(new ApiResponse(404, null, "Booking not found !"));
+                .json(new ApiResponse(404, [], "Booking not found !"));
         }
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -169,18 +169,18 @@ const insertBooking = async (req, res) => {
         if (result) {
             return res
                 .status(201)
-                .json(new ApiResponse(201, null, "Booking Successfull"));
+                .json(new ApiResponse(201, [], "Booking Successfull"));
         }
         else {
             return res
                 .status(500)
-                .json(new ApiResponse(500, null, "Server down !"));
+                .json(new ApiResponse(500, [], "Server down !"));
         }
     }
     catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -226,13 +226,13 @@ const getBookingDatabyDate = async (req, res) => {
         else {
             return res
                 .status(404)
-                .json(new ApiResponse(404, null, "Result not found !"));
+                .json(new ApiResponse(404, [], "Result not found !"));
         }
     }
     catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 

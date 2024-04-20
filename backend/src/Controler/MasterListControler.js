@@ -7,12 +7,12 @@ const DeleteMasterUser = async (req, res) => {
         let _id = req.params.user_id;
         let result = await MasterList.deleteOne({ _id: _id });
         if (result.deletedCount) {
-            res.status(200).json(new ApiResponse(200, null, "MasterList user deleted"));
+            res.status(200).json(new ApiResponse(200, [], "MasterList user deleted"));
         } else {
-            res.status(404).json(new ApiResponse(404, null, "MasterUser not found !"));
+            res.status(404).json(new ApiResponse(404, [], "MasterUser not found !"));
         }
     } catch (error) {
-        res.status(500).json(new ApiResponse(500, null, "Server down !"));
+        res.status(500).json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -26,13 +26,13 @@ const GetMasterUser = async (req, res) => {
         else {
             res
                 .status(404)
-                .json(new ApiResponse(404, null, "User not found !"));
+                .json(new ApiResponse(404, [], "User not found !"));
         }
     }
     catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -42,17 +42,17 @@ const PostMasterUser = async (req, res) => {
         if (result) {
             res
                 .status(201)
-                .json(new ApiResponse(201, null, "MasterList User Created Successfully"));
+                .json(new ApiResponse(201, [], "MasterList User Created Successfully"));
         }
         else {
             res
                 .status(500)
-                .json(new ApiResponse(500, null, "Server down !"));
+                .json(new ApiResponse(500, [], "Server down !"));
         }
     } catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
@@ -65,18 +65,18 @@ const UpdateMasterUser = async (req, res) => {
         if (result.modifiedCount) {
             res
                 .status(200)
-                .json(new ApiResponse(200, null, "MasterList User SucessFullly Updated"));
+                .json(new ApiResponse(200, [], "MasterList User SucessFullly Updated"));
         }
         else {
             res
                 .status(404)
-                .json(new ApiResponse(404, null, "User not found !"));
+                .json(new ApiResponse(404, [], "User not found !"));
         }
     }
     catch {
         res
             .status(500)
-            .json(new ApiResponse(500, null, "Server down !"));
+            .json(new ApiResponse(500, [], "Server down !"));
     }
 }
 
