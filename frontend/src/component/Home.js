@@ -18,7 +18,7 @@ const Home = () => {
     const [src, setsrc] = useState("");
     const [dist, setdist] = useState("")
     const [date, setdate] = useState(today)
-    const [disabled, setdisabled] = useState(false)
+    const [disabled, setdisabled] = useState(true)
     const [button, setbutton] = useState("Find Bus")
     const [bus__id, setbus__id] = useState('')
     const [show_seat_button, setshow_seat_button] = useState("Show Seat")
@@ -40,7 +40,7 @@ const Home = () => {
     const [errordate, seterrordate] = useState(false)
     const [messerrordate, setmesserrordate] = useState("")
 
-    console.log("Bus ", Bus)
+    // console.log("Bus ", Bus)
 
     useEffect(() => {
         if (station?.length === 0) dispatch(loadStation());
@@ -355,7 +355,7 @@ const Home = () => {
                                     {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
                                 </div>
                                 <div className="d-flex d-flex justify-content-center mx-1">
-                                    <button type="submit" className="btn btn-primary btn-block btn-sm" disabled={disabled}  >{button}</button>
+                                    <button type="submit" className="btn btn-primary btn-block btn-sm" disabled={disabled} >{button}</button>
                                 </div>
                             </div>
 
