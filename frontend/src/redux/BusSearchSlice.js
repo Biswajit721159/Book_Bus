@@ -22,11 +22,34 @@ function getDistinationStation() {
     }
 }
 
+function getDate() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+
+    let date = localStorage.getItem('date');
+    if (date === null) {
+        localStorage.setItem('date', JSON.stringify(today));
+        return today
+    } else {
+        return JSON.parse(date)
+    }
+}
+
+function clearEverythig() {
+    localStorage.setItem('date', JSON.stringify(''))
+    localStorage.setItem('src', JSON.stringify(''))
+    localStorage.setItem('dist', JSON.stringify(''))
+}
+
 const BusSearchSlice = createSlice({
     name: 'BusSearch',
     initialState: {
         src: getSourceStation(),
-        dist: getDistinationStation()
+        dist: getDistinationStation(),
+        date: getDate()
     },
 
     reducers: {
@@ -37,6 +60,16 @@ const BusSearchSlice = createSlice({
         adddist: (state, action) => {
             state.dist = action.payload
             localStorage.setItem('dist', JSON.stringify(action.payload))
+        },
+        addate: (state, action) => {
+            state.date = action.payload
+            localStorage.setItem('date', JSON.stringify(action.payload))
+        },
+        clearsearch: (state, action) => {
+            clearEverythig()
+            state.src = ''
+            state.dist = ''
+            state.date = ''
         }
     },
 })

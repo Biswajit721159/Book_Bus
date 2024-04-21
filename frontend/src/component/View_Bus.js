@@ -40,17 +40,17 @@ const View_Bus = () => {
                             <thead>
                                 <tr>
                                     <th scope="col">Bus Name -</th>
-                                    <th scope="col">{data[0].bus_name}</th>
+                                    <th scope="col">{data[0]?.bus_name}</th>
                                     <th scope="col">Total No. Of Station -</th>
-                                    <th scope="col">{data[0].station_data.length}</th>
+                                    <th scope="col">{data[0]?.station_data.length}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <th scope="row">Bus ID -</th>
-                                    <th><Link style={{ textDecoration: "none" }}>{data[0]._id}</Link></th>
+                                    <th><Link style={{ textDecoration: "none" }}>{data[0]?._id}</Link></th>
                                     <th>Total_seat</th>
-                                    <th>{data[0].Total_seat}</th>
+                                    <th>{data[0]?.Total_seat}</th>
                                 </tr>
                             </tbody>
                         </table>
@@ -58,14 +58,14 @@ const View_Bus = () => {
 
                             <div>
                                 {
-                                    data.length != 0 && data[0].station_data.map((item, ind) => (
+                                    data?.length != 0 && data[0]?.station_data?.map((item, ind) => (
                                         <div key={ind}>
                                             <div className="mt-2">
-                                                <h6>*{item.station} - {item.arrived_time} ({item.Distance_from_Previous_Station} km)</h6>
+                                                <h6>*{item?.station} - {item?.arrived_time} ({item?.Distance_from_Previous_Station} km)</h6>
                                             </div>
                                             <div className="mx-2 mt-0 d-flex align-items-center justify-content-center mt-1">
                                                 {
-                                                    (ind + 1) == data[0].station_data.length ?
+                                                    (ind + 1) == data[0]?.station_data.length ?
                                                         ""
                                                         : <i className="fa fa-arrow-circle-down mt-2" style={{ fontSize: "30px", color: "green", textAlign: "center" }}></i>
                                                 }

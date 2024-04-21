@@ -30,7 +30,6 @@ const userSlice = createSlice({
             Set_UserData(action.payload)
         },
         Logout_User: (state, action) => {
-            console.log("Logout is came ")
             state.user = ""
             Clear_User()
         }

@@ -38,17 +38,17 @@ const CheckStatus = () => {
         setdisabled(true)
 
         fetch(`${api}/Booking/getTicketByid/${idNumber}`).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res.statusCode === 200 && res.length != 0) {
-                fetch(`${api}/bus/bus_detail/${res.data[0].bus_id}`, {
+            if (res != undefined && res?.statusCode === 200 && res?.length != 0) {
+                fetch(`${api}/bus/bus_detail/${res?.data[0]?.bus_id}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                     }
                 }).then(responce => responce.json()).then((result) => {
                     if (result != undefined) {
-                        setdata(res.data)
-                        set_data(res.data)
-                        setbus(result.data)
+                        setdata(res?.data)
+                        set_data(res?.data)
+                        setbus(result?.data)
                         setbutton("Check")
                         setdisabled(false)
                     }
@@ -96,10 +96,10 @@ const CheckStatus = () => {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Bus Name : {bus[0].bus_name}</th>
-                                    <th scope="col">Date : {data[0].date}</th>
-                                    <th scope="col">Total Distance : {data[0].total_distance} KM</th>
-                                    <th scope="col">{data[0].src}  -  {data[0].dist}</th>
+                                    <th scope="col">Bus Name : {bus[0]?.bus_name}</th>
+                                    <th scope="col">Date : {data[0]?.date}</th>
+                                    <th scope="col">Total Distance : {data[0]?.total_distance} KM</th>
+                                    <th scope="col">{data[0]?.src}  -  {data[0]?.dist}</th>
                                 </tr>
                             </thead>
                             <thead >
@@ -116,8 +116,8 @@ const CheckStatus = () => {
                                         <tr key={ind}>
                                             <th scope="row">{ind + 1}</th>
                                             <td>Passanger {ind + 1}</td>
-                                            <td>{item.personSeat}</td>
-                                            <td>{data[0].date}</td>
+                                            <td>{item?.personSeat}</td>
+                                            <td>{data[0]?.date}</td>
                                         </tr>
                                     ))
                                 }

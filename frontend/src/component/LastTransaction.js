@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { usermethod } from '../redux/UserSlice'
 import Loader from './Loader'
 const api = process.env.REACT_APP_API
 const LastTransaction = () => {
@@ -9,6 +10,7 @@ const LastTransaction = () => {
     const history = useNavigate();
     const [data, setdata] = useState([])
     const [load, setload] = useState(true)
+    const dispatch = useDispatch()
 
     function loadTicket() {
         fetch(`${api}/Booking/getTicket/${userinfo?.user?.user?.email}`, {
@@ -18,12 +20,17 @@ const LastTransaction = () => {
                 Authorization: `Bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res.statusCode===200) {
+            if (res != undefined && res.statusCode === 200) {
                 setload(false)
                 setdata(res.data)
+            } else if (res.statusCode === 498) {
+                dispatch(usermethod.Logout_User())
+                history('/Login')
+            }
+            else {
+                history('*')
             }
         }, (error) => {
-            console.log(error)
             history('*')
         })
     }

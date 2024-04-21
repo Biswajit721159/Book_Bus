@@ -5,22 +5,14 @@ import Swal from 'sweetalert2'
 import { HiOutlineCheckCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { loadStation, loadBus, fetchBusData } from '../redux/BusSlice'
-import { BusSearchmethod } from '../redux/BusSearchSlice'
+import Searching from "./Searching";
 const api = process.env.REACT_APP_API
 const Home = () => {
 
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd;
-
+    let date = useSelector((state) => state.BusSearch.date)
     const history = useNavigate()
     let src = useSelector((state) => state.BusSearch.src);
     let dist = useSelector((state) => state.BusSearch.dist);
-    const [date, setdate] = useState(today)
-    const [disabled, setdisabled] = useState(false)
-    const [button, setbutton] = useState("Find Bus")
     const [bus__id, setbus__id] = useState('')
     const [show_seat_button, setshow_seat_button] = useState("Show Seat")
     const [disabled_showseat, setdisabled_showseat] = useState(false)
@@ -32,53 +24,11 @@ const Home = () => {
 
     const [bus, setbus] = useState(Bus)
 
-    const [erroInSrc, seterroInSrc] = useState(false)
-    const [messerroInSrc, setmesserroInSrc] = useState("")
-
-    const [errordist, seterrordist] = useState(false)
-    const [messerrordist, setmesserrordist] = useState("")
-
-    const [errordate, seterrordate] = useState(false)
-    const [messerrordate, setmesserrordate] = useState("")
-
-
     useEffect(() => {
-        if (Bus.length === 0 && src.length !== 0 && dist.length !== 0) dispatch(fetchBusData({ src, dist }))
+        if (Bus?.length === 0 && src?.length !== 0 && dist?.length !== 0) dispatch(fetchBusData({ src, dist }))
         else if (Bus?.length === 0) dispatch(loadBus());
         if (station?.length === 0) dispatch(loadStation());
     }, [dispatch]);
-
-    function FindError() {
-        let x = true
-        if (src == "Select Your Source Station" || src.length == 0) {
-            seterroInSrc(true)
-            setmesserroInSrc("*Select A Station")
-            x = false
-        }
-        if (dist == "Select Your Source Station" || dist.length == 0) {
-            seterrordist(true)
-            setmesserrordist("*Select A Station")
-            x = false
-        }
-        if (date.length == 0) {
-            seterrordate(true)
-            setmesserrordate("*Select A Date")
-            x = false
-        }
-        return x;
-    }
-
-    function Findbus() {
-        let ans = FindError();
-        if (ans == true) {
-            seterroInSrc(false)
-            seterrordist(false)
-            seterrordate(false)
-            setdisabled(true)
-            dispatch(fetchBusData({ src, dist }))
-            setdisabled(false)
-        }
-    }
 
     function show_seat(_id, src, dist) {
         if (date.length < 10) {
@@ -112,12 +62,6 @@ const Home = () => {
             history('*')
         })
     }
-
-    const minDate = () => {
-        const today = new Date().toISOString().split('T')[0];
-        return today;
-    };
-
 
     const [DurationEarlyFirst, setDurationEarlyFirst] = useState(false)
     const [DurationLateFirst, setDurationLateFirst] = useState(false)
@@ -300,48 +244,10 @@ const Home = () => {
                 loadingBus === true || loadingStation === true ?
                     <Loader /> :
                     <>
-                        <form onSubmit={(e) => { e.preventDefault(); Findbus() }}>
-                            <div className="d-flex align-items-center justify-content-center mt-5">
-                                <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
-                                        <option style={{ textAlign: "center" }} selected>Select Your Source Station</option>
-                                        {
-                                            station.map((item, ind) => (
-                                                <option key={ind} style={{ textAlign: "center" }} >{item}</option>
-                                            ))
-                                        }
-                                    </select>
-                                    {erroInSrc ? <label className="mt-0" style={{ color: "red" }}>{messerroInSrc}</label> : ""}
-                                </div>
-                                <div className="d-flex ">
-                                    <i className="fa fa-arrow-circle-right d-flex justify-content-center mx-2 my-2" style={{ fontSize: "38px", color: "green", textAlign: "center" }}></i>
-                                </div>
-                                <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" value={dist} required onChange={(e) => { dispatch(BusSearchmethod.adddist(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
-                                        <option style={{ textAlign: "center" }} selected>Select Your Distination Station</option>
-                                        {
-                                            station.map((item, ind) => (
-                                                <option key={ind} style={{ textAlign: "center" }} >{item}</option>
-                                            ))
-                                        }
-                                    </select>
-                                    {errordist ? <label className="mt-0" style={{ color: "red" }}>{messerrordist}</label> : ""}
-                                </div>
-                                <div className="d-flex mx-1">
-                                    <div className="input-group date" id="datepicker">
-                                        <input type="date" className="form-control" value={date} min={minDate()} onChange={(e) => { setdate(e.target.value) }} required id="date" />
-                                    </div>
-                                    {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
-                                </div>
-                                <div className="d-flex d-flex justify-content-center mx-1">
-                                    <button type="submit" className="btn btn-primary btn-block btn-sm" disabled={disabled} >{button}</button>
-                                </div>
-                            </div>
-                        </form>
-
+                        <Searching />
 
                         <div className="container-fluid">
-                            <div className="mt-5" style={{ display: "flex", flexDirection: 'row', justifyContent: 'center' }}>
+                            {/* <div className="mt-5" style={{ display: "flex", flexDirection: 'row', justifyContent: 'center' }}>
                                 <div className="mb-3 mx-2">
                                     <div className="form-check">
                                         <input className="form-check-input" checked={DurationEarlyFirst} onChange={(e) => ChangeChecked(e, "DurationEarlyFirst")} type="checkbox" />
@@ -390,13 +296,13 @@ const Home = () => {
                                         </label>
                                     </div>
                                 </div>
-                                {/* <button type="submit" className="btn btn-success btn-sm" onClick={applyFilter}>Apply Filter</button> */}
-                            </div>
+                                <button type="submit" className="btn btn-success btn-sm" onClick={applyFilter}>Apply Filter</button>
+                            </div> */}
 
 
-                            <div className="row d-flex justify-content-around">
+                            {Bus?.length != 0 ? <div className="row d-flex justify-content-around">
                                 <div className="col-9 mt-5">
-                                    <table className=" container table border-info">
+                                    <table className=" container table table-striped table border-info">
                                         <thead>
                                             <tr>
                                                 <th className="text-center" scope="col">Bus Name</th>
@@ -415,7 +321,7 @@ const Home = () => {
                                             {
                                                 Bus?.length != 0 ?
                                                     Bus?.map((item, ind) => (
-                                                        <tr key={ind} style={{ height: "70px" }}>
+                                                        <tr key={ind} style={{ height: "70px", margin: '20px' }}>
                                                             <td className="text-center">{item.bus_name} <HiOutlineCheckCircle style={{ color: 'green' }} /></td>
                                                             <td className="text-center">{item.start_station}</td>
                                                             <td className="text-center"> {item.start_arrived_time}</td>
@@ -424,10 +330,10 @@ const Home = () => {
                                                             <td className="text-center">{item.end_arrive_time}</td>
                                                             <td className="text-center">{item.total_time}</td>
                                                             <td className="text-center">{item.end_station}</td>
-                                                            <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-secondary btn-sm">view</button></Link></td>
+                                                            <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-primary btn-sm">view</button></Link></td>
                                                             {
                                                                 item.bus_id != bus__id ?
-                                                                    <td className="text-center"><button className="btn btn-danger btn-sm" onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >Show</button></td>
+                                                                    <td className="text-center"><button className="btn btn-info btn-sm" onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >Show</button></td>
                                                                     :
                                                                     seat_res_come == true ?
                                                                         <td className="text-center">
@@ -463,7 +369,8 @@ const Home = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div> : <h6 className="text-center mt-5">Bus not Found ! 😥 </h6>
+                            }
                         </div>
                     </>
             }
