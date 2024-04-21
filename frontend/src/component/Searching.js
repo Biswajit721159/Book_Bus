@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { loadBus, fetchBusData } from '../redux/BusSlice'
 import { BusSearchmethod } from '../redux/BusSearchSlice'
-const api = process.env.REACT_APP_API
-
+import '../stylesheet/Searching.css'
 const Searching = () => {
 
     let src = useSelector((state) => state.BusSearch.src);
@@ -26,17 +25,17 @@ const Searching = () => {
 
     function FindError() {
         let x = true
-        if (src == "Select Your Source Station" || src.length == 0) {
+        if (src === "Select Your Source Station" || src.length === 0) {
             seterroInSrc(true)
             setmesserroInSrc("*Select A Station")
             x = false
         }
-        if (dist == "Select Your Source Station" || dist.length == 0) {
+        if (dist === "Select Your Source Station" || dist.length === 0) {
             seterrordist(true)
             setmesserrordist("*Select A Station")
             x = false
         }
-        if (date.length == 0) {
+        if (date.length === 0) {
             seterrordate(true)
             setmesserrordate("*Select A Date")
             x = false
@@ -46,7 +45,7 @@ const Searching = () => {
 
     function Findbus() {
         let ans = FindError();
-        if (ans == true) {
+        if (ans === true) {
             seterroInSrc(false)
             seterrordist(false)
             seterrordate(false)
@@ -63,7 +62,7 @@ const Searching = () => {
 
     return (
         <form onSubmit={(e) => { e.preventDefault(); Findbus() }}>
-            <div className="d-flex align-items-center justify-content-center mt-4">
+            <div className="searching">
                 <div className="d-flex ">
                     <select className="form-select" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
                         <option style={{ textAlign: "center" }} value='' selected>Select Your Source Station</option>
@@ -95,7 +94,7 @@ const Searching = () => {
                     </div>
                     {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
                 </div>
-                <div className="d-flex d-flex justify-content-center mx-1">
+                <div className="d-flex  mx-1">
                     <button type="submit" className="btn btn-success btn-sm" disabled={disabled} >Find Bus</button>
                     {(src?.length && dist?.length && date?.length) ? <button type="submit" onClick={() => {
                         dispatch(BusSearchmethod.clearsearch())
