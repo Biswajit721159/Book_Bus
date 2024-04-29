@@ -17,7 +17,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usermethod } from '../redux/UserSlice';
 import { useDispatch } from 'react-redux';
 
-const pages = ['Home', 'Book Bus', 'Check Status'];
+const pages = ['BlueBus', 'Booking', 'Check Status'];
 const settings = ['My Transaction', 'WishList', 'MasterList', 'Logout'];
 const loginRegisterPage = ['Login', 'Register'];
 
@@ -189,7 +189,7 @@ function ResponsiveAppBar() {
                 </Link>
               </Menu>
             </Box> :
-            <Box sx={{ display:'flex' }}>
+            <Box sx={{ display: 'flex' }}>
               <Link to='/Login' style={{ textDecoration: 'none', color: 'black' }}>
                 <MenuItem key={loginRegisterPage[0]} >
                   <Typography textAlign="center">{loginRegisterPage[0]}</Typography>

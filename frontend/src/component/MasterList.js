@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Loader from "./Loader";
+import { usermethod } from '../redux/UserSlice'
 const api = process.env.REACT_APP_API
 const MasterList = () => {
     const [name, setname] = useState("")
@@ -29,7 +30,7 @@ const MasterList = () => {
 
     const [disableupdate, setdisableupdate] = useState(false)
     const [updatebutton, setupdatebutton] = useState("Update")
-
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (userinfo?.user?.auth) {
@@ -52,6 +53,10 @@ const MasterList = () => {
             if (res.statusCode === 200) {
                 setload(false)
                 setdata(res.data)
+            }
+            else if (res.statusCode === 498) {
+                dispatch(usermethod.Logout_User())
+                history('/Login')
             }
             else {
                 history('*')
