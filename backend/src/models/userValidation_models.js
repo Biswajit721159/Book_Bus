@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 
 const userValidation_models = new Schema(
   {
