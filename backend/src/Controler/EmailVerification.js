@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const User = require("../models/user_models.js");
 let { ApiResponse } = require("../utils/ApiResponse.js");
 let userValidation = require("../models/userValidation_models.js");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 let { register, login } = require("../Controler/usercontrolter");
 
 let VerificationRegister = async (req, res) => {
