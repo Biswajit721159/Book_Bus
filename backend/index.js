@@ -18,7 +18,6 @@ app.use(express.static("public"))
 
 connectDB()
 
-let verifytoken=require('./src/Middelware/TokenVerification')
 let user = require('./src/Router/userRouter')
 let MasterList = require('./src/Router/MasterListRouter')
 let bus = require('./src/Router/Bus_detailRouter')
@@ -26,7 +25,9 @@ let booking = require('./src/Router/BookingRouter')
 let busowner = require('./src/Router/BusOwnerUserRouter')
 let Adminpanel = require('./src/Router/Adminpanel_userRouter')
 let sendMessage = require('./src/Router/sendMessageRoute')
+let Verification=require('./src/Router/Verification_Router')
 
+app.use('/Verification',Verification)
 app.use('/user', user)
 app.use('/MasterList', MasterList)
 app.use('/bus', bus)

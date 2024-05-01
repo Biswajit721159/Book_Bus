@@ -13,6 +13,8 @@ import View_Ticket from "./component/View_Ticket";
 import View_Bus from "./component/View_Bus";
 import FrontPage from "./component/FrontPage"
 import ResponsiveAppBar from './component/ResponsiveAppBar'
+import ForgotPassword from "./User/ForgotPassword";
+
 function App() {
   return (
     <div>
@@ -30,6 +32,7 @@ function App() {
           <Route path="/WishList" element={<WishList />}></Route>
           <Route path="/checkstatus" element={<CheckStatus />}></Route>
           <Route path="/:bus_id/:src/:dist/:date" element={<Ticket_Book />}></Route>
+          <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
           <Route path="/:_id" element={<View_Ticket />}></Route>
           <Route path="/View_Bus/:_id" element={<View_Bus />}></Route>
           <Route path="*" element={<Error />}></Route>

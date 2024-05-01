@@ -192,7 +192,7 @@ const Ticket_Book = () => {
                                 total_distance: total_distance
                             })
                         }).then((responce => responce.json())).then((res) => {
-                            if (res != undefined && res.status == 200) {
+                            if (res != undefined && res.status == 201) {
                                 history('/LastTransaction')
                             }
                             else if (res != undefined && res.status == 498) {
