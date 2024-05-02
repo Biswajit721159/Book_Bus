@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect } from "react";
 import { GoXCircleFill } from "react-icons/go";
 import { HiCheckCircle } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import { usermethod } from '../redux/UserSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import '../stylesheet/Auth.css'
 import swal from 'sweetalert'
 export default function Login() {
@@ -70,7 +70,7 @@ export default function Login() {
         setwronguser(false)
         s = s.replace(/\s+/g, '');
         setpassword(s)
-        if (s.length == 0) {
+        if (s.length === 0) {
             setpasswordcontrol((prevUserData) => ({
                 ...prevUserData,
                 uppercase: false,
@@ -82,7 +82,7 @@ export default function Login() {
             return
         }
 
-        if (containsUppercase(s) == true) {
+        if (containsUppercase(s) === true) {
             setpasswordcontrol((prevUserData) => ({
                 ...prevUserData,
                 uppercase: true,
@@ -94,7 +94,7 @@ export default function Login() {
             }));
         }
 
-        if (containsLowercase(s) == true) {
+        if (containsLowercase(s) === true) {
             setpasswordcontrol((prevUserData) => ({
                 ...prevUserData,
                 lowercase: true,
@@ -106,7 +106,7 @@ export default function Login() {
             }));
         }
 
-        if (containsDigit(s) == true) {
+        if (containsDigit(s) === true) {
             setpasswordcontrol((prevUserData) => ({
                 ...prevUserData,
                 digit: true,
@@ -118,7 +118,7 @@ export default function Login() {
             }));
         }
 
-        if (containsSpecialCharacter(s) == true) {
+        if (containsSpecialCharacter(s) === true) {
             setpasswordcontrol((prevUserData) => ({
                 ...prevUserData,
                 specialCharacters: true,

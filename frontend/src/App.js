@@ -20,13 +20,11 @@ function App() {
     <div>
       <Router>
         <ResponsiveAppBar />
-        {/* <Navbar/> */}
         <Routes>
           <Route path="/" element={<FrontPage />}></Route>
           <Route path="/BookBus" element={<Home />}></Route>
           <Route path="/Register" element={<Register />}></Route>
           <Route path="/Login" element={<Login />}></Route>
-          {/* <Route path="/Bus_adder" element={<Bus_adder/>}></Route> */}
           <Route path="/MasterList" element={<MasterList />}></Route>
           <Route path="LastTransaction" element={<LastTransaction />}></Route>
           <Route path="/WishList" element={<WishList />}></Route>

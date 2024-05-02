@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { loadBus, fetchBusData } from '../redux/BusSlice'
 import { BusSearchmethod } from '../redux/BusSearchSlice'
+import { GoArrowSwitch } from "react-icons/go";
 import '../stylesheet/Searching.css'
 const Searching = () => {
 
@@ -60,11 +61,16 @@ const Searching = () => {
         return today;
     };
 
+    function swap() {
+        dispatch(BusSearchmethod.Addsrc(dist))
+        dispatch(BusSearchmethod.adddist(src))
+    }
+
     return (
         <form onSubmit={(e) => { e.preventDefault(); Findbus() }}>
             <div className="searching">
                 <div className="d-flex ">
-                    <select className="form-select" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
+                    <select className="form-select" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} >
                         <option style={{ textAlign: "center" }} value='' selected>Select Your Source Station</option>
                         {
                             station.map((item, ind) => (
@@ -75,10 +81,10 @@ const Searching = () => {
                     {erroInSrc ? <label className="mt-0" style={{ color: "red" }}>{messerroInSrc}</label> : ""}
                 </div>
                 <div className="d-flex ">
-                    <i className="fa fa-arrow-circle-right d-flex justify-content-center mx-2 my-2" style={{ fontSize: "38px", color: "green", textAlign: "center" }}></i>
+                    <GoArrowSwitch onClick={swap} className="icon mx-1" />
                 </div>
                 <div className="d-flex ">
-                    <select className="form-select" aria-label="Default select example" value={dist} required onChange={(e) => { dispatch(BusSearchmethod.adddist(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }}>
+                    <select className="form-select" aria-label="Default select example" value={dist} required onChange={(e) => { dispatch(BusSearchmethod.adddist(e.target.value)) }} >
                         <option style={{ textAlign: "center" }} value='' selected>Select Your Distination Station</option>
                         {
                             station.map((item, ind) => (
@@ -90,16 +96,16 @@ const Searching = () => {
                 </div>
                 <div className="d-flex mx-1">
                     <div className="input-group date" id="datepicker">
-                        <input type="date" className="form-control" value={date} min={minDate()} onChange={(e) => { dispatch(BusSearchmethod.addate(e.target.value)) }} style={{ backgroundColor: "#7DBCFA" }} required id="date" />
+                        <input type="date" className="form-control" value={date} min={minDate()} onChange={(e) => { dispatch(BusSearchmethod.addate(e.target.value)) }} required id="date" />
                     </div>
                     {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
                 </div>
                 <div className="d-flex  mx-1">
-                    <button type="submit" className="btn btn-success btn-sm" disabled={disabled} >Find Bus</button>
+                    <button type="submit" id="btn1" className="btn btn-success btn-sm" disabled={disabled} >Find Bus</button>
                     {(src?.length && dist?.length && date?.length) ? <button type="submit" onClick={() => {
                         dispatch(BusSearchmethod.clearsearch())
                         dispatch(loadBus())
-                    }} className="btn btn-danger mx-2 btn-sm">clear</button> : ""}
+                    }} className="btn btn-danger mx-2 btn-sm" id="btn2">clear</button> : ""}
                 </div>
             </div>
         </form>

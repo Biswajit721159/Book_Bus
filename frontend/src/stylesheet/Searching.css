@@ -1,7 +1,148 @@
-.searching{
+.searching {
     display: flex;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 15px;
+    margin-top: 12px;
 }
+
+
+
+.icon {
+    color: #000000 !important;
+}
+
+.form-select {
+    background-color: #7DBCFA;
+    padding: 16px;
+}
+
+.form-control {
+    background-color: #7DBCFA
+}
+
+.icon {
+    font-size: 38px;
+    color: black;
+    text-align: center;
+    margin-top: 13px;
+    border-radius: 1px solid black;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 1000px) {
+    .form-select {
+        padding: 12px;
+    }
+
+    .form-control {
+        padding: 12px;
+    }
+
+    #btn1 {
+        height: 50px;
+    }
+
+    #btn2 {
+        height: 50px;
+    }
+}
+
+@media only screen and (max-width: 877px) {
+    .form-select {
+        height: 40px;
+        width: 150px;
+        padding: 10px;
+    }
+
+    .form-control {
+        height: 40px;
+        width: 150px;
+        padding: 10px;
+    }
+
+    #btn1 {
+        height: 40px;
+    }
+
+    #btn2 {
+        height: 40px;
+    }
+
+    .icon {
+        font-size: 20px;
+        margin-top: 7px;
+    }
+}
+
+@media only screen and (max-width: 734px) {
+    .form-select {
+        height: 30px;
+        width: 120px;
+        padding: 5px;
+    }
+
+    .form-control {
+        height: 30px;
+        width: 120px;
+        padding: 5px;
+    }
+
+    #btn1 {
+        height: 30px;
+    }
+
+    #btn2 {
+        height: 30px;
+    }
+
+    .icon {
+        margin-top: 5px;
+    }
+} 
+
+
+
+
+@media only screen and (max-width: 585px) {
+    .form-select {
+        height: 25px;
+        width: 120px;
+        padding: 5px;
+    }
+
+    .form-control {
+        width: 120px;
+        padding: 5px;
+    }
+
+    #btn1 {
+        height: 25px;
+    }
+
+    #btn2 {
+        height: 25px;
+    }
+
+    .icon {
+        margin-top: 7px;
+    }
+} 
+
+@media only screen and (max-width: 555px) {
+    .form-select {
+        width: 100px;
+    }
+
+    .form-control {
+        width: 100px;
+    }
+    #btn1 {
+        margin-top: 10px;
+    }
+
+    #btn2 {
+        margin-top: 10px;
+    }
+}  
+
