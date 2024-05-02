@@ -70,7 +70,7 @@ const Searching = () => {
         <form onSubmit={(e) => { e.preventDefault(); Findbus() }}>
             <div className="searching">
                 <div className="d-flex ">
-                    <select className="form-select" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} >
+                    <select className="form-select1" aria-label="Default select example" value={src} required onChange={(e) => { dispatch(BusSearchmethod.Addsrc(e.target.value)) }} >
                         <option style={{ textAlign: "center" }} value='' selected>Select Your Source Station</option>
                         {
                             station.map((item, ind) => (
@@ -84,7 +84,7 @@ const Searching = () => {
                     <GoArrowSwitch onClick={swap} className="icon mx-1" />
                 </div>
                 <div className="d-flex ">
-                    <select className="form-select" aria-label="Default select example" value={dist} required onChange={(e) => { dispatch(BusSearchmethod.adddist(e.target.value)) }} >
+                    <select className="form-select1" aria-label="Default select example" value={dist} required onChange={(e) => { dispatch(BusSearchmethod.adddist(e.target.value)) }} >
                         <option style={{ textAlign: "center" }} value='' selected>Select Your Distination Station</option>
                         {
                             station.map((item, ind) => (
@@ -96,7 +96,7 @@ const Searching = () => {
                 </div>
                 <div className="d-flex mx-1">
                     <div className="input-group date" id="datepicker">
-                        <input type="date" className="form-control" value={date} min={minDate()} onChange={(e) => { dispatch(BusSearchmethod.addate(e.target.value)) }} required id="date" />
+                        <input type="date" className="form-control1" value={date} min={minDate()} onChange={(e) => { dispatch(BusSearchmethod.addate(e.target.value)) }} required id="date" />
                     </div>
                     {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
                 </div>
@@ -108,6 +108,15 @@ const Searching = () => {
                     }} className="btn btn-danger mx-2 btn-sm" id="btn2">clear</button> : ""}
                 </div>
             </div>
+            {/* <div class="custom-select">
+                <select>
+                    <option value="" selected>Select an option</option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div> */}
+
         </form>
     )
 }

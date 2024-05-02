@@ -7,35 +7,39 @@
 }
 
 
+.form-select1 {
+    background-color: #7DBCFA;
+    padding: 16px;
+    appearance: none;
+    border-radius: none;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+.form-control1 {
+    background-color: #7DBCFA;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
 
 .icon {
     color: #000000 !important;
-}
-
-.form-select {
-    background-color: #7DBCFA;
-    padding: 16px;
-}
-
-.form-control {
-    background-color: #7DBCFA
-}
-
-.icon {
     font-size: 38px;
     color: black;
     text-align: center;
-    margin-top: 13px;
+    margin-top: 17px;
     border-radius: 1px solid black;
     cursor: pointer;
 }
 
 @media only screen and (max-width: 1000px) {
-    .form-select {
+    .form-select1 {
         padding: 12px;
     }
 
-    .form-control {
+    .form-control1 {
         padding: 12px;
     }
 
@@ -49,13 +53,13 @@
 }
 
 @media only screen and (max-width: 877px) {
-    .form-select {
+    .form-select1 {
         height: 40px;
         width: 150px;
         padding: 10px;
     }
 
-    .form-control {
+    .form-control1 {
         height: 40px;
         width: 150px;
         padding: 10px;
@@ -71,18 +75,18 @@
 
     .icon {
         font-size: 20px;
-        margin-top: 7px;
+        margin-top: 10px;
     }
 }
 
 @media only screen and (max-width: 734px) {
-    .form-select {
+    .form-select1 {
         height: 30px;
         width: 120px;
         padding: 5px;
     }
 
-    .form-control {
+    .form-control1 {
         height: 30px;
         width: 120px;
         padding: 5px;
@@ -99,19 +103,17 @@
     .icon {
         margin-top: 5px;
     }
-} 
-
-
-
+}
 
 @media only screen and (max-width: 585px) {
-    .form-select {
+    .form-select1 {
         height: 25px;
         width: 120px;
         padding: 5px;
     }
 
-    .form-control {
+    .form-control1 {
+        height: 25px;
         width: 120px;
         padding: 5px;
     }
@@ -127,16 +129,19 @@
     .icon {
         margin-top: 7px;
     }
-} 
+}
 
-@media only screen and (max-width: 555px) {
-    .form-select {
-        width: 100px;
+@media only screen and (max-width: 560px) {
+    .form-select1 {
+        width: 110px;
     }
 
-    .form-control {
-        width: 100px;
+    .form-control1 {
+        width: 110px;
     }
+}
+
+@media only screen and (max-width: 485px) {
     #btn1 {
         margin-top: 10px;
     }
@@ -144,5 +149,4 @@
     #btn2 {
         margin-top: 10px;
     }
-}  
-
+}
