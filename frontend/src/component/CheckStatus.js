@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import '../stylesheet/CheckStatus.css'
 const api = process.env.REACT_APP_API
 
 const CheckStatus = () => {
@@ -8,98 +8,64 @@ const CheckStatus = () => {
     const [idNumber, setidNumber] = useState(0)
     const [wrongidNumber, setwrongidNumber] = useState(false)
     const [messidNumber, setmessidNumber] = useState("")
-    const [button, setbutton] = useState("Check")
+    const [button, setbutton] = useState("check status")
     const [disabled, setdisabled] = useState(false)
-    const [data, setdata] = useState([])
+    const [data, setdata] = useState()
     const [key_value, setkey_value] = useState([])
-    const [bus, setbus] = useState([])
     const history = useNavigate()
 
-    function set_data(nums) {
-        let arr1 = nums[0].person;
-        let arr2 = nums[0].seat_record;
-        let arr = []
-        for (let i = 0; i < arr1.length; i++) {
-            let obj = {
-                personName: arr1[i],
-                personSeat: arr2[i]
-            }
-            arr.push(obj)
-        }
-        setkey_value([...arr])
-    }
 
 
     function submit() {
-        setdata([])
+        setdata()
         setwrongidNumber(false)
         setmessidNumber("")
-        setbutton("Please Wait ...")
+        setbutton("please wait ...")
         setdisabled(true)
 
-        fetch(`${api}/Booking/getTicketByid/${idNumber}`).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res?.statusCode === 200 && res?.length != 0) {
-                fetch(`${api}/bus/bus_detail/${res?.data[0]?.bus_id}`, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                }).then(responce => responce.json()).then((result) => {
-                    if (result != undefined) {
-                        setdata(res?.data)
-                        set_data(res?.data)
-                        setbus(result?.data)
-                        setbutton("Check")
-                        setdisabled(false)
-                    }
-                }, (error) => {
-                    setwrongidNumber(true)
-                    setmessidNumber("Invalid PNR.")
-                    setbutton("Check")
-                    setdisabled(false)
-                    history('*')
-                })
+        fetch(`${api}/Booking/getTicketForUnAuthUser/${idNumber}`).then(responce => responce.json()).then((res) => {
+            if (res != undefined && res?.statusCode === 200) {
+                setdata(res?.data)
+                setkey_value(res?.data?.seat_record)
+                setbutton("check _id status")
+                setdisabled(false)
             }
             else {
                 setwrongidNumber(true)
-                setmessidNumber("Invalid PNR.")
-                setbutton("Check")
+                setmessidNumber("Invalid _id.")
+                setbutton("check status")
                 setdisabled(false)
             }
         }, (error) => {
             setwrongidNumber(true)
-            setmessidNumber("Invalid PNR.")
-            setbutton("Check")
+            setmessidNumber("Invalid _id.")
+            setbutton("check status")
             setdisabled(false)
             history('*')
         })
     }
 
+
     return (
         <>
-            <div className='d-flex align-items-center justify-content-center'>
-                <div>
-                    <div className="mt-3">
-                        <div className="form-group">
-                            <input type="text" onChange={(e) => { setidNumber(e.target.value) }} className="form-control" placeholder="Enter PNR Number" required />
-                            {wrongidNumber ? <label style={{ color: "red" }}>{messidNumber}</label> : ""}
-                        </div>
-                    </div>
-                    <div className="mt-3">
-                        <button className="btn btn-primary btn-sm" disabled={disabled} onClick={submit}>{button}</button>
-                    </div>
+            <div className='checkstatus mt-3'>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'row' }}>
+                    <input type="text" onChange={(e) => { setidNumber(e.target.value) }} className="checkinputfrom" placeholder="Enter _id Number" required />
+                    <button className="btn btn-primary" id='checkbtn' disabled={disabled} onClick={submit}>{button}</button>
                 </div>
+                {wrongidNumber ? <label style={{ color: "red", marginTop: '2px' }}>{messidNumber}</label> : ""}
             </div>
+
             {
-                data.length != 0 ?
+                data ?
                     <div className='container shadow mt-5'>
-                        <table className="table">
+                        < table className="table" >
                             <thead>
                                 <tr>
-                                    <th scope="col">Bus Name : {bus[0]?.bus_name}</th>
-                                    <th scope="col">Date : {data[0]?.date}</th>
-                                    <th scope="col">Total Distance : {data[0]?.total_distance} KM</th>
-                                    <th scope="col">{data[0]?.src}  -  {data[0]?.dist}</th>
+                                    <th scope="col">Bus Name : {data?.bus_name}</th>
+                                    <th scope="col">Booking Date : {data?.booking_date}</th>
+                                    <th scope="col">Total Distance : {data?.total_distance} km</th>
+                                    <th scope="col">{data?.src}  -  {data?.dist}</th>
                                 </tr>
                             </thead>
                             <thead >
@@ -112,18 +78,18 @@ const CheckStatus = () => {
                             </thead>
                             <tbody>
                                 {
-                                    key_value.map((item, ind) => (
+                                    key_value?.map((item, ind) => (
                                         <tr key={ind}>
                                             <th scope="row">{ind + 1}</th>
-                                            <td>Passanger {ind + 1}</td>
-                                            <td>{item?.personSeat}</td>
-                                            <td>{data[0]?.date}</td>
+                                            <td>passanger {ind + 1}</td>
+                                            <td>{item}</td>
+                                            <td>{data?.date}</td>
                                         </tr>
                                     ))
                                 }
                             </tbody>
-                        </table>
-                    </div>
+                        </table >
+                    </div >
                     : ""
             }
         </>

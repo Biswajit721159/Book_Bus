@@ -141,7 +141,6 @@ let checkMailIsPresent = async (otp, email, res) => {
 let VerifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    console.log(req.body)
     if (!email || !otp) {
       return res
         .status(400)

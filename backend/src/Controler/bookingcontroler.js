@@ -119,11 +119,11 @@ const get_Seat = async (req, res) => {
 
 const GetTicketById = async (req, res) => {
     try {
-        let result = await Booking.find({ id: req.params._id });
+        let result = await Booking.findOne({ _id: req.params.id });
         if (result) {
             return res
                 .status(200)
-                .json(new ApiResponse(200, result, "Booking found"));
+                .json(new ApiResponse(200, [result], "Booking found"));
         }
         else {
             return res
@@ -236,4 +236,42 @@ const getBookingDatabyDate = async (req, res) => {
     }
 }
 
-module.exports = { getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking,getBookingDatabyDate }
+const getTicketForUnAuthUser = async (req, res) => {
+    try {
+        let Ticket = await Booking.findOne({ _id: req.params.id });
+        if (Ticket && Ticket?.bus_id) {
+            let bus = await Bus_detail.findOne({ _id: Ticket.bus_id })
+            let ans = {
+                bus_name: bus.bus_name,
+                total_distance: Ticket.total_distance,
+                src: Ticket.src,
+                dist: Ticket.dist,
+                booking_date: await TransfromData(Ticket.createdAt),
+                date: Ticket.date,
+                seat_record: Ticket.seat_record
+            }
+            return res
+                .status(200)
+                .json(new ApiResponse(200, ans, "Ticket successfully found !"));
+        } else {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, {}, "Data Not found !"));
+        }
+    } catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, {}, "Server down !"));
+    }
+}
+
+async function TransfromData(createdAtString) {
+    const createdAtDate = new Date(createdAtString);
+    const year = createdAtDate.getFullYear();
+    const month = String(createdAtDate.getMonth() + 1).padStart(2, "0");
+    const day = String(createdAtDate.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate
+}
+
+module.exports = { getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser }
