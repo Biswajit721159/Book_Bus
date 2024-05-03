@@ -27,18 +27,18 @@ const CheckStatus = () => {
             if (res != undefined && res?.statusCode === 200) {
                 setdata(res?.data)
                 setkey_value(res?.data?.seat_record)
-                setbutton("check _id status")
+                setbutton("check status")
                 setdisabled(false)
             }
             else {
                 setwrongidNumber(true)
-                setmessidNumber("Invalid _id.")
+                setmessidNumber("Invalid value")
                 setbutton("check status")
                 setdisabled(false)
             }
         }, (error) => {
             setwrongidNumber(true)
-            setmessidNumber("Invalid _id.")
+            setmessidNumber("Invalid value")
             setbutton("check status")
             setdisabled(false)
             history('*')
@@ -48,9 +48,9 @@ const CheckStatus = () => {
 
     return (
         <>
-            <div className='checkstatus mt-3'>
+            <div className='checkstatus mt-1'>
                 <div className="form-group" style={{ display: 'flex', flexDirection: 'row' }}>
-                    <input type="text" onChange={(e) => { setidNumber(e.target.value) }} className="checkinputfrom" placeholder="Enter _id Number" required />
+                    <input type="text" onChange={(e) => { setidNumber(e.target.value) }} className="checkinputfrom" placeholder="Enter Id Number" required />
                     <button className="btn btn-primary" id='checkbtn' disabled={disabled} onClick={submit}>{button}</button>
                 </div>
                 {wrongidNumber ? <label style={{ color: "red", marginTop: '2px' }}>{messidNumber}</label> : ""}

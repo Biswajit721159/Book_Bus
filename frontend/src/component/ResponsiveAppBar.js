@@ -17,7 +17,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usermethod } from '../redux/UserSlice';
 import { useDispatch } from 'react-redux';
 
-const pages = ['BlueBus', 'Booking', 'Check Status'];
+const pages = ['Bluebus', 'Booking', 'Check status'];
 const settings = ['My Transaction', 'WishList', 'MasterList', 'Logout'];
 const loginRegisterPage = ['Login', 'Register'];
 

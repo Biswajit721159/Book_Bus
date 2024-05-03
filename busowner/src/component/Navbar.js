@@ -59,7 +59,7 @@ const Navbar =()=>{
                     {
                         userinfo?
                         <div className="d-flex">
-                            <button className="btn btn-success btn-sm" type="submit" onClick={logout}>Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+                            <button className="btn btn-success btn-sm" type="submit" onClick={logout}>Logout <i className="fa fa-sign-out" aria-hidden="true"></i></button>
                         </div>:""
                     }
                     </div>

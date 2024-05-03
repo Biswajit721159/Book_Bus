@@ -32,7 +32,7 @@ const Footer=()=>{
                     <li className="head1"><GiUsaFlag /> USA</li>
                     <li className="head1"><SiIledefrancemobilites /> France</li>
                 </div>
-                <div class="box">
+                <div className="box">
                     <h4 className="head2">Quick Links</h4>
                     <li className="head1"><Link to="/" style={{ textDecoration: 'none' }}><AiOutlineHome /> Home</Link></li>
                     <li className="head1"><Link to="/BookBus" style={{ textDecoration: 'none' }}><FaBus /> Book Bus</Link></li>
@@ -40,7 +40,7 @@ const Footer=()=>{
                     <li className="head1"><a href='https://busowner.vercel.app/' style={{ textDecoration: 'none' }} target="_blank" ><MdAddBusiness /> Bus Owner</a></li>
                     <li className="head1"><a href='https://bus-booking-adminpanel.vercel.app/' style={{ textDecoration: 'none' }} target="_blank"><MdAdminPanelSettings /> adminpanel</a></li>
                 </div>
-                <div class="box">
+                <div className="box">
                 <h4 className="head2">Contact Info</h4>
                     <li className="head1"><CiHeadphones/> +123-456-7890</li>
                     <li className="head1"><CiHeadphones/> +111-222-3333</li>
@@ -48,7 +48,7 @@ const Footer=()=>{
                     <li className="head1"><MdEmail /> biswajit@riktamtech.com</li>
                     <li className="head1"><FaLocationArrow /> Hyderabad , india - 500016</li>
                 </div>
-                <div class="box">
+                <div className="box">
                     <h4 className="head2">Follow us</h4>
                     <li className="head1"><a href="#"  style={{ textDecoration: 'none' }}><FaFacebook /> Facebook</a></li>
                     <li className="head1"><a href="#"  style={{ textDecoration: 'none' }}><FaTwitter /> Twitter</a></li>
@@ -56,7 +56,7 @@ const Footer=()=>{
                     <li className="head1"><a href="#"  style={{ textDecoration: 'none' }}><FaLinkedinIn /> Linkedin</a></li>
                     <li className="head1"><a href="#"  style={{ textDecoration: 'none' }}><FaYoutube /> Youtube</a></li>
                 </div>
-                {/* <div class="box">
+                {/* <div className="box">
                     <h4 className="head2">Message US</h4>
                     <div>
                         <input className="form-control mr-sm-2" name='search' type="search" placeholder="Enter Message" aria-label="Search"/>

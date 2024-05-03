@@ -202,7 +202,7 @@ const MasterList = () => {
                                     </>
                             }
                         </div>
-                        <table class="table mt-3">
+                        <table className="table mt-3">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>

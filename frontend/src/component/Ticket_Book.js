@@ -192,6 +192,7 @@ const Ticket_Book = () => {
                                 total_distance: total_distance
                             })
                         }).then((responce => responce.json())).then((res) => {
+                            console.log(res)
                             if (res != undefined && res.status == 201) {
                                 history('/LastTransaction')
                             }
@@ -310,11 +311,11 @@ const Ticket_Book = () => {
                                                                     {
                                                                         checkbox.includes(item.name) == true ?
                                                                             <div className="form-check">
-                                                                                <input className="form-check-input" type="checkbox" checked={true} onClick={() => handleCheckboxChange(item.name)} id="flexCheckDefault" />
+                                                                                <input type="checkbox" checked={true} onClick={() => handleCheckboxChange(item.name)} id="flexCheckDefault" />
                                                                             </div>
                                                                             :
                                                                             <div className="form-check">
-                                                                                <input className="form-check-input" type="checkbox" checked={false} onClick={() => handleCheckboxChange(item.name)} id="flexCheckDefault" />
+                                                                                <input type="checkbox" checked={false} onClick={() => handleCheckboxChange(item.name)} id="flexCheckDefault" />
                                                                             </div>
                                                                     }
                                                                 </td>

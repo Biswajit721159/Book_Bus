@@ -6,7 +6,7 @@
 }
 
 .checkinputfrom {
-    padding: 15px;
+    padding: 12px;
     outline: none;
     border: none;
     background-color: #7DBCFA;
@@ -16,5 +16,6 @@
 }
 
 #checkbtn {
-    padding: 15px;
+    padding: 12px;
+    font-size: 12px;
 }

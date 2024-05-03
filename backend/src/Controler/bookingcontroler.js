@@ -119,21 +119,33 @@ const get_Seat = async (req, res) => {
 
 const GetTicketById = async (req, res) => {
     try {
-        let result = await Booking.findOne({ _id: req.params.id });
-        if (result) {
+        let Ticket = await Booking.findOne({ _id: req.params.id });
+        if (Ticket && Ticket?.bus_id) {
+            let bus = await Bus_detail.findOne({ _id: Ticket.bus_id })
+            let ans = {
+                _id: Ticket._id,
+                bus_name: bus.bus_name,
+                total_distance: Ticket.total_distance,
+                total_rupees: Ticket.total_money,
+                src: Ticket.src,
+                dist: Ticket.dist,
+                booking_date: await TransfromData(Ticket.createdAt),
+                date: Ticket.date,
+                seat_record: Ticket.seat_record,
+                person: Ticket.person
+            }
             return res
                 .status(200)
-                .json(new ApiResponse(200, [result], "Booking found"));
-        }
-        else {
+                .json(new ApiResponse(200, ans, "Ticket successfully found !"));
+        } else {
             return res
                 .status(404)
-                .json(new ApiResponse(404, [], "Booking not found !"));
+                .json(new ApiResponse(404, {}, "Data Not found !"));
         }
     } catch {
         return res
             .status(500)
-            .json(new ApiResponse(500, [], "Server down !"));
+            .json(new ApiResponse(500, {}, "Server down !"));
     }
 }
 
