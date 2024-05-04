@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 import Loader from './Loader';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { usermethod } from '../redux/UserSlice'
 const api = process.env.REACT_APP_API
 const Ticket_Book = () => {
 
+    const dispatch = useDispatch()
     const url = '';
     const userinfo = useSelector((state) => state.user)
     const history = useNavigate()
@@ -63,9 +65,9 @@ const Ticket_Book = () => {
         }
         else {
             if (seatarr.length >= MasterList.length) {
-                Swal.fire(`Your MasterList Has ${MasterList.length} User `)
+                swal(`Your MasterList Has ${MasterList.length} User `)
             }
-            else Swal.fire('Sorry Only 5 Seat are Allow !')
+            else swal('Sorry Maximum 5 Seat are Allow !')
         }
     }
 
@@ -93,19 +95,28 @@ const Ticket_Book = () => {
                     }
                 }).then(responce => responce.json()).then((result) => {
                     if (result != undefined && result.statusCode === 200) {
-                        console.log(result)
                         setMasterList(result?.data)
                         setload(false)
                         settotal_seat(res.data.total_seat)
                         setdata(res.data.BookingRecord)
                         settotal_distance(res.data.total_distance)
                     }
+                    else if (result.statusCode === 498) {
+                        dispatch(usermethod.Logout_User())
+                        history('/Login')
+                    }
                 }, (error) => {
                     console.log(error)
+                    history('*')
                 })
 
             }
+            else if (res.statusCode === 498) {
+                dispatch(usermethod.Logout_User())
+                history('/Login')
+            }
         }, (error) => {
+            history('*')
             console.log(error)
         })
     }
@@ -124,7 +135,7 @@ const Ticket_Book = () => {
             setcheckbox([...arr])
         }
         else if (checkbox.length >= seatarr.length) {
-            Swal.fire(`Sorry You Are Select ${seatarr.length} Seat`)
+            swal(`Sorry You Are Select ${seatarr.length} Seat`)
         }
         else {
             pay += ((total_distance * 5))
@@ -204,7 +215,7 @@ const Ticket_Book = () => {
                         })
                     }
                     else {
-                        Swal.fire('Sorry Your Seat is already get by another user Please Select Different Seat')
+                        swal('Sorry Your Seat is already get by another user Please Select Different Seat')
                         setsubmitload(false)
                         show_seat()
                         setcheckbox([])
@@ -222,7 +233,7 @@ const Ticket_Book = () => {
             })
         }
         else {
-            Swal.fire('Sorry We find Some Error')
+            swal('Sorry We find Some Error')
             history('/')
         }
     }

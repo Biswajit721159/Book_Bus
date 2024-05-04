@@ -180,7 +180,7 @@ const Register = () => {
       }));
     }
 
-    if (s.length >= 10 && s.length <= 20) {
+    if (s.length >= 6 && s.length <= 20) {
       setnamecontrol((prevUserData) => ({
         ...prevUserData,
         len: true,
@@ -577,7 +577,7 @@ const Register = () => {
               <label className="wrongtext">{namecontrol.charcter == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />} FullName Must not be Contain Number</label>
               <label className="wrongtext">{namecontrol.word == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  FullName Must be Minimum Two Word</label>
               <label className="wrongtext">{namecontrol.lenWord == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Length of Each word Greater then one</label>
-              <label className="wrongtext">{namecontrol.len == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Length of FullName in Between 10 to 20</label>
+              <label className="wrongtext">{namecontrol.len == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Length of FullName in Between 6 to 20</label>
               <label className="wrongtext">{namecontrol.specialCharacters == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Avoid Numbers and Special Characters</label>
             </>
           </div>
@@ -647,7 +647,7 @@ const Register = () => {
       {otp.showOtpButton == true ? <button className="btn btn-info btn-sm" disabled={otp.loginbutton} onClick={OTPVerified}>Register</button> :
         <button className="btn btn-info btn-sm" disabled={disabled} onClick={SendOTP}>Send OTP</button>}
 
-      {registerandloginlink && <p className="mt-3">Already have an account? <Link to={'/Signin'}>Sing in</Link></p>}
+      {registerandloginlink && <p className="mt-3">Already have an account? <Link style={{textDecoration:'none'}} to={'/Signin'}>Sing in</Link></p>}
     </div>
   )
 }

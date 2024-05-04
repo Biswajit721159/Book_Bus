@@ -353,8 +353,8 @@ export default function Login() {
                 <button className="btn btn-info btn-sm" disabled={disabled} onClick={sendOTP}>Send OTP</button>}
             {registerandloginlink &&
                 <>
-                    <Link className="mt-3" to={'/ForgotPassword'}>Forgot Password</Link>
-                    <p className="mt-4">Not a member? <Link to={'/register'}>Signup now</Link></p>
+                    <Link className="mt-3" style={{textDecoration:'none'}} to={'/ForgotPassword'}>Forgot Password</Link>
+                    <p className="mt-4">Not a member? <Link style={{textDecoration:'none'}} to={'/register'}>Signup now</Link></p>
                 </>
             }
         </div>

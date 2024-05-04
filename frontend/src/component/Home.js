@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from './Loader'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert';
 import { HiOutlineCheckCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { loadStation, loadBus, fetchBusData } from '../redux/BusSlice'
@@ -32,7 +32,7 @@ const Home = () => {
 
     function show_seat(_id, src, dist) {
         if (date.length < 10) {
-            Swal.fire("Please Select a Date!")
+            swal("Please Select a Date!")
             return;
         }
         setbus__id(_id)
