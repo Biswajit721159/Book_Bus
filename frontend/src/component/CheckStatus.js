@@ -48,7 +48,7 @@ const CheckStatus = () => {
 
     return (
         <>
-            <div className='checkstatus mt-1'>
+            <div className='checkstatus mt-3'>
                 <div className="form-group" style={{ display: 'flex', flexDirection: 'row' }}>
                     <input type="text" onChange={(e) => { setidNumber(e.target.value) }} className="checkinputfrom" placeholder="Enter Id Number" required />
                     <button className="btn btn-primary" id='checkbtn' disabled={disabled} onClick={submit}>{button}</button>

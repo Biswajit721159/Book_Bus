@@ -5,7 +5,7 @@
     align-items: center;
     margin: 10px;
 }
-input{
+/* input{
     background-color: #B3B6B7;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -13,7 +13,7 @@ input{
     padding-right: 10px;
     border: none;
     outline: none;
-}
+} */
 
 .wrongtext{
     font-size: 13px;
@@ -21,6 +21,13 @@ input{
 
 .inputreglog{
     width: 300px;
+    background-color: #B3B6B7;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: none;
+    outline: none;
 }
 
 .wrong{

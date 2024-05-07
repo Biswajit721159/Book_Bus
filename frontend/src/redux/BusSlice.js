@@ -55,19 +55,96 @@ export const fetchBusData = createAsyncThunk(
 
 
 const initialState = {
+    mainBus: [],
     Bus: [],
     station: [],
     loadingBus: false,
     loadingStation: false,
-    error: null
+    error: null,
+    searchinput: 'Riktam',
 };
+
+function searchproduct(searchinput, bus) {
+    if (searchinput.length === 0) {
+        return bus
+    }
+    else {
+        searchinput = searchinput.toLowerCase();
+        let n = searchinput.length;
+        let newbus = [];
+        for (let i = 0; i < bus.length; i++) {
+            let s = bus[i].bus_name;
+            s = s.toLowerCase();
+            if (KMP(searchinput, s) === true || check_All_Charcter(searchinput, s)) {
+                newbus.push(bus[i]);
+            }
+        }
+        return newbus
+    }
+}
+
+function KMP(searchproduct, product_name) {
+    let patt = solve1(searchproduct);
+    let original = solve2(product_name);
+    let n = patt.length;
+    for (let i = 0; i < original.length - n + 1; i++) {
+        let generate = original.substring(i, i + n);
+        if (generate === patt) return true;
+    }
+    return false;
+}
+
+function check_All_Charcter(searchproduct, product_name) {
+    let s = product_name;
+    let patt = searchproduct;
+    let i = 0;
+    let j = 0;
+    let n = s.length;
+    let m = patt.length;
+    while (i < n && j < m) {
+        if (patt[j] == s[i]) {
+            i++; j++;
+        }
+        else {
+            i++;
+        }
+    }
+    if (j == m) {
+        return true;
+    }
+    return false;
+}
+
+function solve1(s) {
+    let res = "";
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] >= 'a' && s[i] < 'z') {
+            res += s[i];
+        }
+    }
+    return res;
+}
+
+function solve2(s) {
+    let res = "";
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] >= 'a' && s[i] < 'z') {
+            res += s[i];
+        }
+    }
+    return res;
+}
 
 const busTableSlice = createSlice({
     name: 'busTable',
     initialState,
     reducers: {
-        DurationEarlyFirst: (state, payload) => {
-            let bus = payload?.payload;
+        Addsearch: (state, action) => {
+            state.searchinput = action?.payload?.searchinput
+            state.Bus = searchproduct(action?.payload?.searchinput, action?.payload?.bus)
+        },
+        DurationEarlyFirst: (state, action) => {
+            let bus = action?.payload;
             let sortedBuses = [...bus].sort((a, b) => {
                 let fa = HourToMin(a?.total_time);
                 let fb = HourToMin(b?.total_time);
@@ -82,8 +159,8 @@ const busTableSlice = createSlice({
             });
             state.Bus = sortedBuses;
         },
-        DurationLateFirst: (state, payload) => {
-            let bus = payload?.payload;
+        DurationLateFirst: (state, action) => {
+            let bus = action?.payload;
             let sortedBuses = [...bus]?.sort((a, b) => {
                 let fa = HourToMin(a?.total_time)
                 let fb = HourToMin(b?.total_time)
@@ -98,8 +175,8 @@ const busTableSlice = createSlice({
             });
             state.Bus = sortedBuses
         },
-        DepartureEarlyFirst: (state, payload) => {
-            let bus = payload?.payload;
+        DepartureEarlyFirst: (state, action) => {
+            let bus = action?.payload;
             let sortedBuses = [...bus]?.sort((a, b) => {
                 let fa = finMinutes(a?.end_arrive_time)
                 let fb = finMinutes(b?.end_arrive_time)
@@ -114,8 +191,8 @@ const busTableSlice = createSlice({
             });
             state.Bus = sortedBuses
         },
-        DepartureLateFirst: (state, payload) => {
-            let bus = payload?.payload;
+        DepartureLateFirst: (state, action) => {
+            let bus = action?.payload;
             let sortedBuses = [...bus]?.sort((a, b) => {
                 let fa = finMinutes(a?.end_arrive_time)
                 let fb = finMinutes(b?.end_arrive_time)
@@ -130,8 +207,8 @@ const busTableSlice = createSlice({
             });
             state.Bus = sortedBuses
         },
-        ArrivalEarlyFirst: (state, payload) => {
-            let bus = payload?.payload;
+        ArrivalEarlyFirst: (state, action) => {
+            let bus = action?.payload;
             let sortedBuses = [...bus]?.sort((a, b) => {
                 let fa = finMinutes(a?.start_arrived_time)
                 let fb = finMinutes(b?.start_arrived_time)
@@ -146,8 +223,8 @@ const busTableSlice = createSlice({
             });
             state.Bus = sortedBuses
         },
-        ArrivalLateFirst: (state, payload) => {
-            let bus = payload?.payload;
+        ArrivalLateFirst: (state, action) => {
+            let bus = action?.payload;
             let sortedBuses = [...bus]?.sort((a, b) => {
                 let fa = finMinutes(a?.start_arrived_time)
                 let fb = finMinutes(b?.start_arrived_time)

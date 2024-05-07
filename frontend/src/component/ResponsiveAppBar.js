@@ -17,8 +17,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usermethod } from '../redux/UserSlice';
 import { useDispatch } from 'react-redux';
 
-const pages = ['Bluebus', 'Booking', 'Check status'];
-const settings = ['My Transaction', 'WishList', 'MasterList', 'Logout'];
+const pages = ['Blue Bus', 'Booking', 'Check Ticket'];
+const settings = ['My Booking', 'Favourite Journey', 'MasterList', 'Logout'];
 const loginRegisterPage = ['Login', 'Register'];
 
 const api = process.env.REACT_APP_API
@@ -126,17 +126,17 @@ function ResponsiveAppBar() {
 
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+            <Link to='/' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', size: "large", color: "#F8F9F9" }}>
               <MenuItem key={pages[0]} >
                 <Typography textAlign="center">{pages[0]}</Typography>
               </MenuItem>
             </Link>
-            <Link to='/BookBus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+            <Link to='/BookBus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: "#F8F9F9" }}>
               <MenuItem key={pages[1]} >
                 <Typography textAlign="center">{pages[1]}</Typography>
               </MenuItem>
             </Link>
-            <Link to='/checkstatus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'black' }}>
+            <Link to='/checkstatus' onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: "#F8F9F9" }}>
               <MenuItem key={pages[2]} >
                 <Typography textAlign="center">{pages[2]}</Typography>
               </MenuItem>
@@ -203,7 +203,7 @@ function ResponsiveAppBar() {
             </Box>}
         </Toolbar>
       </Container>
-    </AppBar>
+    </AppBar >
   );
 }
 

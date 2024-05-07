@@ -8,6 +8,7 @@ import { loadStation, loadBus, fetchBusData } from '../redux/BusSlice'
 import Searching from "./Searching";
 import Filter from "./Filter";
 import '../stylesheet/Home.css'
+import Search from "./Search";
 const api = process.env.REACT_APP_API
 const Home = () => {
 
@@ -73,76 +74,79 @@ const Home = () => {
                         <Searching />
 
                         {Bus?.length != 0 && <Filter />}
-                        {Bus?.length != 0 ? <div className="row d-flex justify-content-around">
-                            <div className="col-9 mt-5">
-                                <table className=" container table table-striped table border-info">
-                                    <thead>
-                                        <tr>
-                                            <th className="text-center" scope="col">Bus Name</th>
-                                            <th className="text-center" scope="col">Starting Station</th>
-                                            <th className="text-center" scope="col">Arrival Time</th>
-                                            <th className="text-center" scope="col">Distance</th>
-                                            <th className="text-center" scope="col">Rupees</th>
-                                            <th className="text-center" scope="col">Departure Time</th>
-                                            <th className="text-center" scope="col">Duration</th>
-                                            <th className="text-center" scope="col">Ending Station</th>
-                                            <th className="text-center" scope="col">View Bus</th>
-                                            <th className="text-center" scope="col">View Ticket</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody >
-                                        {
-                                            Bus?.length != 0 ?
-                                                Bus?.map((item, ind) => (
-                                                    <tr key={ind} style={{ height: "70px", margin: '20px' }}>
-                                                        <td className="text-center">{item.bus_name} <HiOutlineCheckCircle style={{ color: 'green' }} /></td>
-                                                        <td className="text-center">{item.start_station}</td>
-                                                        <td className="text-center"> {item.start_arrived_time}</td>
-                                                        <td className="text-center">{item.total_distance}km</td>
-                                                        <td className="text-center">₹{item.total_distance * 5}</td>
-                                                        <td className="text-center">{item.end_arrive_time}</td>
-                                                        <td className="text-center">{item.total_time}</td>
-                                                        <td className="text-center">{item.end_station}</td>
-                                                        <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-primary btn-sm">view</button></Link></td>
-                                                        {
-                                                            item.bus_id != bus__id ?
-                                                                <td className="text-center"><button className="btn btn-info btn-sm" onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >Show</button></td>
-                                                                :
-                                                                seat_res_come == true ?
-                                                                    <td className="text-center">
-                                                                        <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
-                                                                        <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
-                                                                            <button className="btn btn-primary btn-sm">
-                                                                                Book
-                                                                            </button>
-                                                                        </Link>
-                                                                    </td>
+                        {/* {Bus?.length != 0 && <Search />} */}
+
+                        {Bus?.length != 0 ?
+                            <div className="row d-flex justify-content-around">
+                                <div className="col-9 mt-4">
+                                    <table className=" container table table-striped table border-info">
+                                        <thead>
+                                            <tr>
+                                                <th className="text-center" scope="col">Bus Name</th>
+                                                <th className="text-center" scope="col">Starting Station</th>
+                                                <th className="text-center" scope="col">Arrival Time</th>
+                                                <th className="text-center" scope="col">Distance</th>
+                                                <th className="text-center" scope="col">Rupees</th>
+                                                <th className="text-center" scope="col">Departure Time</th>
+                                                <th className="text-center" scope="col">Duration</th>
+                                                <th className="text-center" scope="col">Ending Station</th>
+                                                <th className="text-center" scope="col">View Bus</th>
+                                                <th className="text-center" scope="col">View Ticket</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            {
+                                                Bus?.length != 0 ?
+                                                    Bus?.map((item, ind) => (
+                                                        <tr key={ind} style={{ height: "70px", margin: '20px' }}>
+                                                            <td className="text-center">{item.bus_name} <HiOutlineCheckCircle style={{ color: 'green' }} /></td>
+                                                            <th className="text-center" style={{ color: 'gray' }}>{item.start_station}</th>
+                                                            <td className="text-center"> {item.start_arrived_time}</td>
+                                                            <td className="text-center">{item.total_distance}km</td>
+                                                            <td className="text-center">₹{item.total_distance * 5}</td>
+                                                            <td className="text-center">{item.end_arrive_time}</td>
+                                                            <td className="text-center">{item.total_time}</td>
+                                                            <th className="text-center" style={{ color: 'gray' }}>{item.end_station}</th>
+                                                            <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-primary btn-sm">view</button></Link></td>
+                                                            {
+                                                                item.bus_id != bus__id ?
+                                                                    <td className="text-center"><button className="btn btn-info btn-sm" onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >Show</button></td>
                                                                     :
-                                                                    <td className="text-center">
-                                                                        <button className="btn btn-danger btn-sm" disabled={disabled_showseat} onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >
-                                                                            {show_seat_button}
-                                                                        </button>
-                                                                    </td>
-                                                        }
+                                                                    seat_res_come == true ?
+                                                                        <td className="text-center">
+                                                                            <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
+                                                                            <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
+                                                                                <button className="btn btn-primary btn-sm">
+                                                                                    Book
+                                                                                </button>
+                                                                            </Link>
+                                                                        </td>
+                                                                        :
+                                                                        <td className="text-center">
+                                                                            <button className="btn btn-danger btn-sm" disabled={disabled_showseat} onClick={() => { show_seat(item.bus_id, item.start_station, item.end_station) }} >
+                                                                                {show_seat_button}
+                                                                            </button>
+                                                                        </td>
+                                                            }
+                                                        </tr>
+                                                    ))
+                                                    : <tr >
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center">NA</td>
+                                                        <td className="text-center"></td>
                                                     </tr>
-                                                ))
-                                                : <tr >
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center">NA</td>
-                                                    <td className="text-center"></td>
-                                                </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> : <h6 className="text-center mt-5">Bus not Found ! 😥 </h6>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> : <h6 className="text-center mt-5">Bus not Found ! 😥 </h6>
                         }
                     </>
             }

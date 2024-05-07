@@ -108,7 +108,7 @@ const get_Seat = async (req, res) => {
             ans.push(obj)
         }
         let nowAvailable_seat = totalSeat - countBookingSeat;
-        res.status(200).json(new ApiResponse(200, { 'nowAvailable_seat': nowAvailable_seat, 'total_seat': totalSeat, 'BookingRecord': ans, 'total_distance': total_distance }, "Seat found"))
+        return res.status(200).json(new ApiResponse(200, { 'nowAvailable_seat': nowAvailable_seat, 'total_seat': totalSeat, 'BookingRecord': ans, 'total_distance': total_distance }, "Seat found"))
 
     } catch {
         return res

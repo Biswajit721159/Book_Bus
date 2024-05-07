@@ -8,7 +8,6 @@ const api = process.env.REACT_APP_API
 const Ticket_Book = () => {
 
     const dispatch = useDispatch()
-    const url = '';
     const userinfo = useSelector((state) => state.user)
     const history = useNavigate()
     const { src } = useParams()
@@ -18,7 +17,7 @@ const Ticket_Book = () => {
 
     const [submitload, setsubmitload] = useState(false)
     const [load, setload] = useState(true)
-    const [total_seat, settotal_seat] = useState(0)
+    // const [total_seat, settotal_seat] = useState(0)
     const [data, setdata] = useState([])
     const [seatarr, setseatarr] = useState([])
     const [MasterList, setMasterList] = useState([])
@@ -28,9 +27,9 @@ const Ticket_Book = () => {
 
 
     function markseat(id) {
-        if (data[id - 1].isbooked == "Both") {
+        if (data[id - 1].isbooked === "Both") {
             for (let i = 0; i < seatarr.length; i++) {
-                if (seatarr[i] == id) {
+                if (seatarr[i] === id) {
                     seatarr.splice(i, 1);
                 }
             }
@@ -53,9 +52,9 @@ const Ticket_Book = () => {
     }
 
     function Mark(id) {
-        if (markseat(id) == true) {
+        if (markseat(id) === true) {
             id = id - 1;
-            if (data[id].isbooked == false) {
+            if (data[id].isbooked === false) {
                 data[id].isbooked = "Both";
             }
             else {
@@ -94,10 +93,10 @@ const Ticket_Book = () => {
                         Authorization: `Bearer ${userinfo?.user?.auth}`
                     }
                 }).then(responce => responce.json()).then((result) => {
-                    if (result != undefined && result.statusCode === 200) {
+                    if (result !== undefined && result.statusCode === 200) {
                         setMasterList(result?.data)
                         setload(false)
-                        settotal_seat(res.data.total_seat)
+                        // settotal_seat(res.data.total_seat)
                         setdata(res.data.BookingRecord)
                         settotal_distance(res.data.total_distance)
                     }
@@ -106,7 +105,6 @@ const Ticket_Book = () => {
                         history('/Login')
                     }
                 }, (error) => {
-                    console.log(error)
                     history('*')
                 })
 
@@ -117,16 +115,15 @@ const Ticket_Book = () => {
             }
         }, (error) => {
             history('*')
-            console.log(error)
         })
     }
 
     function handleCheckboxChange(name) {
 
-        if (checkbox.includes(name) == true) {
+        if (checkbox.includes(name) === true) {
             let arr = []
             for (let i = 0; i < checkbox.length; i++) {
-                if (checkbox[i] != name) {
+                if (checkbox[i] !== name) {
                     arr.push(checkbox[i]);
                 }
             }
@@ -147,7 +144,7 @@ const Ticket_Book = () => {
 
     function checkAlreadyGetOrNot(nums) {
         for (let i = 0; i < seatarr.length; i++) {
-            if (nums[seatarr[i] - 1].isbooked == true) {
+            if (nums[seatarr[i] - 1].isbooked === true) {
                 return true;
             }
         }
@@ -156,7 +153,7 @@ const Ticket_Book = () => {
 
     function checkAlreadyBoth() {
         for (let i = 0; i < seatarr.length; i++) {
-            if (data[seatarr[i] - 1].isbooked != "Both") {
+            if (data[seatarr[i] - 1].isbooked !== "Both") {
                 return false;
             }
         }
@@ -167,7 +164,7 @@ const Ticket_Book = () => {
         while (checkbox.length < seatarr.length) {
             seatarr.pop();
         }
-        if (checkAlreadyBoth() && checkbox.length == seatarr.length) {
+        if (checkAlreadyBoth() && checkbox.length === seatarr.length) {
             setsubmitload(true)
             fetch(`${api}/Booking/get_Seat`, {
                 method: 'PATCH',
@@ -183,7 +180,7 @@ const Ticket_Book = () => {
                 })
             }).then(responce => responce.json()).then((comeres) => {
                 if (comeres != undefined && comeres.statusCode === 200) {
-                    if (checkAlreadyGetOrNot(comeres.data.BookingRecord) == false) {
+                    if (checkAlreadyGetOrNot(comeres.data.BookingRecord) === false) {
                         fetch(`${api}/Booking`, {
                             method: 'POST',
                             headers: {
@@ -203,12 +200,15 @@ const Ticket_Book = () => {
                                 total_distance: total_distance
                             })
                         }).then((responce => responce.json())).then((res) => {
-                            console.log(res)
-                            if (res != undefined && res.status == 201) {
+                            if (res != undefined && res.statusCode == 201) {
                                 history('/LastTransaction')
                             }
-                            else if (res != undefined && res.status == 498) {
-                                history('*');
+                            else if (res != undefined && res.statusCode == 498) {
+                                dispatch(usermethod.Logout_User())
+                                history('/Login')
+                            }
+                            else {
+                                history('*')
                             }
                         }, (error) => {
                             history('*')
@@ -222,11 +222,16 @@ const Ticket_Book = () => {
                         setseatarr([])
                     }
                 }
+                else if (comeres?.statusCode === 498) {
+                    dispatch(usermethod.Logout_User())
+                    history('/Login')
+                }
                 else {
                     setsubmitload(false)
                     show_seat()
                     setcheckbox([])
                     setseatarr([])
+                    history('*')
                 }
             }, (error) => {
                 history('/')
@@ -250,10 +255,10 @@ const Ticket_Book = () => {
     return (
         <>
             {
-                submitload == true ?
+                submitload === true ?
                     <Loader />
                     :
-                    load == false ?
+                    load === false ?
                         <div className='container align-items-center mt-4'>
                             {
                                 <div className='row'>
@@ -261,11 +266,11 @@ const Ticket_Book = () => {
                                         data.map((item, ind) => (
                                             <div className='col' key={ind}>
                                                 {
-                                                    item.isbooked == true ?
+                                                    item.isbooked === true ?
                                                         <Link style={{ textDecoration: "none" }} >
                                                             <div className="card" style={{ width: "3.5rem", height: "3.5rem", backgroundColor: "#F69F8C" }}>
                                                                 <div className="card-body">
-                                                                    <h7 className="card-title">{ind + 1}</h7>
+                                                                    <h6 className="card-title">{ind + 1}</h6>
                                                                 </div>
                                                             </div>
                                                         </Link>
@@ -274,14 +279,14 @@ const Ticket_Book = () => {
                                                             <Link style={{ textDecoration: "none" }} onClick={() => { Mark(ind + 1) }} >
                                                                 <div className="card" style={{ width: "3.5rem", height: "3.5rem", backgroundColor: "#98F980" }} >
                                                                     <div className="card-body">
-                                                                        <h7 className="card-title">{ind + 1}</h7>
+                                                                        <h6 className="card-title">{ind + 1}</h6>
                                                                     </div>
                                                                 </div>
                                                             </Link>
                                                             : <Link style={{ textDecoration: "none" }} onClick={() => { Mark(ind + 1) }} >
                                                                 <div className="card" style={{ width: "3.5rem", height: "3.5rem" }} >
                                                                     <div className="card-body">
-                                                                        <h7 className="card-title">{ind + 1}</h7>
+                                                                        <h6 className="card-title">{ind + 1}</h6>
                                                                     </div>
                                                                 </div>
                                                             </Link>
