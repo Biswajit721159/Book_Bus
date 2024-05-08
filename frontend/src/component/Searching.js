@@ -4,6 +4,7 @@ import { loadBus, fetchBusData } from '../redux/BusSlice'
 import { BusSearchmethod } from '../redux/BusSearchSlice'
 import { GoArrowSwitch } from "react-icons/go";
 import '../stylesheet/Searching.css'
+import swal from 'sweetalert';
 const Searching = () => {
 
     let src = useSelector((state) => state.BusSearch.src);
@@ -45,6 +46,10 @@ const Searching = () => {
     }
 
     function Findbus() {
+        if (src === dist) {
+            swal("Source and Destination cannot be same")
+            return;
+        }
         let ans = FindError();
         if (ans === true) {
             seterroInSrc(false)

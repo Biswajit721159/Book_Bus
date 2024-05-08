@@ -92,6 +92,9 @@ const GetBusBySrcDist = async (req, res) => {
         start_station = req.body.start_station;
         end_station = req.body.end_station;
 
+        if (start_station === end_station) {
+            return res.status(200).json(new ApiResponse(200, [], "Bus Not found !"))
+        }
         let result = await Bus_detail.find();
         let ans = []
 
@@ -103,15 +106,16 @@ const GetBusBySrcDist = async (req, res) => {
             let start_ind = -1;
             let end_ind = -1;
             for (k = 0; k < arr.length; k++) {
-                if (arr[k].station.toUpperCase() == start_station) {
+                if (arr[k].station.toUpperCase() === start_station) {
                     start_ind = k;
                     x++;
+                    k++;
                     break;
                 }
             }
             if (x == 1) {
                 for (; k < arr.length; k++) {
-                    if (arr[k].station.toUpperCase() == end_station) {
+                    if (arr[k].station.toUpperCase() === end_station) {
                         total_distance += (parseInt(arr[k].Distance_from_Previous_Station))
                         end_ind = k; x++; break;
                     }
@@ -119,7 +123,7 @@ const GetBusBySrcDist = async (req, res) => {
                         total_distance += (parseInt(arr[k].Distance_from_Previous_Station))
                     }
                 }
-                if (x == 2) {
+                if (x === 2) {
                     let obj = {
                         bus_id: result[i]._id,
                         bus_name: result[i].bus_name,
@@ -135,9 +139,9 @@ const GetBusBySrcDist = async (req, res) => {
             }
         }
         if (ans) {
-            res.status(200).json(new ApiResponse(200, ans, "Bus found successFully"))
+            return res.status(200).json(new ApiResponse(200, ans, "Bus found successFully"))
         } else {
-            res.status(404).json(new ApiResponse(404, [], "Bus not found"))
+            return res.status(404).json(new ApiResponse(404, [], "Bus not found"))
         }
     } catch {
         return res

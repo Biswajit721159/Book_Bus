@@ -36,6 +36,10 @@ const Home = () => {
             swal("Please Select a Date!")
             return;
         }
+        else if(src===dist){
+            swal("Source and Destination cannot be same")
+            return;
+        }
         setbus__id(_id)
         setseat_res_come(false)
         setdisabled_showseat(true)

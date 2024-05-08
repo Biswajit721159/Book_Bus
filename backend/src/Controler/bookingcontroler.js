@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking_models')
 const Bus_detail = require('../models/Bus_detail_models')
+let FavouriteJourney = require('../models/FavouriteJourney_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
 
 const getTicketByidFprAuthenticateUser = async (req, res) => {
@@ -122,6 +123,7 @@ const GetTicketById = async (req, res) => {
         let Ticket = await Booking.findOne({ _id: req.params.id });
         if (Ticket && Ticket?.bus_id) {
             let bus = await Bus_detail.findOne({ _id: Ticket.bus_id })
+            let journey = await FavouriteJourney.findOne({ 'booking_id': Ticket?._id })
             let ans = {
                 _id: Ticket._id,
                 bus_name: bus.bus_name,
@@ -132,7 +134,8 @@ const GetTicketById = async (req, res) => {
                 booking_date: await TransfromData(Ticket.createdAt),
                 date: Ticket.date,
                 seat_record: Ticket.seat_record,
-                person: Ticket.person
+                person: Ticket.person,
+                isFavouriteJourney: journey === null ? false : true
             }
             return res
                 .status(200)
