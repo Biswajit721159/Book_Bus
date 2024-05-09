@@ -6,12 +6,12 @@ let { ApiResponse } = require("../utils/ApiResponse.js");
 let UpdateBusDetail = async (req, res) => {
     try {
         let result = await BusOwnerDataBase.updateOne(
-            { _id: new ObjectID(req.body.data._id) },
+            { _id: (req.body.data._id) },
             { $set: { status: req.body.status } }
         );
         if (result.acknowledged && req.body.status == 'approved') {
             delete req.body.data.status
-            let result = await Bus_detail.insertOne(req.body.data);
+            let result = await Bus_detail.create(req.body.data);
             if (result) {
                 return res
                     .status(201)
@@ -183,4 +183,4 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = { login, register,AdminPanelgetdata,UpdateBusDetail }
+module.exports = { login, register, AdminPanelgetdata, UpdateBusDetail }

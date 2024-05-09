@@ -8,10 +8,10 @@ const verifytoken = require("../Middelware/TokenVerification");
 
 router.route('/login').post(login);
 router.route('/register').post(register);
-router.route('/:_id').post(getBusById);
-router.route('/:email').post(verifytoken, getBusByEmail);
-router.route('/addBus').post(verifytoken, AddBusInBusOwnerDataBase);
-router.route('/getBookingStatus').patch(verifytoken, getBookingDatabyDate)
+router.route('/getBusById/:id').get(getBusById);
+router.route('/getBusByEmail/:email').get(getBusByEmail);
+router.route('/addBus').post(AddBusInBusOwnerDataBase);
+router.route('/getBookingStatus').patch(getBookingDatabyDate);
 
 
 
