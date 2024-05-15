@@ -36,7 +36,7 @@ const Home = () => {
             swal("Please Select a Date!")
             return;
         }
-        else if(src===dist){
+        else if (src === dist) {
             swal("Source and Destination cannot be same")
             return;
         }
@@ -81,8 +81,8 @@ const Home = () => {
                         {/* {Bus?.length != 0 && <Search />} */}
 
                         {Bus?.length != 0 ?
-                            <div className="row d-flex justify-content-around">
-                                <div className="col-9 mt-4">
+                            <div className="row d-flex justify-content-around col-12 mt-4">
+                                <div >
                                     <table className=" container table table-striped table border-info">
                                         <thead>
                                             <tr>
@@ -104,13 +104,13 @@ const Home = () => {
                                                     Bus?.map((item, ind) => (
                                                         <tr key={ind} style={{ height: "70px", margin: '20px' }}>
                                                             <td className="text-center">{item.bus_name} <HiOutlineCheckCircle style={{ color: 'green' }} /></td>
-                                                            <th className="text-center" style={{ color: 'gray' }}>{item.start_station}</th>
+                                                            <th className="text-center" style={{ color: '#0000FF' }}>{item.start_station}</th>
                                                             <td className="text-center"> {item.start_arrived_time}</td>
                                                             <td className="text-center">{item.total_distance}km</td>
                                                             <td className="text-center">₹{item.total_distance * 5}</td>
                                                             <td className="text-center">{item.end_arrive_time}</td>
                                                             <td className="text-center">{item.total_time}</td>
-                                                            <th className="text-center" style={{ color: 'gray' }}>{item.end_station}</th>
+                                                            <th className="text-center" style={{ color: '#0000FF' }}>{item.end_station}</th>
                                                             <td className="text-center"><Link to={`/View_Bus/${item.bus_id}`}><button className="btn btn-primary btn-sm">view</button></Link></td>
                                                             {
                                                                 item.bus_id != bus__id ?
