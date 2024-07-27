@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.13",
-    "@mui/material": "^5.15.13",
+    "@mui/material": "^5.16.5",
     "@mui/styled-engine-sc": "^6.0.0-alpha.17",
     "@reduxjs/toolkit": "^2.2.1",
     "@testing-library/jest-dom": "^5.17.0",
@@ -24,7 +25,7 @@
     "react-scripts": "^5.0.1",
     "react-spinners": "^0.13.8",
     "redux": "^5.0.1",
-    "styled-components": "^6.1.8",
+    "styled-components": "^6.1.12",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.7.27",
     "web-vitals": "^2.1.4"
@@ -52,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.7"
   }
 }

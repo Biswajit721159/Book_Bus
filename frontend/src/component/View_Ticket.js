@@ -130,9 +130,9 @@ const View_Ticket = () => {
             {
                 load == false ?
                     <div className='container shadow mt-5'>
-                        {FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'20px'} color="#36d7b7" /> :
+                        {FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'20px'} color="blue" /> :
                             isFavouriteJourney === false ? <IoIosStarOutline onClick={AddToFavouriteJourney} className='startButton' /> :
-                                <MdStar onClick={RemoveFromFavouriteJourney} color='red' className='startButton' />}
+                                <MdStar onClick={RemoveFromFavouriteJourney} color='blue' className='startButton' />}
                         <Button style={{ float: 'right', marginTop: '5px' }} variant="contained" color="primary" onClick={Downlode}>
                             Downlode
                         </Button>

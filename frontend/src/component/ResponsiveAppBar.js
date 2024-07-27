@@ -8,20 +8,17 @@ import Menu from '@mui/material/Menu'; // Import Menu from @mui/material
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem'; // Import MenuItem from @mui/material
-import AdbIcon from '@mui/icons-material/Adb';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { usermethod } from '../redux/UserSlice';
 import { useDispatch } from 'react-redux';
 
 const pages = ['Blue Bus', 'Booking', 'Check Ticket'];
-const settings = ['My Booking', 'Favourite Journey', 'MasterList', 'Logout'];
+const settings = ['My Booking', 'MasterList', 'Logout'];
 const loginRegisterPage = ['Login', 'Register'];
 
-const api = process.env.REACT_APP_API
 
 function ResponsiveAppBar() {
 
@@ -172,19 +169,14 @@ function ResponsiveAppBar() {
                     <Typography textAlign="center">{settings[0]}</Typography>
                   </MenuItem>
                 </Link>
-                <Link to='/WishList' style={{ textDecoration: 'none', color: 'black' }}>
+                <Link to='/MasterList' style={{ textDecoration: 'none', color: 'black' }}>
                   <MenuItem key={settings[1]} >
                     <Typography textAlign="center">{settings[1]}</Typography>
                   </MenuItem>
                 </Link>
-                <Link to='/MasterList' style={{ textDecoration: 'none', color: 'black' }}>
+                <Link onClick={logout} style={{ textDecoration: 'none', color: 'black' }}>
                   <MenuItem key={settings[2]} >
                     <Typography textAlign="center">{settings[2]}</Typography>
-                  </MenuItem>
-                </Link>
-                <Link onClick={logout} style={{ textDecoration: 'none', color: 'black' }}>
-                  <MenuItem key={settings[3]} >
-                    <Typography textAlign="center">{settings[3]}</Typography>
                   </MenuItem>
                 </Link>
               </Menu>

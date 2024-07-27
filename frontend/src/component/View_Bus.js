@@ -9,7 +9,7 @@ const View_Bus = () => {
     const { _id } = useParams();
     const history = useNavigate();
 
-    function loaduser() {
+    function loadBus() {
         setload(true)
         fetch(`${api}/bus/bus_detail/${_id}`, {
             headers: {
@@ -27,16 +27,16 @@ const View_Bus = () => {
     }
 
     useEffect(() => {
-        loaduser()
+        loadBus();
     }, [])
 
 
     return (
         <>
             {
-                load == false ?
+                load === false ?
                     <div className='container'>
-                        <table className="table mt-5">
+                        <table className="table border mt-5">
                             <thead>
                                 <tr>
                                     <th scope="col">Bus Name -</th>
@@ -49,7 +49,7 @@ const View_Bus = () => {
                                 <tr>
                                     <th scope="row">Bus ID -</th>
                                     <th><Link style={{ textDecoration: "none" }}>{data[0]?._id}</Link></th>
-                                    <th>Total_seat</th>
+                                    <th>Total Seat -</th>
                                     <th>{data[0]?.Total_seat}</th>
                                 </tr>
                             </tbody>
@@ -67,7 +67,7 @@ const View_Bus = () => {
                                                 {
                                                     (ind + 1) == data[0]?.station_data.length ?
                                                         ""
-                                                        : <i className="fa fa-arrow-circle-down mt-2" style={{ fontSize: "30px", color: "green", textAlign: "center" }}></i>
+                                                        : <i className="fa fa-arrow-circle-down mt-2" style={{ fontSize: "20px", color: "blue", textAlign: "center" }}></i>
                                                 }
                                             </div>
                                         </div>
