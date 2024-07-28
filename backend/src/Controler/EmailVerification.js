@@ -40,11 +40,35 @@ let OTPGenerateAndSendToUser = async (res, email) => {
       pass: "vqxn zycm bovh xexf",
     },
   });
+  let HtmlTemplates = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
+    <h2 style="color: #4CAF50;">OTP Verification</h2>
+    <p style="font-size: 16px; color: #333;">Hello,</p>
+    <p style="font-size: 16px; color: #333;">
+      Thank you for verifying your email address. Your OTP for verification is:
+    </p>
+    <div style="text-align: center; margin: 20px 0;">
+      <span style="display: inline-block; font-size: 24px; font-weight: bold; color: #4CAF50; border: 2px dashed #4CAF50; padding: 10px 20px; border-radius: 5px;">
+        ${otp}
+      </span>
+    </div>
+    <p style="font-size: 16px; color: #333;">
+      Please enter this OTP within the next 10 minutes to complete your verification process.
+    </p>
+    <p style="font-size: 16px; color: #333;">Thank you!</p>
+    <p style="font-size: 10px; color: #999;">Best regards,<br>Blue Bus</p>
+    <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;">
+    <p style="font-size: 12px; color: #999; text-align: center;">
+      This email was sent to you because you requested OTP verification. If you did not request this, please ignore this email.
+    </p>
+  </div>
+  `
   const mailOptions = {
     from: "bg5050525@gmail.com",
     to: email,
     subject: "Your OTP for Verification",
     text: `Your OTP is ${otp}. It is valid for 10 minutes.`,
+    html: HtmlTemplates
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -236,22 +260,22 @@ let passwordSave = async (req, res) => {
         if (isOTPCorrect) {
           let data = await userValidation.deleteOne({ email });
           if (data) {
-               const passwordHash = await bcrypt.hash(password.toString(), 10);
-                const result = await User.updateOne(
-                  { email: email },
-                  { $set: { password: passwordHash } }
+            const passwordHash = await bcrypt.hash(password.toString(), 10);
+            const result = await User.updateOne(
+              { email: email },
+              { $set: { password: passwordHash } }
+            );
+            if (result.modifiedCount === 1) {
+              return res
+                .status(200)
+                .json(new ApiResponse(200, null, "Password Reset successfully"));
+            } else {
+              return res
+                .status(200)
+                .json(
+                  new ApiResponse(200, null, `No user found with email: ${email}`)
                 );
-                if (result.modifiedCount === 1) {
-                  return res
-                    .status(200)
-                    .json(new ApiResponse(200, null, "Password Reset successfully"));
-                } else {
-                  return res
-                    .status(200)
-                    .json(
-                      new ApiResponse(200, null, `No user found with email: ${email}`)
-                    );
-                }
+            }
           } else {
             return res
               .status(404)

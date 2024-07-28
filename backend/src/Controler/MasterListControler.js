@@ -19,7 +19,7 @@ const DeleteMasterUser = async (req, res) => {
 
 const GetMasterUser = async (req, res) => {
     try {
-        let result = await MasterList.find({ user_id: req.params.user_id });
+        let result = await MasterList.find({ user_id: req.params.user_id }).select(["-createdAt", "-__v", "-updatedAt"]);
         if (result) res
             .status(200)
             .json(new ApiResponse(200, result, "Success"));
@@ -38,17 +38,25 @@ const GetMasterUser = async (req, res) => {
 
 const PostMasterUser = async (req, res) => {
     try {
+        const count = await MasterList.countDocuments({ user_id: req.body?.user_id });
+        if (count >= 10) {
+            return res.status(401).json(new ApiResponse(401, [], "Your masterList user limit has exit.You need delete some user first"));
+        }
         let result = await MasterList.create(req.body);
-        if (result) {
+        let resultObject = result.toObject();
+        delete resultObject.updatedAt;
+        delete resultObject.createdAt;
+        delete resultObject.__v;
+        if (resultObject) {
             res
                 .status(201)
-                .json(new ApiResponse(201, [], "MasterList User Created Successfully"));
-        }
-        else {
+                .json(new ApiResponse(201, resultObject, "MasterList user created successfully"));
+        } else {
             res
                 .status(500)
-                .json(new ApiResponse(500, [], "Server down !"));
+                .json(new ApiResponse(500, [], "Server down!"));
         }
+
     } catch {
         res
             .status(500)
@@ -58,14 +66,15 @@ const PostMasterUser = async (req, res) => {
 
 const UpdateMasterUser = async (req, res) => {
     try {
-        let result = await MasterList.updateOne(
-            { _id: req.params.user_id },
-            { $set: { name: req.body.name } }
-        );
-        if (result.modifiedCount) {
+        let result = await MasterList.findByIdAndUpdate(
+            req.params.user_id,
+            { name: req.body.name },
+            { new: true }
+        ).select(["-createdAt", "-__v", "-updatedAt"]);
+        if (result) {
             res
                 .status(200)
-                .json(new ApiResponse(200, [], "MasterList User SucessFullly Updated"));
+                .json(new ApiResponse(200, result, "MasterList user sucessfully updated"));
         }
         else {
             res

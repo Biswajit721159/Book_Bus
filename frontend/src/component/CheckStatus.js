@@ -17,6 +17,7 @@ const CheckStatus = () => {
 
 
     function submit() {
+        if(!idNumber) return;
         setdata()
         setwrongidNumber(false)
         setmessidNumber("")

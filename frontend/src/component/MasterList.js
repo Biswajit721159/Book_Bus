@@ -1,247 +1,289 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import Loader from "./Loader";
-import { usermethod } from '../redux/UserSlice'
-const api = process.env.REACT_APP_API
+import { usermethod } from '../redux/UserSlice';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+
+const api = process.env.REACT_APP_API;
+
 const MasterList = () => {
-    const [name, setname] = useState("")
-    const [wrongname, setwrongname] = useState(false)
-    const [messname, setmessname] = useState("")
+    const [name, setName] = useState("");
+    const [wrongName, setWrongName] = useState(false);
+    const [messName, setMessName] = useState("");
 
-    const [updatename, setupdatename] = useState("")
-    const [wrongupdatename, setwrongupdatename] = useState(false)
-    const [messupdatename, setmessupdatename] = useState("")
+    const [updateName, setUpdateName] = useState("");
+    const [wrongUpdateName, setWrongUpdateName] = useState(false);
+    const [messUpdateName, setMessUpdateName] = useState("");
 
-    const [add, setadd] = useState(true)
-    const [data, setdata] = useState([])
-    const userinfo = useSelector((state) => state.user)
-    const history = useNavigate();
-    const [Submit, setSubmit] = useState("Submit")
-    const [disable, setdisable] = useState(false)
-    const [load, setload] = useState(true)
-    const [DeleteButton, setDeleteButton] = useState("Delete")
-    const [Deletedisable, setDeletedisable] = useState(false)
+    const [openAddModal, setOpenAddModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
-    const [takeid, settakeid] = useState('')
+    const [data, setData] = useState([]);
+    const userInfo = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const [submitButtonText, setSubmitButtonText] = useState("Submit");
+    const [disableSubmit, setDisableSubmit] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [deleteButtonText, setDeleteButtonText] = useState("Delete");
+    const [deleteDisabled, setDeleteDisabled] = useState(false);
 
-    const [updateinput, setupdateinput] = useState(false)
-    const [update_id, setupdate_id] = useState('')
+    const [takeId, setTakeId] = useState('');
 
-    const [disableupdate, setdisableupdate] = useState(false)
-    const [updatebutton, setupdatebutton] = useState("Update")
-    const dispatch = useDispatch()
+    const [updateId, setUpdateId] = useState('');
+    const [disableUpdate, setDisableUpdate] = useState(false);
+    const [updateButtonText, setUpdateButtonText] = useState("Update");
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        if (userinfo?.user?.auth) {
-            loaddata()
+        if (userInfo?.user?.auth) {
+            loadData();
+        } else {
+            navigate('/Login');
         }
-        else {
-            history('/Login')
-        }
-    }, [userinfo])
+    }, [userInfo]);
 
-    function loaddata() {
-        setload(true)
-        fetch(`${api}/MasterList/${userinfo?.user?.user._id}`, {
+    const loadData = () => {
+        setLoading(true);
+        fetch(`${api}/MasterList/${userInfo?.user?.user._id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userinfo?.user?.auth}`
+                Authorization: `Bearer ${userInfo?.user?.auth}`
             }
-        }).then(responce => responce.json()).then((res) => {
+        }).then(response => response.json()).then((res) => {
             if (res.statusCode === 200) {
-                setload(false)
-                setdata(res.data)
+                setLoading(false);
+                setData(res.data);
+            } else if (res.statusCode === 498) {
+                dispatch(usermethod.Logout_User());
+                navigate('/Login');
+            } else {
+                navigate('*');
             }
-            else if (res.statusCode === 498) {
-                dispatch(usermethod.Logout_User())
-                history('/Login')
-            }
-            else {
-                history('*')
-            }
-        }, (error) => {
-            history('*')
-        })
-    }
+        }).catch((error) => {
+            navigate('*');
+        });
+    };
 
-    function addhtml() {
-        setadd(false)
-    }
-
-    function finderrorName(s) {
+    const findErrorName = (s) => {
         var regex = /^[a-zA-Z ]{2,30}$/;
-        let a = regex.test(s);
-        return a;
-    }
+        return regex.test(s);
+    };
 
-    function submit() {
-        let res = finderrorName(name)
-        if (res == true) {
-            setwrongname(false)
-            setmessname("")
-            setdisable(true)
-            setSubmit("Please Wait....")
-            fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
+    const handleSubmit = () => {
+        let res = findErrorName(name);
+        if (res) {
+            setWrongName(false);
+            setMessName("");
+            setDisableSubmit(true);
+            setSubmitButtonText("Please Wait....");
+            fetch(`${api}/MasterList/${userInfo?.user?.user?._id}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${userinfo?.user?.auth}`
+                    Authorization: `Bearer ${userInfo?.user?.auth}`
                 },
                 body: JSON.stringify({
-                    user_id: userinfo?.user?.user?._id,
+                    user_id: userInfo?.user?.user?._id,
                     name: name
                 })
             }).then(response => response.json()).then((res) => {
+                setDisableSubmit(false);
+                setSubmitButtonText("Submit");
                 if (res.statusCode === 201) {
-                    setadd(true)
-                    setdisable(false)
-                    setSubmit("Submit")
-                    setname("")
-                    loaddata()
+                    setName("");
+                    setOpenAddModal(false);
+                    data.push(res?.data);
+                    setData(data);
                 } else {
-                    history('*')
+                    setWrongName(true);
+                    setMessName(res?.message);
                 }
-            }, (error) => {
-                history('*')
-            })
+            }).catch((error) => {
+                navigate('*');
+            });
+        } else {
+            setWrongName(true);
+            setMessName("*Name must be only string and should not contain symbols or numbers and string length is less than 2");
         }
-        else {
-            setwrongname(true)
-            setmessname("*Name must be only string and should not contain symbols or numbers and string length is less then 2")
-        }
-    }
+    };
 
-    function Delete_user(id) {
-        settakeid(id)
-        setDeleteButton("Please Wait...")
-        setDeletedisable(true)
+    const handleDeleteUser = (id) => {
+        if (deleteDisabled) return;
+        setTakeId(id);
+        setDeleteButtonText("Please Wait...");
+        setDeleteDisabled(true);
         fetch(`${api}/MasterList/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userinfo?.user?.auth}`
+                Authorization: `Bearer ${userInfo?.user?.auth}`
             },
-        }).then(responce => responce.json()).then((res) => {
-            if (res != undefined) {
-                setDeletedisable(false)
-                setDeleteButton("Delete")
-                settakeid('')
-                loaddata()
-            }
-        }, (error) => {
-            history('*')
-        })
-    }
+        }).then(response => response.json()).then((res) => {
+            setDeleteDisabled(false);
+            setDeleteButtonText("Delete");
+            setTakeId('');
+            let newData = data.filter((item) => {
+                if (item?._id !== id) {
+                    return item;
+                }
+            })
+            setData(newData);
+        }).catch((error) => {
+            navigate('*');
+        });
+    };
 
-    function Update(id, name) {
-        setupdate_id(id)
-        setupdateinput(true)
-        setupdatename(name)
-    }
+    const handleUpdate = (id, name) => {
+        setUpdateId(id);
+        setOpenUpdateModal(true);
+        setWrongUpdateName(false);
+        setMessUpdateName("");
+        setUpdateName(name);
+    };
 
-    function ActualUpdate(id) {
-        let res = finderrorName(updatename)
-        if (res == true) {
-            setwrongupdatename(false)
-            setmessupdatename("")
-
-
-            setupdatebutton("Please Wait...")
-            setdisableupdate(true)
+    const handleActualUpdate = (id) => {
+        let res = findErrorName(updateName);
+        if (res) {
+            setWrongUpdateName(false);
+            setMessUpdateName("");
+            setUpdateButtonText("Please Wait...");
+            setDisableUpdate(true);
             fetch(`${api}/MasterList/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${userinfo?.user?.auth}`
+                    Authorization: `Bearer ${userInfo?.user?.auth}`
                 },
                 body: JSON.stringify({
-                    name: updatename
+                    name: updateName
                 })
-            }).then(responce => responce.json()).then((res) => {
+            }).then(response => response.json()).then((res) => {
                 if (res.statusCode === 200) {
-                    loaddata()
-                    setupdatebutton("Update")
-                    setdisableupdate(false)
-                    setupdate_id('')
+                    setOpenUpdateModal(false);
+                    setUpdateButtonText("Update");
+                    setDisableUpdate(false);
+                    setUpdateId('');
+                    let newData = data?.map((item) => {
+                        if (item?._id === id) {
+                            return res?.data;
+                        } else {
+                            return item;
+                        }
+                    })
+                    setData(newData);
                 } else {
-                    history('*')
+                    navigate('*');
                 }
-            }, (error) => {
-                history('*')
-            })
+            }).catch((error) => {
+                navigate('*');
+            });
+        } else {
+            setWrongUpdateName(true);
+            setMessUpdateName("*Name must be only string and should not contain symbols or numbers and string length is less than 2");
         }
-        else {
-            setwrongupdatename(true)
-            setmessupdatename("*Name must be only string and should not contain symbols or numbers and string length is less then 2")
-        }
-    }
+    };
 
     return (
         <>
             {
-                load == false ?
+                !loading ?
                     <div className="container">
-                        <div className="row">
-                            {
-                                add == true ?
-                                    <div className="col"><button className="btn btn-primary mt-2 btn-sm" onClick={addhtml}>Add+</button></div>
-                                    :
-                                    <>
-                                        <div className="col">
-                                            <div className="form-group mt-2">
-                                                <input type="text" value={name} onChange={(e) => { setname(e.target.value) }} className="form-control" placeholder="Enter Full Name" required />
-                                                {wrongname ? <label style={{ color: "red" }}>{messname}</label> : ""}
-                                            </div>
-                                        </div>
-                                        <div className="col"><button className="btn btn-success mt-2  btn-sm" disabled={disable} onClick={submit}>{Submit}</button></div>
-                                    </>
-                            }
+                        <div className="mt-2" style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button variant="contained" size="small" sx={{ textTransform: 'none' }} color="primary" onClick={() => setOpenAddModal(true)}>Add +</Button>
                         </div>
-                        <table className="table mt-3">
+
+
+                        <table className="table-auto shadow border mt-3 p-5 w-auto mx-auto mb-3">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">#Action1</th>
-                                    <th scope="col">#Action2</th>
+                                    <th scope="col" className="text-center px-5 py-2 border ">#</th>
+                                    <th scope="col" className="text-center px-5 py-2 border">Name</th>
+                                    <th scope="col" className="text-center px-5 py-2 border">#Action1</th>
+                                    <th scope="col" className="text-center px-5 py-2 border">#Action2</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     data && data.length !== 0 && data.map((item, ind) => (
                                         <tr key={ind}>
-                                            <th >{ind + 1}</th>
-                                            {
-                                                updateinput == true && update_id == item._id ?
-                                                    <div className="form-group">
-                                                        <input type="text" style={{ backgroundColor: "#BFC9CA" }} value={updatename} onChange={(e) => { setupdatename(e.target.value) }} className="form-control" placeholder="Enter Full Name" required />
-                                                        {wrongupdatename ? <label style={{ color: "red" }}>{messupdatename}</label> : ""}
-                                                    </div>
-                                                    : <td>{item.name}</td>
-                                            }
-                                            {
-                                                updateinput == true && update_id == item._id ?
-                                                    <td><button className="btn btn-primary  btn-sm" disabled={disableupdate} onClick={() => ActualUpdate(item._id)}>{updatebutton}</button></td>
-                                                    : <td><button className="btn btn-primary  btn-sm" onClick={() => Update(item._id, item.name)}>Update</button></td>
-                                            }
-                                            {
-                                                item._id == takeid ? <td><button className="btn btn-danger  btn-sm" disabled={Deletedisable} onClick={() => Delete_user(item._id)}>{DeleteButton}</button></td>
-                                                    : <td><button className="btn btn-danger  btn-sm" onClick={() => Delete_user(item._id)}>Delete</button></td>
-                                            }
+                                            <th className="text-center px-5 py-2 border">{ind + 1}</th>
+                                            <td className="text-center px-5 py-2 border">{item?.name}</td>
+                                            <td className="text-center px-5 py-2 border">
+                                                <Button variant="contained" color="primary" size="small" sx={{ textTransform: 'none' }} onClick={() => handleUpdate(item._id, item.name)}>Update</Button>
+                                            </td>
+                                            <td className="text-center px-5 py-2 border">
+                                                <Button variant="contained" color="secondary" size="small" sx={{ textTransform: 'none' }} disabled={item._id === takeId && deleteDisabled} onClick={() => handleDeleteUser(item._id)}>
+                                                    {item._id === takeId ? deleteButtonText : "Delete"}
+                                                </Button>
+                                            </td>
                                         </tr>
                                     ))
                                 }
                             </tbody>
                         </table>
+
+                        <Dialog open={openAddModal} onClose={() => setOpenAddModal(false)} maxWidth="xs" fullWidth>
+                            <DialogTitle>Add Master User</DialogTitle>
+                            <DialogContent>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    label="Name"
+                                    type="text"
+                                    fullWidth
+                                    spellCheck='false'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    error={wrongName}
+                                    helperText={wrongName ? messName : ""}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => setOpenAddModal(false)} variant="contained" color="primary" size="small" sx={{ textTransform: 'none' }}>
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleSubmit} variant="contained" color="primary" size="small" sx={{ textTransform: 'none' }} disabled={disableSubmit}>
+                                    {submitButtonText}
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog open={openUpdateModal} onClose={() => setOpenUpdateModal(false)} maxWidth="xs" fullWidth>
+                            <DialogTitle>Update Master User</DialogTitle>
+                            <DialogContent>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    label="Name"
+                                    type="text"
+                                    fullWidth
+                                    spellCheck='false'
+                                    value={updateName}
+                                    onChange={(e) => setUpdateName(e.target.value)}
+                                    error={wrongUpdateName}
+                                    helperText={wrongUpdateName ? messUpdateName : ""}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => setOpenUpdateModal(false)} color="primary" variant="contained" size="small" sx={{ textTransform: 'none' }}>
+                                    Cancel
+                                </Button>
+                                <Button onClick={() => handleActualUpdate(updateId)} variant="contained" color="primary" size="small" sx={{ textTransform: 'none' }} disabled={disableUpdate}>
+                                    {updateButtonText}
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                     : <Loader />
             }
         </>
-    )
-}
-export default MasterList
+    );
+};
+
+export default MasterList;
