@@ -3,6 +3,37 @@ const Bus_detail = require('../models/Bus_detail_models')
 let FavouriteJourney = require('../models/FavouriteJourney_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
 
+
+const addAndRemoveFromWishList = async (req, res) => {
+    try {
+        const bookingId = req.body.id;
+        const is_wishlist = req.body.is_wishlist;
+        if (!bookingId) {
+            return res.status(404).json(new ApiResponse(404, null, "Booking id not found"));
+        } else if (!is_wishlist) {
+            return res.status(404).json(new ApiResponse(404, null, "is_wishlist is empty or not found"));
+        }
+        let booking = await Booking.findOne({ _id: bookingId });
+        if (is_wishlist === "yes") {
+            booking.is_wishlist = true;
+        } else {
+            booking.is_wishlist = false;
+        }
+        booking.save();
+        if (booking) {
+            return res.status(200).json(new ApiResponse(200, booking, "success"));
+        } else {
+            return res
+                .status(500)
+                .json(new ApiResponse(500, [], "Server down !"));
+        }
+    } catch {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, [], "Server down !"));
+    }
+}
+
 const getTicketByidFprAuthenticateUser = async (req, res) => {
     try {
         let id = req.params._id
@@ -22,7 +53,7 @@ const getTicketByidFprAuthenticateUser = async (req, res) => {
 
 const getTicketByEmail = async (req, res) => {
     try {
-        let result = await Booking.find({ useremail: req.params.email })
+        let result = await Booking.find({ useremail: req.params.email }).select(["-updatedAt,", "-__v", "-createAt"])
         result.reverse()
         if (result) {
             return res.status(200).json(new ApiResponse(200, result, "success"))
@@ -289,4 +320,4 @@ async function TransfromData(createdAtString) {
     return formattedDate
 }
 
-module.exports = { getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser }
+module.exports = {addAndRemoveFromWishList, getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser }

@@ -38,6 +38,10 @@ const BookingSchema = new Schema(
             type: Number,
             required: true,
         },
+        is_wishlist:{
+            type:Boolean,
+            default:false
+        }
     },
     {
         timestamps: true

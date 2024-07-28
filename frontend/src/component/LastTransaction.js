@@ -5,6 +5,7 @@ import { usermethod } from '../redux/UserSlice'
 import Loader from './Loader'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { ClipLoader } from 'react-spinners';
+import Tooltip from '@mui/material/Tooltip';
 const api = process.env.REACT_APP_API
 const LastTransaction = () => {
 
@@ -14,6 +15,7 @@ const LastTransaction = () => {
     const [load, setload] = useState(true)
     const dispatch = useDispatch()
     const [wishlistLoader, setWishlistLoader] = useState(false);
+    const [wishListId, setWishListId] = useState();
 
     function loadTicket() {
         fetch(`${api}/Booking/getTicket/${userinfo?.user?.user?.email}`, {
@@ -48,7 +50,11 @@ const LastTransaction = () => {
     }, [])
 
     const addToWishList = async (id, is_wishlist) => {
+        if (wishlistLoader) {
+            return;
+        }
         setWishlistLoader(true);
+        setWishListId(id);
         let response = await fetch(`${api}/Booking/addAndRemoveFromWishList`, {
             method: 'PATCH',
             headers: {
@@ -61,16 +67,25 @@ const LastTransaction = () => {
                 is_wishlist: is_wishlist === true ? "no" : "yes",
             })
         })
+        let booking = await response.json();
+        booking = booking?.data;
+        let newBookings = data?.map((item) => {
+            if (item?._id === booking?._id) {
+                return booking;
+            } else {
+                return item;
+            }
+        })
+        setdata(newBookings);
         setWishlistLoader(false);
-        console.log(response);
     }
 
     return (
         <>
             {
-                load == false ?
+                load === false ?
                     <div className='container mt-5'>
-                        {data.length ? <table className="table">
+                        {data?.length ? <table className="table">
                             <thead>
                                 <tr>
                                     <th scope="col" className="text-center">#</th>
@@ -85,7 +100,7 @@ const LastTransaction = () => {
                             <tbody>
                                 {
                                     data?.length && data?.map((item, ind) => (
-                                        <tr className='' key={ind}>
+                                        <tr className='m-10' key={ind}>
                                             <th className="text-center" scope="row">{ind + 1}</th>
                                             <td className="text-center">{item.src}</td>
                                             <td className="text-center">{item.dist}</td>
@@ -93,11 +108,14 @@ const LastTransaction = () => {
                                             <td className="text-center">₹{item.total_money}</td>
                                             <td className="text-center">
                                                 {
-                                                    wishlistLoader === true ?
-                                                        <ClipLoader className='starloader' size={'20px'} color="blue" /> :
-                                                        <FavoriteRoundedIcon onClick={() => addToWishList(item?._id, item?.is_wishlist)}
-                                                            style={{ color: item?.is_wishlist && 'blue' }}
-                                                        />
+                                                    wishlistLoader === true && wishListId === item._id ?
+                                                        <ClipLoader className='starloader' size={'12px'} color="blue" /> :
+                                                        <Tooltip title={item?.is_wishlist ? "Remove from wishList" : "Add to wishList"} >
+                                                            <FavoriteRoundedIcon
+                                                                onClick={() => addToWishList(item?._id, item?.is_wishlist)}
+                                                                style={{ color: item?.is_wishlist ? 'red' : 'default' }}
+                                                            />
+                                                        </Tooltip>
                                                 }
                                             </td>
                                             <td className="text-center"><Link to={`/${item._id}`}><button className='btn btn-primary btn-sm'>View more</button></Link></td>
