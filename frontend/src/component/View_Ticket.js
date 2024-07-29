@@ -8,6 +8,7 @@ import Loader from './Loader';
 import Button from '@mui/material/Button';
 import '../stylesheet/ViewTicket.css'
 import { usermethod } from '../redux/UserSlice'
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 const api = process.env.REACT_APP_API
 const View_Ticket = () => {
 
@@ -130,9 +131,12 @@ const View_Ticket = () => {
             {
                 load == false ?
                     <div className='container shadow mt-5'>
-                        {FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'20px'} color="blue" /> :
-                            isFavouriteJourney === false ? <IoIosStarOutline onClick={AddToFavouriteJourney} className='startButton' /> :
-                                <MdStar onClick={RemoveFromFavouriteJourney} color='blue' className='startButton' />}
+                        {
+                            FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'20px'} color="blue" /> :
+                                isFavouriteJourney === false ?
+                                    <StarRoundedIcon onClick={AddToFavouriteJourney} className='startButton' /> :
+                                    <StarRoundedIcon onClick={RemoveFromFavouriteJourney} style={{color:'blue'}} className='startButton' />
+                        }
                         <Button style={{ float: 'right', marginTop: '5px' }} variant="contained" color="primary" onClick={Downlode}>
                             Downlode
                         </Button>
