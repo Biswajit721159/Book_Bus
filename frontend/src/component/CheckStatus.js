@@ -52,7 +52,7 @@ const CheckStatus = () => {
             <div className='checkstatus mt-3'>
                 <div className="form-group" style={{ display: 'flex', flexDirection: 'row' }}>
                     <input type="text" onChange={(e) => { setidNumber(e.target.value) }} spellCheck='false' className="checkinputfrom" placeholder="Enter Id Number" required />
-                    <button className="btn btn-primary" id='checkbtn' disabled={disabled} onClick={submit}>{button}</button>
+                    <button className="btn btn-primary mx-1" id='checkbtn' disabled={disabled} onClick={submit}>{button}</button>
                 </div>
                 {wrongidNumber ? <label style={{ color: "red", marginTop: '2px' }}>{messidNumber}</label> : ""}
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Button,
     TextField,
@@ -10,7 +10,10 @@ import {
 } from '@mui/material';
 
 const OTPModal = ({ open, handleClose, OTPVerified, sendOTP, errormess, submitLoading, resentLoading }) => {
+
     const [otp, setOtp] = useState('');
+    const [resendTimeout, setResendTimeout] = useState(60);
+    const [resendEnabled, setResendEnabled] = useState(false);
 
     const handleChange = (e) => {
         setOtp(e.target.value);
@@ -20,6 +23,21 @@ const OTPModal = ({ open, handleClose, OTPVerified, sendOTP, errormess, submitLo
         e.preventDefault();
         OTPVerified(otp);
     };
+
+    useEffect(() => {
+        if (resendTimeout > 0) {
+            const timer = setTimeout(() => setResendTimeout(resendTimeout - 1), 1000);
+            return () => clearTimeout(timer);
+        } else {
+            setResendEnabled(true);
+        }
+    }, [resendTimeout]);
+
+    function resentOTP() {
+        sendOTP();
+        setResendTimeout(60);
+        setResendEnabled(false);
+    }
 
     const style = {
         position: 'absolute',
@@ -72,17 +90,20 @@ const OTPModal = ({ open, handleClose, OTPVerified, sendOTP, errormess, submitLo
                             >
                                 {submitLoading ? "Submitting" : "Submit"}
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                sx={{ mt: 2 }}
-                                onClick={sendOTP}
-                                disabled={submitLoading | resentLoading}
-                                size='small'
-                                style={{ textTransform: 'none', marginLeft: '10px' }}
-                            >
-                                {resentLoading ? "Resending" : "Resend"}
-                            </Button>
+                            {
+                                !resendEnabled && !resentLoading ?
+                                    <p className='mt-2' style={{ color: 'green' }}>Resend OTP in <strong>{resendTimeout}</strong> seconds</p> :
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        sx={{ mt: 2 }}
+                                        onClick={resentOTP}
+                                        disabled={submitLoading | resentLoading}
+                                        size='small'
+                                        style={{ textTransform: 'none', marginLeft: '10px' }}
+                                    >
+                                        {resentLoading ? "Resending" : "Resend"}
+                                    </Button>}
                         </div>
                     </form>
                     <p style={{ color: 'red', marginTop: '5%' }}>{errormess}</p>
