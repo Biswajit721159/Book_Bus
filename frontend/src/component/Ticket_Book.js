@@ -71,51 +71,57 @@ const Ticket_Book = () => {
     }
 
     function show_seat(_id) {
-        setload(true)
-        fetch(`${api}/Booking/get_Seat`, {
-            method: 'PATCH',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                start_station: src,
-                end_station: dist,
-                date: date,
-                bus_id: bus_id,
-            })
-        }).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res.statusCode === 200) {
-                fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${userinfo?.user?.auth}`
-                    }
-                }).then(responce => responce.json()).then((result) => {
-                    if (result !== undefined && result.statusCode === 200) {
-                        setMasterList(result?.data)
-                        setload(false)
-                        // settotal_seat(res.data.total_seat)
-                        setdata(res.data.BookingRecord)
-                        settotal_distance(res.data.total_distance)
-                    }
-                    else if (result.statusCode === 498) {
-                        dispatch(usermethod.Logout_User())
-                        history('/Login')
-                    }
-                }, (error) => {
-                    history('*')
+        try {
+            setload(true)
+            fetch(`${api}/Booking/get_Seat`, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    start_station: src,
+                    end_station: dist,
+                    date: date,
+                    bus_id: bus_id,
                 })
+            }).then(responce => responce.json()).then((res) => {
+                if (res != undefined && res.statusCode === 200) {
+                    fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${userinfo?.user?.auth}`
+                        }
+                    }).then(responce => responce.json()).then((result) => {
+                        if (result !== undefined && result.statusCode === 200) {
+                            setMasterList(result?.data)
+                            setload(false)
+                            // settotal_seat(res.data.total_seat)
+                            setdata(res.data.BookingRecord)
+                            settotal_distance(res.data.total_distance)
+                        }
+                        else if (result.statusCode === 498) {
+                            dispatch(usermethod.Logout_User())
+                            history('/Login')
+                        }
+                    }, (error) => {
+                        history('*')
+                    })
 
-            }
-            else if (res.statusCode === 498) {
-                dispatch(usermethod.Logout_User())
-                history('/Login')
-            }
-        }, (error) => {
-            history('*')
-        })
+                }
+                else if (res.statusCode === 498) {
+                    dispatch(usermethod.Logout_User())
+                    history('/Login')
+                } else {
+                    history('*');
+                }
+            }, (error) => {
+                history('*')
+            })
+        } catch (error) {
+            history('*');
+        }
     }
 
     function handleCheckboxChange(name) {

@@ -73,16 +73,20 @@ const get_Seat = async (req, res) => {
         let dist = req.body.end_station.toUpperCase()
         let date = req.body.date
         let bus_id = req.body.bus_id
-
+        if(src===dist || !date || !bus_id){
+            return res
+            .status(404)
+            .json(new ApiResponse(404, [], "Not Found"));
+        }
 
         let Bookingdata = await Booking.find({ bus_id: bus_id, date: date });
-        let ffff = await Bus_detail.find({});
-        let busData = []
-        for (let i = 0; i < ffff.length; i++) {
-            if (ffff[i]._id == bus_id) {
-                busData.push(ffff[i])
-            }
-        }
+        let busData = await Bus_detail.find({_id:bus_id});
+        // let busData = []
+        // for (let i = 0; i < ffff.length; i++) {
+        //     if (ffff[i]._id == bus_id) {
+        //         busData.push(ffff[i])
+        //     }
+        // }
         let bus = busData[0].station_data
 
         let srcToDistStation = new Set()
