@@ -34,14 +34,18 @@ const BookingSchema = new Schema(
             type: [String],
             required: true,
         },
+        status:{
+            type: [Boolean],
+            require: true,
+        },
         total_distance: {
             type: Number,
             required: true,
         },
         is_wishlist:{
             type:Boolean,
-            default:false
-        }
+            defaul: false
+        },
     },
     {
         timestamps: true

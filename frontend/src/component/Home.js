@@ -120,7 +120,7 @@ const Home = () => {
                                                                         <td className="text-center">
                                                                             <button className="btn btn-primary btn-sm" disabled={true} >{Available_seat} Left </button>
                                                                             <Link to={`/${item.bus_id}/${item.start_station}/${item.end_station}/${date}`}>
-                                                                                <button className="btn btn-primary btn-sm">
+                                                                                <button className="btn btn-primary btn-sm" disabled={!Available_seat}>
                                                                                     Book
                                                                                 </button>
                                                                             </Link>

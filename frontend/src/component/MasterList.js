@@ -165,8 +165,6 @@ const MasterList = () => {
                 })
             }).then(response => response.json()).then((res) => {
                 if (res.statusCode === 200) {
-                    setOpenUpdateModal(false);
-                    setUpdateButtonText("Update");
                     setDisableUpdate(false);
                     setUpdateId('');
                     let newData = data?.map((item) => {
@@ -175,11 +173,15 @@ const MasterList = () => {
                         } else {
                             return item;
                         }
-                    })
+                    }) 
                     setData(newData);
+                    setOpenUpdateModal(false);
                 } else {
-                    navigate('*');
+                    setWrongUpdateName(true);
+                    setMessUpdateName(res?.message);
                 }
+                setDisableUpdate(false);
+                setUpdateButtonText("Update");
             }).catch((error) => {
                 navigate('*');
             });
@@ -242,6 +244,7 @@ const MasterList = () => {
                                     onChange={(e) => setName(e.target.value)}
                                     error={wrongName}
                                     helperText={wrongName ? messName : ""}
+                                    size="small"
                                 />
                             </DialogContent>
                             <DialogActions>
@@ -268,6 +271,7 @@ const MasterList = () => {
                                     onChange={(e) => setUpdateName(e.target.value)}
                                     error={wrongUpdateName}
                                     helperText={wrongUpdateName ? messUpdateName : ""}
+                                    size="small"
                                 />
                             </DialogContent>
                             <DialogActions>

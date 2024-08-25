@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Home from "./component/Home";
 import Register from "./User/Register";
 import Login from "./User/Login";
@@ -36,6 +38,7 @@ function App() {
           <Route path="*" element={<Error />}></Route>
         </Routes>
       </Router>
+      <ToastContainer theme="light"/>
     </div>
   );
 }

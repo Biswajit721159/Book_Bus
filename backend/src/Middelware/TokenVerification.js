@@ -10,6 +10,7 @@ function verifytoken(req, res, next) {
         if (token) {
             try {
                 const decodedToken = jwt.verify(token, jwtKey);
+                req.user=decodedToken;
                 if (decodedToken) {
                     next();
                 } else {

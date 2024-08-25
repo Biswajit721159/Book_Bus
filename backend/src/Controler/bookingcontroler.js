@@ -4,6 +4,24 @@ let FavouriteJourney = require('../models/FavouriteJourney_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
 
 
+const cancelTicket = async (req, res) => {
+    try {
+        let { booking_id, index } = req.body;
+        console.log(req.body)
+        let booking = await Booking.findOne({ _id: booking_id });
+        if (!booking) {
+            return res.status(400).json(new ApiResponse(400, null, "Booking id not found"));
+        } else if (index === undefined || index === null) {
+            return res.status(400).json(new ApiResponse(400, null, "index not found"));
+        }
+        booking.status[index] = false;
+        booking.save();
+        return res.status(200).json(new ApiResponse(200, booking, "Ticket cancel successfully"));
+    } catch (error) {
+        return res.status(500).json(new ApiResponse(500, null, "Server Down"));
+    }
+}
+
 const addAndRemoveFromWishList = async (req, res) => {
     try {
         const bookingId = req.body.id;
@@ -37,7 +55,7 @@ const addAndRemoveFromWishList = async (req, res) => {
 const getTicketByidFprAuthenticateUser = async (req, res) => {
     try {
         let id = req.params._id
-        let result = await Booking.find({ id: id })
+        let result = await Booking.find({ id: id });
         if (result) return res
             .status(200)
             .json(new ApiResponse(200, result, "Success"));
@@ -73,14 +91,14 @@ const get_Seat = async (req, res) => {
         let dist = req.body.end_station.toUpperCase()
         let date = req.body.date
         let bus_id = req.body.bus_id
-        if(src===dist || !date || !bus_id){
+        if (src === dist || !date || !bus_id) {
             return res
-            .status(404)
-            .json(new ApiResponse(404, [], "Not Found"));
+                .status(404)
+                .json(new ApiResponse(404, [], "Not Found"));
         }
 
         let Bookingdata = await Booking.find({ bus_id: bus_id, date: date });
-        let busData = await Bus_detail.find({_id:bus_id});
+        let busData = await Bus_detail.find({ _id: bus_id });
         // let busData = []
         // for (let i = 0; i < ffff.length; i++) {
         //     if (ffff[i]._id == bus_id) {
@@ -126,10 +144,14 @@ const get_Seat = async (req, res) => {
                 let srcStation = Bookingdata[i].src
                 let distStation = Bookingdata[i].dist
                 if (checkStationIsPresentOrNot(srcStation, distStation, srcToDistStation, bus) == true) {
-                    countBookingSeat += parseInt(Bookingdata[i].person.length)
-                    let arr = Bookingdata[i].seat_record
+                    // countBookingSeat += parseInt(Bookingdata[i].person.length)
+                    let arr = Bookingdata[i].seat_record;
+                    let status = Bookingdata[i].status;
                     for (let j = 0; j < arr.length; j++) {
-                        seat.add(arr[j])
+                        if (status[j]) {
+                            seat.add(arr[j]);
+                            countBookingSeat++;
+                        }
                     }
                 }
             }
@@ -170,7 +192,8 @@ const GetTicketById = async (req, res) => {
                 date: Ticket.date,
                 seat_record: Ticket.seat_record,
                 person: Ticket.person,
-                isFavouriteJourney: journey === null ? false : true
+                isFavouriteJourney: journey === null ? false : true,
+                status: Ticket?.status,
             }
             return res
                 .status(200)
@@ -215,6 +238,23 @@ function checkStationIsPresentOrNot(src, dist, set, bus) {
 
 const insertBooking = async (req, res) => {
     try {
+        let person = req.body?.person;
+        let seat_record = req.body?.seat_record;
+        if (!person || !person || person?.length != seat_record?.length || person?.length === 0 || seat_record?.length === 0) {
+            return res.status(400).json(new ApiResponse(400, [], "Missing parameter"));
+        }
+        let status = new Array(person?.length).fill(true);
+        req.body.status = status;
+        let todayResultFound = await Booking.findOne({
+            date: req.body.date,
+            bus_id: req.body.bus_id,
+            useremail: req.user?.email,
+            src: req.body?.src,
+            dist: req.body?.dist,
+        });
+        if (todayResultFound) {
+            return res.status(400).json(new ApiResponse(400, [], "Today you are not allowed to book."));
+        }
         let result = await Booking.create(req.body);
         if (result) {
             return res
@@ -324,4 +364,4 @@ async function TransfromData(createdAtString) {
     return formattedDate
 }
 
-module.exports = {addAndRemoveFromWishList, getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser }
+module.exports = { addAndRemoveFromWishList, getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser, cancelTicket }

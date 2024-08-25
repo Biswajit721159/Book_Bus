@@ -9,27 +9,34 @@ import Button from '@mui/material/Button';
 import '../stylesheet/ViewTicket.css'
 import { usermethod } from '../redux/UserSlice'
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import axios from 'axios'
 const api = process.env.REACT_APP_API
 const View_Ticket = () => {
 
-    const userinfo = useSelector((state) => state.user)
-    const dispatch = useDispatch()
+    const userinfo = useSelector((state) => state.user);
+    const dispatch = useDispatch();
     const { _id } = useParams();
     const history = useNavigate();
-    const [load, setload] = useState(true)
-    const [data, setdata] = useState()
-    const [key_value, setkey_value] = useState()
-    const [isFavouriteJourney, setisFavouriteJourney] = useState(false)
-    const [FavouriteJourneyLoader, setFavouriteJourneyLoader] = useState(false)
+    const [load, setload] = useState(true);
+    const [data, setdata] = useState();
+    const [key_value, setkey_value] = useState();
+    const [isFavouriteJourney, setisFavouriteJourney] = useState(false);
+    const [FavouriteJourneyLoader, setFavouriteJourneyLoader] = useState(false);
+    const [cancelModal, setCancelModal] = useState(false);
+    const [formData, setFormData] = useState();
+    const [cancelLoading, setCancelLoading] = useState(false);
 
     function set_data(nums) {
         let arr1 = nums.person;
         let arr2 = nums.seat_record;
+        let arr3 = nums.status;
         let arr = []
         for (let i = 0; i < arr1.length; i++) {
             let obj = {
                 personName: arr1[i],
-                personSeat: arr2[i]
+                personSeat: arr2[i],
+                status: arr3[i],
             }
             arr.push(obj)
         }
@@ -126,6 +133,32 @@ const View_Ticket = () => {
         })
     }
 
+    async function cancelTicket() {
+        try {
+            setCancelLoading(true);
+            let response = await axios.patch(`${api}/Booking/cancelTicket`, formData,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${userinfo?.user?.auth}`
+                    }
+                });
+            let res = response.data;
+            set_data(res?.data)
+            closeModal();
+            setCancelLoading(false);
+        } catch (error) {
+            history('*');
+            setCancelLoading(false);
+        }
+    }
+
+    function closeModal() {
+        setFormData({});
+        setCancelModal(false);
+    }
+
     return (
         <>
             {
@@ -135,11 +168,11 @@ const View_Ticket = () => {
                             FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'20px'} color="blue" /> :
                                 isFavouriteJourney === false ?
                                     <StarRoundedIcon onClick={AddToFavouriteJourney} className='startButton' /> :
-                                    <StarRoundedIcon onClick={RemoveFromFavouriteJourney} style={{color:'blue'}} className='startButton' />
+                                    <StarRoundedIcon onClick={RemoveFromFavouriteJourney} style={{ color: 'blue' }} className='startButton' />
                         }
-                        <Button style={{ float: 'right', marginTop: '5px' }} variant="contained" color="primary" onClick={Downlode}>
+                        {/* <Button style={{ float: 'right', marginTop: '5px' }} variant="contained" color="primary" size="small" onClick={Downlode}>
                             Downlode
-                        </Button>
+                        </Button> */}
                         <table className="table">
                             <thead>
                                 <tr>
@@ -174,13 +207,68 @@ const View_Ticket = () => {
                                             <td>{item?.personName}</td>
                                             <td>{item?.personSeat}</td>
                                             <td>₹{parseInt(data?.total_rupees) / parseInt(key_value?.length)}</td>
-                                            <td><button className='btn btn-danger btn-sm'>Cancel Ticket</button></td>
+                                            <td>
+                                                {
+                                                    new Date(data?.date) < new Date((new Date()).getDate() + 1) ?
+                                                        <button className='btn btn-primary btn-sm' disabled={true}>Completed</button>
+                                                        : item?.status ?
+                                                            <button
+                                                                className='btn btn-danger btn-sm'
+                                                                onClick={() => {
+                                                                    setCancelModal(true);
+                                                                    setFormData({
+                                                                        booking_id: data?._id,
+                                                                        index: ind,
+                                                                    });
+                                                                }}
+                                                                disabled={cancelLoading}
+                                                            >Cancel Ticket</button>
+                                                            : <button className='btn btn-danger btn-sm' color='secondary' disabled={true}>Canceled</button>
+                                                }
+                                            </td>
                                         </tr>
                                     ))
                                 }
                             </tbody>
                         </table>
-                    </div>
+                        <Dialog
+                            open={cancelModal}
+                            onClose={() => closeModal()}
+                            aria-labelledby="cancel-dialog-title"
+                            aria-describedby="cancel-dialog-description"
+                        >
+                            <DialogTitle id="cancel-dialog-title">
+                                {"Cancel Ticket Confirmation"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="cancel-dialog-description">
+                                    Are you sure you want to cancel this ticket? This action cannot be undone.
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button
+                                    size='small'
+                                    variant='contained'
+                                    style={{ textTransform: 'none' }}
+                                    onClick={() => closeModal()}
+                                >
+                                    No
+                                </Button>
+                                <Button
+                                    size='small'
+                                    variant='contained'
+                                    style={{ textTransform: 'none' }}
+                                    color='secondary' // Optional: Add a color to differentiate the confirm button
+                                    onClick={() => cancelTicket()}
+                                    autoFocus
+                                    disabled={cancelLoading}
+                                >
+                                    {cancelLoading ? 'Canceling...' : 'Confirm'}
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                    </div >
                     : <Loader />
             }
         </>

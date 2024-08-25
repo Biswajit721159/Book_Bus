@@ -4,6 +4,7 @@ import swal from 'sweetalert'
 import Loader from './Loader';
 import { useSelector, useDispatch } from 'react-redux';
 import { usermethod } from '../redux/UserSlice'
+import { toast } from 'react-toastify';
 const api = process.env.REACT_APP_API
 const Ticket_Book = () => {
 
@@ -214,6 +215,7 @@ const Ticket_Book = () => {
                                 history('/Login')
                             }
                             else {
+                                toast.warn(res?.message)
                                 history('*')
                             }
                         }, (error) => {
@@ -361,6 +363,7 @@ const Ticket_Book = () => {
                             </div>
                         </div>
                         : <Loader />
+                        
             }
         </>
     )

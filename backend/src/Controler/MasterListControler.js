@@ -42,6 +42,10 @@ const PostMasterUser = async (req, res) => {
         if (count >= 10) {
             return res.status(401).json(new ApiResponse(401, [], "Your masterList user limit has exit.You need delete some user first"));
         }
+        let masterList = await MasterList.findOne({ user_id: req.body.user_id, name: req.body.name });
+        if (masterList) {
+            return res.status(409).json(new ApiResponse(409, null, "This name is already found."));
+        }
         let result = await MasterList.create(req.body);
         let resultObject = result.toObject();
         delete resultObject.updatedAt;
@@ -66,6 +70,10 @@ const PostMasterUser = async (req, res) => {
 
 const UpdateMasterUser = async (req, res) => {
     try {
+        let masterList = await MasterList.findOne({ user_id: req.user._id, name: req.body.name });
+        if (masterList) {
+            return res.status(409).json(new ApiResponse(409, null, "This name is already found."));
+        }
         let result = await MasterList.findByIdAndUpdate(
             req.params.user_id,
             { name: req.body.name },
