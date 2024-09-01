@@ -7,6 +7,9 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { ClipLoader } from 'react-spinners';
 import Tooltip from '@mui/material/Tooltip';
 import { Button } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 const api = process.env.REACT_APP_API
 const LastTransaction = () => {
 
@@ -17,9 +20,12 @@ const LastTransaction = () => {
     const dispatch = useDispatch()
     const [wishlistLoader, setWishlistLoader] = useState(false);
     const [wishListId, setWishListId] = useState();
+    const [totalPage, setTotalPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    function loadTicket() {
-        fetch(`${api}/Booking/getTicket/${userinfo?.user?.user?.email}`, {
+    function loadTicket(page = 1) {
+        setload(true)
+        fetch(`${api}/Booking/getTicket/${userinfo?.user?.user?.email}/${page}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -27,8 +33,9 @@ const LastTransaction = () => {
             }
         }).then(responce => responce.json()).then((res) => {
             if (res != undefined && res.statusCode === 200) {
-                setload(false)
-                setdata(res.data)
+                setload(false);
+                setdata(res.data?.bookingData);
+                setTotalPage(res?.data?.totalPage);
             } else if (res.statusCode === 498) {
                 dispatch(usermethod.Logout_User())
                 history('/Login')
@@ -83,58 +90,72 @@ const LastTransaction = () => {
 
     return (
         <>
-            {
-                load === false ?
-                    <div className='container mt-5'>
-                        {data?.length ?
-                            <table className="table border shadow">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" className="text-center">#</th>
-                                        <th scope="col" className="text-center">Source</th>
-                                        <th scope="col" className="text-center">Dastination</th>
-                                        <th scope="col" className="text-center">Date</th>
-                                        <th scope="col" className="text-center">Total Money</th>
-                                        <th scope="col" className="text-center">WishList</th>
-                                        <th scope="col" className="text-center">View Detail</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        data?.length && data?.map((item, ind) => (
-                                            <tr className='m-10' key={ind}>
-                                                <th className="text-center" scope="row">{ind + 1}</th>
-                                                <td className="text-center">{item.src}</td>
-                                                <td className="text-center">{item.dist}</td>
-                                                <td className="text-center">{item.date}</td>
-                                                <td className="text-center">₹{item.total_money}</td>
-                                                <td className="text-center">
-                                                    {
-                                                        wishlistLoader === true && wishListId === item._id ?
-                                                            <ClipLoader className='starloader' size={'12px'} color="blue" /> :
-                                                            <Tooltip title={item?.is_wishlist ? "Remove from wishList" : "Add to wishList"} >
-                                                                <FavoriteRoundedIcon
-                                                                    onClick={() => addToWishList(item?._id, item?.is_wishlist)}
-                                                                    style={{ color: item?.is_wishlist ? 'red' : 'default' }}
-                                                                />
-                                                            </Tooltip>
-                                                    }
-                                                </td>
-                                                <td className="text-center">
-                                                    <Link to={`/${item._id}`}>
-                                                        <Button variant="contained" color="primary" size="small" sx={{ textTransform: 'none' }}>View more</Button>
-                                                    </Link>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                            : "No Transaction Found"
-                        }
-                    </div>
-                    : <Loader />
-            }
+            <div className='container mt-5'>
+                {data?.length ?
+                    <>
+                        <table className="table border shadow">
+                            <thead>
+                                <tr>
+                                    <th scope="col" className="text-center">#</th>
+                                    <th scope="col" className="text-center">Source</th>
+                                    <th scope="col" className="text-center">Dastination</th>
+                                    <th scope="col" className="text-center">Date</th>
+                                    <th scope="col" className="text-center">Total Money</th>
+                                    <th scope="col" className="text-center">WishList</th>
+                                    <th scope="col" className="text-center">View Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    data?.length && data?.map((item, ind) => (
+                                        <tr className='m-10' key={ind}>
+                                            <th className="text-center" scope="row">{ind + 1}</th>
+                                            <td className="text-center">{item.src}</td>
+                                            <td className="text-center">{item.dist}</td>
+                                            <td className="text-center">{item.date}</td>
+                                            <td className="text-center">₹{item.total_money}</td>
+                                            <td className="text-center">
+                                                {
+                                                    wishlistLoader === true && wishListId === item._id ?
+                                                        <ClipLoader className='starloader' size={'12px'} color="blue" /> :
+                                                        <Tooltip title={item?.is_wishlist ? "Remove from wishList" : "Add to wishList"} >
+                                                            <FavoriteRoundedIcon
+                                                                onClick={() => addToWishList(item?._id, item?.is_wishlist)}
+                                                                style={{ color: item?.is_wishlist ? 'red' : 'default' }}
+                                                            />
+                                                        </Tooltip>
+                                                }
+                                            </td>
+                                            <td className="text-center">
+                                                <Link to={`/${item._id}`}>
+                                                    <Button variant="contained" color="primary" size="small" sx={{ textTransform: 'none' }}>View more</Button>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                        <Pagination
+                            onChange={(e, value) => {
+                                setCurrentPage(value);
+                                loadTicket(value);
+                            }}
+                            page={currentPage}
+                            style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', marginBottom: '20px' }}
+                            count={totalPage}
+                            color="primary"
+                        />
+                    </>
+                    : load === false ? <h5 style={{ display: 'flex', justifyContent: 'center' }}>No Transaction Found</h5> : ""
+                }
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={load}
+                >
+                    <CircularProgress color="primary" />
+                </Backdrop>
+            </div>
         </>
     )
 }

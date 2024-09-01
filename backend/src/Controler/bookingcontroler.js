@@ -71,17 +71,29 @@ const getTicketByidFprAuthenticateUser = async (req, res) => {
 
 const getTicketByEmail = async (req, res) => {
     try {
-        let result = await Booking.find({ useremail: req.params.email }).select(["-updatedAt,", "-__v", "-createAt"])
-        result.reverse()
-        if (result) {
-            return res.status(200).json(new ApiResponse(200, result, "success"))
+        let limit = 8;
+        let { page } = req.params;
+        page = page ? parseInt(page) : 1; 
+
+        let count = await Booking.countDocuments({ useremail: req.params.email });
+
+        let result = await Booking.find({ useremail: req.params.email })
+            .select(["-updatedAt", "-__v", "-createAt"])
+            .skip((page - 1) * limit) 
+            .limit(limit) 
+            .sort({ createdAt: -1 });
+        let data = {
+            bookingData: result,
+            totalPage: Math.ceil(count / limit)
+        };
+    
+        if (result.length > 0) {
+            return res.status(200).json(new ApiResponse(200, data, "success"));
         } else {
-            return res.status(404).json(new ApiResponse(404, [], "Ticket not found !"))
+            return res.status(404).json(new ApiResponse(404, [], "Ticket not found!"));
         }
-    } catch {
-        return res
-            .status(500)
-            .json(new ApiResponse(500, [], "Server down !"));
+    } catch (error) {
+        return res.status(500).json(new ApiResponse(500, [], "Server down!"));
     }
 }
 
