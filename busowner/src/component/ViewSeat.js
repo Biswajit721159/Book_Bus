@@ -51,7 +51,7 @@ const ViewSeat=()=>{
     function loadproduct()
     {
         setload(true)
-        fetch(`/busowner/${userinfo.user.email}`,{
+        fetch(`/businfo/${userinfo.user.email}`,{
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/json',
@@ -102,7 +102,7 @@ const ViewSeat=()=>{
             setdisabled(true)
             let y=findBusId()
             setbutton("Wait Finding...")
-            fetch('/busowner/getBookingStatus',{
+            fetch('/businfo/getBookingStatus',{
                 method:'PATCH',
                 headers:{
                     'Accept':'application/json',

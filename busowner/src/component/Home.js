@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import loader from "../images/loader.gif"
 import { FullPageLoader } from './FullPageLoader';
 import { toast } from 'react-toastify'
+import { convertUtcToIst } from '../helpers/USTtoIST';
+import { Pagination } from '@mui/material';
+import { getBuses } from '../utilities/busApi';
 const api = process.env.REACT_APP_API
 
 const Home = () => {
     const [data, setdata] = useState([])
     const history = useNavigate();
     const userinfo = JSON.parse(localStorage.getItem('user'))
-    const [load, setload] = useState(true)
+    const [load, setLoad] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(5);
 
     useEffect(() => {
         if (userinfo == null) {
@@ -21,21 +25,26 @@ const Home = () => {
     }, [])
 
 
-    function loadData() {
-        setload(true)
-        fetch(`${api}/busowner/getBusByEmail/${userinfo.user.email}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                auth: `Bearer ${userinfo.auth}`
+    async function loadData(page = 1) {
+        try {
+            setLoad(true);
+            let response = await getBuses(page);
+            if (response?.statusCode) {
+                setdata(response?.data?.data);
+                setTotalPage(response?.data?.totalPage);
+            } else {
+                toast(response?.message);
             }
-        }).then(responce => responce.json()).then((res) => {
-            setdata(res.data);
-            setload(false);
-            toast.success("successfully found!")
-        }, (error) => {
-            setload(false);
-        })
+            setLoad(false);
+        } catch (e) {
+            toast.warn(e?.message);
+            setLoad(false);
+        }
+    }
+
+    function onChangePage(e, page) {
+        setPage(page);
+        loadData(page)
     }
 
 
@@ -47,14 +56,15 @@ const Home = () => {
                         <table className="table mt-5">
                             <thead>
                                 <tr>
-                                    <th className='text-center' scope="col">#</th>
-                                    <th className='text-center' scope="col">Bus Name</th>
-                                    <th className='text-center' scope="col">Total Seat</th>
-                                    <th className='text-center' scope="col">Src To Dist</th>
-                                    <th className='text-center' scope="col">Action Taken</th>
-                                    <th className='text-center' >view</th>
-                                    <th className='text-center' >edit</th>
-                                    <th className='text-center' >delete</th>
+                                    <th className='text-center text-gray-500' scope="col">#</th>
+                                    <th className='text-center text-gray-500' scope="col">Bus Name</th>
+                                    <th className='text-center text-gray-500' scope="col">Total Seat</th>
+                                    <th className='text-center text-gray-500' scope="col">Src To Dist</th>
+                                    <th className='text-center text-gray-500' scope="col">Create At</th>
+                                    <th className='text-center text-gray-500' scope="col">Action Taken</th>
+                                    <th className='text-center text-gray-500' >view</th>
+                                    <th className='text-center text-gray-500' >edit</th>
+                                    <th className='text-center text-gray-500' >delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,12 +75,13 @@ const Home = () => {
                                             <td className='text-center'>{item?.bus_name}</td>
                                             <td className='text-center' >{item?.Total_seat}</td>
                                             <th className='text-center'>*{item?.station_data[0]?.station} - {item?.station_data[(item?.station_data?.length) - 1]?.station}</th>
+                                            <td className='text-center' >{convertUtcToIst(item?.createdAt)}</td>
                                             <td className='text-center' >
                                                 <button className='px-3 p-1 bg-blue-500 rounded-md hover:bg-blue-600 text-white text-sm' disabled>{item?.status}</button>
                                             </td>
                                             <td className='text-center' >
                                                 <Link to={`/View_Bus/${item?._id}`}>
-                                                    <button className='px-3 p-1 bg-orange-500 rounded-md hover:bg-orange-600 text-white text-sm'>View More</button>
+                                                    <button className='px-3 p-1 bg-orange-500 rounded-md hover:bg-orange-600 text-white text-sm'>View</button>
                                                 </Link>
                                             </td>
                                             <td className='text-center'>
@@ -84,6 +95,14 @@ const Home = () => {
                                 }
                             </tbody>
                         </table>
+                        {totalPage ? <Pagination
+                            className='mt-5'
+                            sx={{ display: 'flex', justifyContent: 'center' }}
+                            count={totalPage}
+                            onChange={onChangePage}
+                            page={page}
+                            color="primary"
+                        /> : ""}
                     </div>
                     :
                     <FullPageLoader open={load} />

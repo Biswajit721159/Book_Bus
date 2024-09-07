@@ -11,7 +11,7 @@ const View_Bus = () => {
 
     function loaduser() {
         setload(true)
-        fetch(`${api}/busowner/getBusById/${_id}`, {
+        fetch(`${api}/businfo/getBusById/${_id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

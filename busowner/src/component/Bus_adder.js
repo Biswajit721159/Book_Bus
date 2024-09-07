@@ -62,7 +62,7 @@ const Bus_adder = () => {
     function submit() {
         // setdisabled(true)
         // setbutton("Please Wait...")
-        fetch(`${api}/busowner/addBus`, {
+        fetch(`${api}/businfo/addBus`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

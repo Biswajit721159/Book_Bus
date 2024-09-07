@@ -20,22 +20,62 @@ const getBusById = async (req, res) => {
     }
 }
 
-const getBusByEmail = async (req, res) => {
+const getBuses = async (req, res) => {
     try {
-        let result = await BusOwnerDataBase.find({ email: req.params.email })
-        if (result) {
-            res
-                .status(200)
-                .json(new ApiResponse(200, result, "Success"));
+        if (req.user.role === "200") {
+            return await getBusesForAdmin(req, res);
         } else {
-            res
-                .status(404)
-                .json(new ApiResponse(404, [], "Bus Not Found"));
+            return await getBusesForBusOwner(req, res);
         }
     } catch {
         res
             .status(500)
             .json(new ApiResponse(500, [], "Server down !"));
+    }
+}
+
+
+const getBusesForBusOwner = async (req, res) => {
+    let limit = 10;
+    let { page } = req.params;
+    page = page ? parseInt(page) : 1;
+    let count = await BusOwnerDataBase.countDocuments({ email: req.user.email });
+
+    let result = await BusOwnerDataBase.find({ email: req.user.email })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+    let data = {
+        data: result,
+        totalPage: Math.ceil(count / limit)
+    };
+
+    if (result.length > 0) {
+        return res.status(200).json(new ApiResponse(200, data, "success"));
+    } else {
+        return res.status(404).json(new ApiResponse(404, [], "Ticket not found!"));
+    }
+}
+
+const getBusesForAdmin = async (req, res) => {
+    let limit = 10;
+    let { page } = req.params;
+    page = page ? parseInt(page) : 1;
+    let count = await BusOwnerDataBase.countDocuments({});
+
+    let result = await BusOwnerDataBase.find({})
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+    let data = {
+        data: result,
+        totalPage: Math.ceil(count / limit)
+    };
+
+    if (result.length > 0) {
+        return res.status(200).json(new ApiResponse(200, data, "success"));
+    } else {
+        return res.status(404).json(new ApiResponse(404, [], "Ticket not found!"));
     }
 }
 
@@ -55,4 +95,4 @@ const AddBusInBusOwnerDataBase = async (req, res) => {
 }
 
 
-module.exports = { getBusById, getBusByEmail, AddBusInBusOwnerDataBase }
+module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase }

@@ -1,7 +1,8 @@
+const admin = require("../models/adminUser.js");
 let { ApiResponse } = require("../utils/ApiResponse.js");
 let jwt = require("jsonwebtoken");
 
-function verifytoken(req, res, next) {
+async function verifytoken(req, res, next) {
     try {
         let jwtKey = process.env.ACCESS_TOKEN_SECRET;
         let token =
@@ -10,8 +11,10 @@ function verifytoken(req, res, next) {
         if (token) {
             try {
                 const decodedToken = jwt.verify(token, jwtKey);
-                req.user=decodedToken;
                 if (decodedToken) {
+                    req.user = decodedToken;
+                    let user = await admin.findOne({ email: decodedToken?.email });
+                    req.user.role = user.role
                     next();
                 } else {
                     res.status(498).json(new ApiResponse(498, null, "Invalid Token"));
