@@ -65,10 +65,20 @@ const Home = () => {
                                             <td className='text-center'>{item?.bus_name}</td>
                                             <td className='text-center' >{item?.Total_seat}</td>
                                             <th className='text-center'>*{item?.station_data[0]?.station} - {item?.station_data[(item?.station_data?.length) - 1]?.station}</th>
-                                            <td className='text-center' ><button className='btn btn-primary btn-sm' disabled>{item?.status}</button></td>
-                                            <td className='text-center' ><Link to={`/View_Bus/${item?._id}`}><button className='btn btn-outline-primary btn-sm'>View More</button></Link></td>
-                                            <td className='text-center'><button className='btn btn-dark btn-sm' >Edit</button></td>
-                                            <td className='text-center'><button className='btn btn-danger btn-sm' >Delete</button></td>
+                                            <td className='text-center' >
+                                                <button className='px-3 p-1 bg-blue-500 rounded-md hover:bg-blue-600 text-white text-sm' disabled>{item?.status}</button>
+                                            </td>
+                                            <td className='text-center' >
+                                                <Link to={`/View_Bus/${item?._id}`}>
+                                                    <button className='px-3 p-1 bg-orange-500 rounded-md hover:bg-orange-600 text-white text-sm'>View More</button>
+                                                </Link>
+                                            </td>
+                                            <td className='text-center'>
+                                                <button className='px-3 p-1 bg-sky-500 rounded-md hover:bg-sky-600 text-white text-sm' >Edit</button>
+                                            </td>
+                                            <td className='text-center'>
+                                                <button className='px-3 p-1 bg-red-500 rounded-md hover:bg-red-600 text-white text-sm' >Delete</button>
+                                            </td>
                                         </tr>
                                     ))
                                 }
