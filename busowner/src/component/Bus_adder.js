@@ -150,36 +150,38 @@ const Bus_adder = () => {
 
             {
                 show_html == false ?
-                    <>
-                        <div className="col-md-4 mt-2">
-                            <div className="form-group">
-                                <input type="text" value={station} onChange={(e) => { setstation(e.target.value.toUpperCase()) }} className="form-control" placeholder="Enter Station Name" required />
-                                {wrongstation ? <label style={{ color: "red" }}>{messstation}</label> : ""}
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                        <div>
+                            <div className="mt-2" >
+                                <div className="form-group">
+                                    <input type="text" value={station} onChange={(e) => { setstation(e.target.value.toUpperCase()) }} className="form-control" placeholder="Enter Station Name" required />
+                                    {wrongstation ? <label style={{ color: "red" }}>{messstation}</label> : ""}
+                                </div>
+                            </div>
+                            <div className="mt-2">
+                                <div className="form-group">
+                                    <label style={{ color: "green" }}>*Enter Arrived Time(24 Hour Format)</label>
+                                    <input type="time" value={arrived_time} onChange={(e) => { setarrived_time(e.target.value) }} className="form-control mt-2" placeholder="Enter Arrived Time" required />
+                                    {wrongarrived_time ? <label style={{ color: "red" }}>{messarrived_time}</label> : ""}
+                                </div>
+                            </div>
+                            <div className="mt-2">
+                                <div className="form-group">
+                                    <input type="number" value={Distance} onChange={(e) => { setDistance(e.target.value) }} className="form-control" placeholder="Distance from Previous Station" required />
+                                    {wrongDistance ? <label style={{ color: "red" }}>{messDistance}</label> : ""}
+                                </div>
+                            </div>
+                            <div className="form-check mt-2">
+                                <input className="form-check-input" type="checkbox" onChange={(e) => { setislast_station(e.target.checked) }} id="flexCheckDefault" />
+                                <label className="form-check-label" htmlFor="flexCheckDefault">
+                                    Is this the Last Station
+                                </label>
+                            </div>
+                            <div className="mt-3">
+                                <button className="btn btn-primary" onClick={add_into_list}>Add Into Your List</button>
                             </div>
                         </div>
-                        <div className="col-md-4 mt-2">
-                            <div className="form-group">
-                                <label style={{ color: "green" }}>*Enter Arrived Time(24 Hour Format)</label>
-                                <input type="time" value={arrived_time} onChange={(e) => { setarrived_time(e.target.value) }} className="form-control mt-2" placeholder="Enter Arrived Time" required />
-                                {wrongarrived_time ? <label style={{ color: "red" }}>{messarrived_time}</label> : ""}
-                            </div>
-                        </div>
-                        <div className="col-md-4 mt-2">
-                            <div className="form-group">
-                                <input type="number" value={Distance} onChange={(e) => { setDistance(e.target.value) }} className="form-control" placeholder="Distance from Previous Station" required />
-                                {wrongDistance ? <label style={{ color: "red" }}>{messDistance}</label> : ""}
-                            </div>
-                        </div>
-                        <div className="form-check mt-2">
-                            <input className="form-check-input" type="checkbox" onChange={(e) => { setislast_station(e.target.checked) }} id="flexCheckDefault" />
-                            <label className="form-check-label" htmlFor="flexCheckDefault">
-                                Is this the Last Station
-                            </label>
-                        </div>
-                        <div className="col-md-4 mt-3">
-                            <button className="btn btn-primary" onClick={add_into_list}>Add Into Your List</button>
-                        </div>
-                    </>
+                    </div>
                     : ""
             }
             {show_html == true ?

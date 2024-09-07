@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import loader from "../images/loader.gif"
+import { FullPageLoader } from './FullPageLoader';
+import { toast } from 'react-toastify'
 const api = process.env.REACT_APP_API
 
 const Home = () => {
@@ -28,10 +30,11 @@ const Home = () => {
                 auth: `Bearer ${userinfo.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
-            setdata(res.data)
-            setload(false)
+            setdata(res.data);
+            setload(false);
+            toast.success("successfully found!")
         }, (error) => {
-            history('*')
+            setload(false);
         })
     }
 
@@ -44,35 +47,36 @@ const Home = () => {
                         <table className="table mt-5">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Bus Name</th>
-                                    <th scope="col">Total Seat</th>
-                                    <th scope="col">Src To Dist</th>
-                                    <th scope="col">Action Taken</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    <th className='text-center' scope="col">#</th>
+                                    <th className='text-center' scope="col">Bus Name</th>
+                                    <th className='text-center' scope="col">Total Seat</th>
+                                    <th className='text-center' scope="col">Src To Dist</th>
+                                    <th className='text-center' scope="col">Action Taken</th>
+                                    <th className='text-center' >view</th>
+                                    <th className='text-center' >edit</th>
+                                    <th className='text-center' >delete</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     data?.map((item, ind) => (
                                         <tr key={ind}>
-                                            <th scope="row">{ind + 1}</th>
-                                            <td>{item?.bus_name}</td>
-                                            <td>{item?.Total_seat}</td>
-                                            <th>*{item?.station_data[0]?.station} - {item?.station_data[(item?.station_data?.length) - 1]?.station}</th>
-                                            <td><button className='btn btn-primary btn-sm' disabled>{item?.status}</button></td>
-                                            <td><Link to={`/View_Bus/${item?._id}`}><button className='btn btn-outline-primary btn-sm'>View More</button></Link></td>
-                                            <td><button className='btn btn-dark btn-sm' >Edit</button></td>
-                                            <td><button className='btn btn-danger btn-sm' >Delete</button></td>
+                                            <th className='text-center' scope="row">{ind + 1}</th>
+                                            <td className='text-center'>{item?.bus_name}</td>
+                                            <td className='text-center' >{item?.Total_seat}</td>
+                                            <th className='text-center'>*{item?.station_data[0]?.station} - {item?.station_data[(item?.station_data?.length) - 1]?.station}</th>
+                                            <td className='text-center' ><button className='btn btn-primary btn-sm' disabled>{item?.status}</button></td>
+                                            <td className='text-center' ><Link to={`/View_Bus/${item?._id}`}><button className='btn btn-outline-primary btn-sm'>View More</button></Link></td>
+                                            <td className='text-center'><button className='btn btn-dark btn-sm' >Edit</button></td>
+                                            <td className='text-center'><button className='btn btn-danger btn-sm' >Delete</button></td>
                                         </tr>
                                     ))
                                 }
                             </tbody>
                         </table>
                     </div>
-                    : <div className='loader-container'><img src={loader} /></div>
+                    :
+                    <FullPageLoader open={load} />
             }
         </>
     )

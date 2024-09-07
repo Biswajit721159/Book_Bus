@@ -1,152 +1,149 @@
-import React, { useState,useEffect }  from "react";
-import { json, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { commonClass, ImageComponent } from "../helpers/CommonComponent";
+import { TextField } from "@mui/material";
+import { validateCompanyName, validateConfirmPassword, validatePhoneNumber, validateEmail, validateFullName, validatePassword } from "../helpers/fromValidationCheckers";
+import { toast } from "react-toastify";
+import { register } from "../utilities/authApi";
+const Register = () => {
 
-const Register=()=>{
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setpassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-const [name,setname]=useState("")
-const [email,setemail]=useState("")
-const [password,setpassword]=useState("")
-const history=useNavigate();
-
-const [wrongname,setwrongname]=useState(false)
-const [wrongemail,setwrongemail]=useState(false)
-const [wrongpassword,setwrongpasword]=useState(false)
-
-
-const [messname,setmessname]=useState("")
-const [messemail,setmessemail]=useState("")
-const [messpassword,setmesspassword]=useState("");
-
-const [button,setbutton]=useState("Submit")
-const [disabled,setdisabled]=useState(false)
+  const history = useNavigate();
+  const [load, setLoad] = useState(false);
 
 
-
-  useEffect(()=>{
-    const auth=localStorage.getItem('user')
-    if(auth)
-    {
-        history('/')
+  useEffect(() => {
+    const auth = localStorage.getItem('user')
+    if (auth) {
+      history(-1);
     }
-  },[])
-  
-  function checkforname(s)
-  {
-    var regex = /^[a-zA-Z ]{2,30}$/;
-    let a= regex.test(s);
-    if(a==false)
-    {
-      setwrongname(true)
-      setmessname("*Name must be only string and should not contain symbols or numbers")
-    }
-    return a;
-  }
+  }, [])
 
-  function checkforemailid(s)
-  {
-    var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    let a= regex.test(s);
-    if(a==false)
-    {
-      setwrongemail(true)
-      setmessemail("*Email Address must be in valid formate with @ symbol")
+  async function submit() {
+    if (!validateFullName(fullName)) {
+      toast.warn("Full name must have two parts, each part between 2 and 50 alphabetic characters.")
     }
-    return  a;
-  }
-
-  function checkpassword(s)
-  {
-    var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-    let a= regex.test(s);
-    if(a==false)
-    {
-      setwrongpasword(true)
-      setmesspassword("*Password must have at least one Uppercase, lowercase, digit, special characters & 8 characters")
+    else if (!validateCompanyName(companyName)) {
+      toast.warn("Company name must be between 2 and 100 characters, allowing letters, numbers, &, -, and .")
     }
-    return a;
-  }
-
-  function submit()
-  {
-    let a=checkforname(name)
-    let b=checkforemailid(email)
-    let c=checkpassword(password)
-    setwrongname(!a)
-    setwrongemail(!b)
-    setwrongpasword(!c)
-    
-    if(a && b && c)
-    {
-      setbutton("Please Wait....")
-      setdisabled(true)
-      fetch('/busowner/register',{
-              method:'POST',
-              headers:{
-                  'Accept':'application/json',
-                  'Content-Type':'application/json'
-              },
-              body:JSON.stringify({
-                name:name,
-                email:email,
-                password:password,
-              })
-          })
-          .then(response=>response.json())
-          .then((result)=>{
-              if(result!=undefined && result.status==200)
-              {
-                  delete result.status
-                  localStorage.setItem("user",JSON.stringify(result))
-                  history('/')
-              }
-              else
-              {
-                setbutton("Submit")
-                setdisabled(false)
-                setwrongemail(true)
-                setmessemail(result.message)
-              }
-          })
+    else if (!validateEmail(email)) {
+      toast.warn("Email must be a valid format and between 5 and 100 characters.")
     }
-    else
-    {
-      setbutton("Submit")
-      setdisabled(false)
-      setwrongemail(true)
-      setmessemail("*Email Already present")
+    else if (!validatePhoneNumber(phoneNumber)) {
+      toast.warn("Phone number must be between 10 and 15 digits, allowing optional country code.")
+    }
+    else if (!validatePassword(password)) {
+      toast.warn("Password must be between 8 and 20 characters, and must contain at least: One uppercase letter, One lowercase letter,  One digit, One special character (@$!%*?&#)")
+    }
+    else if (!validateConfirmPassword(password, confirmPassword)) {
+      toast.warn("Password and confirm password must be same.");
+    } else {
+      try {
+        setLoad(true);
+        let response = await register({ fullName, companyName, email, phoneNumber, password });
+        if (response?.statusCode === 201) {
+          toast.success(response?.message);
+          history('/Login');
+        }
+        else {
+          toast.warn(response?.message);
+        }
+        setLoad(false);
+      } catch (e) {
+        toast.warn(e?.message);
+        setLoad(false);
+      }
     }
   }
 
-    return(
-        <div className="d-flex align-items-center justify-content-center">
-           <div>
-           <div className="mt-3">
-                <h3>Register</h3>
-            </div>
-            <div className="mt-2">
-              <div className="form-group">
-                  <input type="text" value={name} onChange={(e)=>{setname(e.target.value)}}  className="form-control" placeholder="Enter Full Name"  required/>
-                  {wrongname?<label  style={{color:"red"}}>{messname}</label>:""}
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="form-group">
-                  <input type="email" value={email} onChange={(e)=>{setemail(e.target.value)}} className="form-control" placeholder="Enter Email Id"  required/>
-                  {wrongemail?<label  style={{color:"red"}}>{messemail}</label>:""}
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="form-group">
-                  <input type="password" value={password} onChange={(e)=>{setpassword(e.target.value)}} className="form-control" placeholder="Enter Password"  required/>
-                  {wrongpassword?<label  style={{color:"red"}}>{messpassword}</label>:""}
-              </div>
-            </div>
-            <div className="mt-3">
-                <button className="btn btn-primary" disabled={disabled} onClick={submit}>{button}</button>
-            </div>
-           </div>
+  return (
+    <>
+      <div className="d-flex align-items-center justify-content-center mt-5">
+        <div onSubmit={submit} className="rounded-md shadow p-10 m-50 flex justify-center flex-col items-center">
+          <ImageComponent />
+          <div className="mt-2 flex justify-between gap-2">
+            <TextField
+              type="text"
+              size="small"
+              value={fullName}
+              onChange={(e) => { setFullName(e.target.value) }}
+              className={commonClass}
+              placeholder="Enter Full Name"
+              required />
+            <TextField
+              type="text"
+              size="small"
+              value={companyName}
+              onChange={(e) => { setCompanyName(e.target.value) }}
+              className={commonClass}
+              placeholder="Company Name"
+              required />
+          </div>
+          <div className="mt-2 flex justify-between gap-2">
+            <TextField
+              type="email"
+              size="small"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value) }}
+              className={commonClass}
+              placeholder="Enter Email Id"
+              required />
+            <TextField
+              type="number"
+              size="small"
+              value={phoneNumber}
+              onChange={(e) => { setPhoneNumber(e.target.value) }}
+              className={commonClass}
+              placeholder="Enter Phone Number"
+              required />
+          </div>
+          <div className="mt-2 flex justify-between gap-2">
+            <TextField
+              type="password"
+              size="small"
+              value={password}
+              onChange={(e) => { setpassword(e.target.value) }}
+              className={commonClass}
+              placeholder="Enter Password"
+              required />
+            <TextField
+              type="password"
+              size="small"
+              value={confirmPassword}
+              onChange={(e) => { setConfirmPassword(e.target.value) }}
+              className={commonClass}
+              placeholder="Enter Confirm Password"
+              required />
+          </div>
+          <button
+            className="px-3 py-1 mt-3 border-none text-white text-sm bg-green-500 rounded-md shadow hover:bg-green-600"
+            disabled={load}
+            onClick={submit}
+          >
+            {
+              !load ?
+                <>
+                  Sign Up <i className="fas fa-arrow-right fa-xs ml-1"></i>
+                </>
+                :
+                <>
+                  Loging... <i className="fas fa-circle-notch fa-spin fa-xs"></i>
+                </>
+            }
+          </button>
+          <div className="flex justify-between mt-4 gap-5">
+            <Link to={'/Login'} className="text-blue-500">Already have an account? Log in</Link>
+          </div>
         </div>
-    )
+      </div>
+    </>
+  )
 }
 
 export default Register;

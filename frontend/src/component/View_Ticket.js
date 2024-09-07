@@ -11,6 +11,7 @@ import { usermethod } from '../redux/UserSlice'
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import axios from 'axios'
+import { toast } from 'react-toastify';
 const api = process.env.REACT_APP_API
 const View_Ticket = () => {
 
@@ -52,8 +53,8 @@ const View_Ticket = () => {
                 Authorization: `Bearer ${userinfo?.user?.auth}`
             }
         }).then(responce => responce.json()).then((res) => {
+            setload(false)
             if (res != undefined && res.statusCode === 200) {
-                setload(false)
                 setdata(res?.data)
                 set_data(res?.data)
                 setisFavouriteJourney(res?.data?.isFavouriteJourney)
@@ -66,6 +67,8 @@ const View_Ticket = () => {
                 history('*')
             }
         }, (error) => {
+            setload(false)
+            toast.warn(error?.message);
             history('*')
         })
     }
@@ -159,13 +162,22 @@ const View_Ticket = () => {
         setCancelModal(false);
     }
 
+    async function copyId(id) {
+        try {
+            await navigator.clipboard.writeText(id);
+            toast.success('ID copied to clipboard!');
+        } catch (error) {
+            toast.error('Failed to copy ID to clipboard.');
+        }
+    }
+
     return (
         <>
             {
                 load == false ?
                     <div className='container shadow mt-5'>
                         {
-                            FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'20px'} color="blue" /> :
+                            FavouriteJourneyLoader === true ? <ClipLoader className='starloader' size={'12px'} color="blue" /> :
                                 isFavouriteJourney === false ?
                                     <StarRoundedIcon onClick={AddToFavouriteJourney} className='startButton' /> :
                                     <StarRoundedIcon onClick={RemoveFromFavouriteJourney} style={{ color: 'blue' }} className='startButton' />
@@ -186,7 +198,7 @@ const View_Ticket = () => {
                                     <td scope="col">Arrival date- </td>
                                     <td scope="col">{data?.date}</td>
                                     <td scope="col">Total Rupees- ₹{data?.total_rupees}</td>
-                                    <th scope="col">Id- <Link style={{ textDecoration: "none" }}>{data?._id}</Link></th>
+                                    <th scope="col">Id- <Link onClick={()=>{copyId(data?._id)}} style={{ textDecoration: "none" }}>{data?._id}</Link></th>
                                     <td scope="col">{data?.src}  -  {data?.dist}</td>
                                 </tr>
                             </thead>

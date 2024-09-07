@@ -2,6 +2,7 @@ let Adminpanel_user = require('../models/BusOwnerUser_models')
 let BusOwnerDataBase = require('../models/BusOwnerDataBase')
 const Bus_detail = require('../models/Bus_detail_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
+let admin = require("../models/adminUser.js");
 
 let UpdateBusDetail = async (req, res) => {
     try {
@@ -67,60 +68,25 @@ let AdminPanelgetdata = async (req, res) => {
 
 let register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        if (
-            name == undefined ||
-            email == undefined ||
-            password == undefined
-        ) {
-            return res
-                .status(204)
-                .json(new ApiResponse(204, [], "All fields are required"));
-        }
-
-        const existedUser = await Adminpanel_user.findOne({
-            $or: [{ email }],
-        });
-
-        if (existedUser) {
-            return res
-                .status(409)
-                .json(new ApiResponse(409, [], `User already exists`));
-        }
-
-        const user = await Adminpanel_user.create({
-            name,
-            email,
-            password,
-        });
-
-        const createdUser = await Adminpanel_user.findById(user._id).select("-password");
-
-        if (!createdUser) {
+        const user = await admin.create(req.body);
+        if (!user) {
             return res
                 .status(500)
-                .json(
-                    new ApiResponse(
-                        500,
-                        [],
-                        "Something went wrong while registering the user"
-                    )
-                );
+                .json(new ApiResponse(500, [], "Something went wrong while registering the user"));
         }
         return res
             .status(201)
-            .json(new ApiResponse(201, createdUser, "User registered Successfully"));
-    } catch {
+            .json(new ApiResponse(201, null, "User registered successfully."));
+    } catch (e) {
         return res
             .status(500)
             .json(new ApiResponse(500, [], "Server down !"));
     }
 };
 
-const generateAccessAndRefereshTokens = async (userId, res) => {
+const generateAccessAndRefereshTokens = async (user, res, rememberMe) => {
     try {
-        const user = await Adminpanel_user.findById(userId);
-        const accessToken = user.generateAccessToken();
+        const accessToken = user.generateAccessToken(rememberMe);
         return accessToken;
     } catch (error) {
         return res
@@ -137,13 +103,13 @@ const generateAccessAndRefereshTokens = async (userId, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, rememberMe = false } = req.body;
         if (!password && !email) {
             res
                 .status(204)
                 .json(new ApiResponse(204, [], "Password and email is required"));
         }
-        const user = await Adminpanel_user.findOne({
+        let user = await admin.findOne({
             $or: [{ email }],
         }).select(["-createdAt", "-updatedAt", "-__v"]);
         if (!user) {
@@ -157,8 +123,11 @@ const login = async (req, res) => {
                 .json(new ApiResponse(401, [], "Invalid user credentials"));
             return;
         }
-        const accessToken = await generateAccessAndRefereshTokens(user._id, res);
-        const loggedInUser = await Adminpanel_user.findById(user._id).select(["-createdAt", "-updatedAt", "-__v", "-password"]);
+        const accessToken = await generateAccessAndRefereshTokens(user, res, rememberMe);
+        if (user.toObject) {
+            user = user.toObject();
+        }
+        delete user.password;
         const options = {
             httpOnly: true,
             secure: true,
@@ -170,7 +139,7 @@ const login = async (req, res) => {
                 new ApiResponse(
                     200,
                     {
-                        user: loggedInUser,
+                        user: user,
                         auth: accessToken,
                     },
                     "User logged In Successfully"

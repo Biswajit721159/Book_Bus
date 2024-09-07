@@ -7,8 +7,8 @@ let { ApiResponse } = require("../utils/ApiResponse.js");
 const cancelTicket = async (req, res) => {
     try {
         let { booking_id, index } = req.body;
-        console.log(req.body)
         let booking = await Booking.findOne({ _id: booking_id });
+        console.log(booking);
         if (!booking) {
             return res.status(400).json(new ApiResponse(400, null, "Booking id not found"));
         } else if (index === undefined || index === null) {
@@ -71,7 +71,7 @@ const getTicketByidFprAuthenticateUser = async (req, res) => {
 
 const getTicketByEmail = async (req, res) => {
     try {
-        let limit = 8;
+        let limit = 10;
         let { page } = req.params;
         page = page ? parseInt(page) : 1; 
 
