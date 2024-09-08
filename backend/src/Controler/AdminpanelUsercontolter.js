@@ -1,9 +1,7 @@
-let Adminpanel_user = require('../models/BusOwnerUser_models')
 let BusOwnerDataBase = require('../models/BusOwnerDataBase')
 const Bus_detail = require('../models/Bus_detail_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
 let admin = require("../models/adminUser.js");
-let jwt = require("jsonwebtoken")
 
 let UpdateBusDetail = async (req, res) => {
     try {

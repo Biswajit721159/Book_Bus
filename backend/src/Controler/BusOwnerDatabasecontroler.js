@@ -37,7 +37,7 @@ const getBuses = async (req, res) => {
 
 const getBusesForBusOwner = async (req, res) => {
     let limit = 10;
-    let { page } = req.params;
+    let { page } = req.query;
     page = page ? parseInt(page) : 1;
     let count = await BusOwnerDataBase.countDocuments({ email: req.user.email });
 
@@ -59,7 +59,7 @@ const getBusesForBusOwner = async (req, res) => {
 
 const getBusesForAdmin = async (req, res) => {
     let limit = 10;
-    let { page } = req.params;
+    let { page } = req.query;
     page = page ? parseInt(page) : 1;
     let count = await BusOwnerDataBase.countDocuments({});
 

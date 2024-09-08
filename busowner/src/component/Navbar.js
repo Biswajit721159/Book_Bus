@@ -16,13 +16,15 @@ const Navbar = () => {
         toast("Successfully logout");
     }
 
+    console.log(otherUserinfo);
+
     return (
         <nav className="bg-blue-500 shadow text-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     <div className="flex items-center">
                         <p className="text-xl font-semibold flex items-center">
-                            {otherUserinfo.role!==''?<AdminPanelSettingsIcon className="mr-1" />:''}
+                            {otherUserinfo.role !== '' ? <AdminPanelSettingsIcon className="mr-1" /> : ''}
                             {
                                 otherUserinfo.role === "100" ?
                                     'Adminpanel'
@@ -33,7 +35,11 @@ const Navbar = () => {
                     <div className="flex space-x-8">
                         <ul className="flex space-x-6">
                             <li>
-                                <Link className="text-white-500 hover:text-white-600" to="/">Home</Link>
+                                {
+                                    otherUserinfo.role !== '' ?
+                                        <Link className="text-white-500 hover:text-white-600" to="/">Home</Link>
+                                        : ''
+                                }
                             </li>
                             {
                                 userinfo == null ?
@@ -47,12 +53,24 @@ const Navbar = () => {
                                     </>
                                     :
                                     <>
-                                        <li>
-                                            <Link className="text-white-500 hover:text-white-600" to="/Bus_adder">Add Bus</Link>
-                                        </li>
-                                        <li>
-                                            <Link className="text-white-500 hover:text-white-600" to="/ViewSeat">View Seat</Link>
-                                        </li>
+                                        {otherUserinfo.role === '100' ?
+                                            <>
+                                                <li>
+                                                    <Link className="text-white-500 hover:text-white-600" to="/BusAdder">
+                                                        Add Bus
+                                                    </Link>
+                                                </li>
+                                                <li>
+
+                                                    <Link className="text-white-500 hover:text-white-600" to="/ViewSeat">
+                                                        View Seat
+                                                    </Link>
+                                                </li>
+                                            </>
+                                            :
+                                            ''
+                                        }
+
                                     </>
                             }
                         </ul>
