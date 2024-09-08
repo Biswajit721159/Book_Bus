@@ -8,13 +8,40 @@ import Error from './component/Error'
 import Home from "./component/Home";
 import View_Bus from "./component/View_Bus"
 import ViewSeat from "./component/ViewSeat"
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect, useState } from "react";
+import { FullPageLoader } from "./component/FullPageLoader";
+import { logInByToken } from "./utilities/authApi";
+import { useSelector, useDispatch } from "react-redux";
+import { usermethod } from "./redux/userSlice";
 
 function App() {
+  const [load, setLoad] = useState(false);
+  const userinfo = useSelector((state) => state.userAuth.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (userinfo?.auth) loadUser();
+  }, []);
+  async function loadUser() {
+    try {
+      setLoad(true);
+      let response = await logInByToken(userinfo?.auth);
+      if (response?.statusCode !== 200) {
+        dispatch(usermethod.Logout_User());
+        toast.warn("user logout")
+      } else if (response?.statusCode === 200) {
+        dispatch(usermethod.setUserInfo(response.data))
+      }
+      setLoad(false);
+    } catch (e) {
+      toast.warn(e.message);
+      setLoad(false);
+    }
+  }
   return (
     <>
-      <Router>
+      {!load ? <Router>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />}></Route>
@@ -25,7 +52,8 @@ function App() {
           <Route path="*" element={<Error />}></Route>
           <Route path="/ViewSeat" element={<ViewSeat />}></Route>
         </Routes>
-      </Router>
+      </Router> :
+        <FullPageLoader open={load} />}
       <ToastContainer theme="light" />
     </>
   );

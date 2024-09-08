@@ -42,4 +42,21 @@ const forgotPassword = () => {
     }
 }
 
-export { register, login, forgotPassword }
+const logInByToken = async (token) => {
+    try {
+        let response = await fetch(`${api}/Adminpanel/logInByToken`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+        let res = await response.json();
+        return res;
+    } catch (e) {
+        throw new Error(e?.message);
+    }
+}
+
+export { register, login, forgotPassword, logInByToken }

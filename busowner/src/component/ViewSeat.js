@@ -33,13 +33,13 @@ const ViewSeat=()=>{
     function FindError()
     {
         let x=true
-        if(src=="Select Your Source Station" || src.length==0)
+        if(src==="Select Your Source Station" || src.length===0)
         {
             seterroInSrc(true)
             setmesserroInSrc("*Select A Station")
             x=false
         }
-        if(date.length==0)
+        if(date.length===0)
         {
             seterrordate(true)
             setmesserrordate("*Select A Date")
@@ -85,7 +85,7 @@ const ViewSeat=()=>{
     {
         for(let i=0 ; i< data.length ; i++)
         {
-            if( data[i].bus_name == src )
+            if( data[i].bus_name === src )
             {
                 return data[i]._id
             }

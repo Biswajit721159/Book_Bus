@@ -5,6 +5,8 @@ import { toast } from 'react-toastify'
 import { commonClass, ImageComponent } from "../helpers/CommonComponent";
 import { validateEmail, validatePassword } from '../helpers/fromValidationCheckers'
 import { login } from "../utilities/authApi";
+import { useDispatch, useSelector } from "react-redux";
+import { usermethod } from '../redux/userSlice'
 
 export default function Login() {
 
@@ -13,10 +15,11 @@ export default function Login() {
     const [rememberMe, setRememberMe] = useState(false);
     const history = useNavigate();
     const [load, setLoad] = useState(false);
+    const dispatch = useDispatch();
+    const userinfo=useSelector((state)=>state.userAuth.user);
 
     useEffect(() => {
-        const auth = localStorage.getItem('user')
-        if (auth) {
+        if (userinfo) {
             history('/')
         }
     }, [])
@@ -32,8 +35,8 @@ export default function Login() {
                 let response = await login({ email, password, rememberMe });
                 if (response.statusCode === 200) {
                     toast.success(response?.message);
-                    localStorage.setItem('user', JSON.stringify(response?.data));
-                    history('/');
+                    dispatch(usermethod.Add_User(response?.data));
+                    history(-1);
                 } else {
                     toast.warn(response?.message);
                 }

@@ -13,8 +13,6 @@ async function verifytoken(req, res, next) {
                 const decodedToken = jwt.verify(token, jwtKey);
                 if (decodedToken) {
                     req.user = decodedToken;
-                    let user = await admin.findOne({ email: decodedToken?.email });
-                    req.user.role = user.role
                     next();
                 } else {
                     res.status(498).json(new ApiResponse(498, null, "Invalid Token"));

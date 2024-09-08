@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { useDispatch, useSelector } from "react-redux";
+import { usermethod } from '../redux/userSlice'
+import { toast } from 'react-toastify'
 
 const Navbar = () => {
-    const userinfo = JSON.parse(localStorage.getItem('user'));
+    const userinfo = useSelector((state) => state.userAuth.user);
+    const otherUserinfo = useSelector((state) => state.userAuth.otherUserinfo);
     const navigate = useNavigate();
-
-    function logout() {
-        localStorage.removeItem('user');
+    const dispatch = useDispatch();
+    async function Logout() {
+        dispatch(usermethod.Logout_User());
         navigate('/Login');
+        toast("Successfully logout");
     }
 
     return (
@@ -17,8 +22,12 @@ const Navbar = () => {
                 <div className="flex justify-between h-16 items-center">
                     <div className="flex items-center">
                         <p className="text-xl font-semibold flex items-center">
-                            <AdminPanelSettingsIcon className="mr-2" />
-                            Adminpanel
+                            {otherUserinfo.role!==''?<AdminPanelSettingsIcon className="mr-1" />:''}
+                            {
+                                otherUserinfo.role === "100" ?
+                                    'Adminpanel'
+                                    : otherUserinfo.role === "200" ? 'SuperAdminpanel' : ''
+                            }
                         </p>
                     </div>
                     <div className="flex space-x-8">
@@ -51,9 +60,9 @@ const Navbar = () => {
                             userinfo &&
                             <button
                                 className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-sm focus:outline-none"
-                                onClick={logout}
+                                onClick={Logout}
                             >
-                                Logout <i className="fa fa-sign-out ml-2" aria-hidden="true"></i>
+                                Logout  <i className="fa fa-sign-out ml-2" aria-hidden="true"></i>
                             </button>
                         }
                     </div>

@@ -3,6 +3,7 @@ let BusOwnerDataBase = require('../models/BusOwnerDataBase')
 const Bus_detail = require('../models/Bus_detail_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
 let admin = require("../models/adminUser.js");
+let jwt = require("jsonwebtoken")
 
 let UpdateBusDetail = async (req, res) => {
     try {
@@ -152,4 +153,16 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = { login, register, AdminPanelgetdata, UpdateBusDetail }
+const logInByToken = async (req, res) => {
+    try {
+        res
+            .status(200)
+            .json(new ApiResponse(200, req.user, "Successfully token verify"));
+    } catch (e) {
+        res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+module.exports = { login, register, AdminPanelgetdata, UpdateBusDetail, logInByToken }
