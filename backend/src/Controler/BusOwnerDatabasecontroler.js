@@ -94,5 +94,60 @@ const AddBusInBusOwnerDataBase = async (req, res) => {
     }
 }
 
+const findBussByFilter = async (req, res) => {
+    try {
+        if (req.user.role !== '200') {
+            return res
+                .status(401)
+                .json(new ApiResponse(401, [], "Unauthorized"));
+        }
 
-module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase }
+        let pending = req.query.pending;
+        let approved = req.query.approved;
+        let rejected = req.query.rejected;
+        let page = req.query.page ? parseInt(req.query.page) : 1;
+        let limit = 10;
+
+        const skip = (page - 1) * limit;
+
+        let filter = {};
+        if (approved === "true") {
+            filter.status = "approved";
+        } else if (pending === "true") {
+            filter.status = "pending";
+        } else if (rejected === "true") {
+            filter.status = "rejected";
+        }
+
+        let sortFilter = { updatedAt: -1 };
+
+        let pipeline = [
+            { $match: filter },
+            { $sort: sortFilter },
+            { $skip: skip },
+            { $limit: limit }
+        ];
+
+        const countResult = await BusOwnerDataBase.aggregate([
+            { $match: filter },
+            { $count: "totalCount" }
+        ]);
+
+        let result = await BusOwnerDataBase.aggregate(pipeline);
+
+        const totalCount = countResult.length > 0 ? countResult[0].totalCount : 0;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        res.status(200).json(new ApiResponse(200, {
+            result: result,
+            totalPage: totalPages
+        }, "success"));
+    } catch (e) {
+        console.log("Error:", e);
+        res.status(500).json(new ApiResponse(500, [], "Server down!"));
+    }
+};
+
+
+
+module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter }

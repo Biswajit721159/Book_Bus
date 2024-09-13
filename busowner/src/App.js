@@ -56,7 +56,7 @@ function App() {
           <Route path="/View_Bus/:_id" element={<View_Bus />}></Route>
           <Route path="*" element={<Error />}></Route>
           <Route path="/ViewSeat" element={<ViewSeat />}></Route>
-          <Route path="/SuperAdmin" element={<SuperAdminpanel />}></Route>
+          <Route path="/SuperAdminpanel" element={<SuperAdminpanel />}></Route>
         </Routes>
       </Router> :
         <FullPageLoader open={load} />}

@@ -16,14 +16,20 @@ const Navbar = () => {
         toast("Successfully logout");
     }
 
-    console.log(otherUserinfo);
+    function goToMainPage() {
+        if (otherUserinfo.role === '100') {
+            navigate('Adminpanel')
+        } else if (otherUserinfo.role === '200') {
+            navigate('SuperAdminpanel');
+        }
+    }
 
     return (
         <nav className="bg-blue-500 shadow text-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     <div className="flex items-center">
-                        <p className="text-xl font-semibold flex items-center">
+                        <p className="text-xl font-semibold flex items-center cursor-pointer" onClick={() => goToMainPage()}>
                             {otherUserinfo.role !== '' ? <AdminPanelSettingsIcon className="mr-1" /> : ''}
                             {
                                 otherUserinfo.role === "100" ?
