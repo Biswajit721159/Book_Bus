@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react"
 import { useNavigate } from 'react-router-dom'
 import { FullPageLoader } from "./FullPageLoader";
 import { useSelector } from "react-redux";
-
+import { getBussByEmail, getBookingStatus } from "../utilities/busApi";
+import { toast } from "react-toastify";
+import { Box, Modal, Typography, Button, IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import { searchData } from "../helpers/searching";
 const ViewSeat = () => {
 
     const userinfo = useSelector((state) => state.userAuth.user);
@@ -13,52 +17,43 @@ const ViewSeat = () => {
 
     today = yyyy + '-' + mm + '-' + dd;
 
-    const [disabled, setdisabled] = useState(false)
-    const [button, setbutton] = useState("Find Bus")
-
     const [data, setdata] = useState([])
     const history = useNavigate()
     const [load, setload] = useState(true)
     const [date, setdate] = useState(today)
 
     const [src, setsrc] = useState("");
-    const [erroInSrc, seterroInSrc] = useState(false)
-    const [messerroInSrc, setmesserroInSrc] = useState("")
 
-    const [errordate, seterrordate] = useState(false)
-    const [messerrordate, setmesserrordate] = useState("")
-    const [bus, setbus] = useState([])
+    const [bus, setbus] = useState([]);
+    const [memoBus, setMemoBus] = useState([]);
+    const [openPassangerModal, setOpenPassangerModal] = useState(false);
+    const [bookingData, setBookingData] = useState({});
+    const [id, setId] = useState('');
 
 
     function FindError() {
-        let x = true
         if (src === "Select Your Source Station" || src.length === 0) {
-            seterroInSrc(true)
-            setmesserroInSrc("*Select A Station")
-            x = false
+            toast.warn('Select s station');
+            return false
         }
         if (date.length === 0) {
-            seterrordate(true)
-            setmesserrordate("*Select A Date")
-            x = false
+            toast.warn('Select A Date');
+            return false;
         }
-        return x;
+        return true;
     }
 
-    function loadBus() {
-        setload(true)
-        fetch(`/businfo/${userinfo.user.email}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `bearer ${userinfo.auth}`
-            }
-        }).then(responce => responce.json()).then((res) => {
-            setdata(res)
-            setload(false)
-        }, (error) => {
-            history('*')
-        })
+    async function loadBus() {
+        try {
+            setload(true)
+            let res = await getBussByEmail();
+            if (res?.data) setdata(res.data);
+        } catch (e) {
+            toast.warn(e.message);
+            history('*');
+        } finally {
+            setload(false);
+        }
     }
 
     useEffect(() => {
@@ -84,105 +79,173 @@ const ViewSeat = () => {
         return null
     }
 
-    function findbus() {
-        if (FindError()) {
-            seterroInSrc(false)
-            seterrordate(false)
-            setdisabled(true)
-            let y = findBusId()
-            setbutton("Wait Finding...")
-            fetch('/businfo/getBookingStatus', {
-                method: 'PATCH',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    auth: `bearer ${userinfo.auth}`
-                },
-                body: JSON.stringify({
-                    "date": date,
-                    "bus_id": y
-                })
-            }).then(response => response.json()).then((res) => {
-                if (res != undefined) {
-                    setdisabled(false)
-                    setbutton("Find Bus")
-                    setbus(res)
-                    console.log(res)
+    async function findbus() {
+        try {
+            if (FindError()) {
+                setload(true);
+                let id = findBusId()
+                let res = await getBookingStatus(date, id);
+                if (res.data) {
+                    setbus(res.data);
+                    setMemoBus(res.data);
                 }
-            }, (error) => {
-                history('*')
-            })
+            }
+        }
+        catch (e) {
+            toast.warn(e.message);
+        }
+        finally {
+            setload(false);
         }
     }
 
+    useEffect(() => {
+        let filterData = searchData(bus, id, '_id');
+        setMemoBus([...filterData])
+    }, [id])
+
+    const handleClose = () => {
+        setOpenPassangerModal(false);
+        setBookingData({});
+    };
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 350,
+        bgcolor: 'background.paper',
+        border: '2px solid green',
+        boxShadow: 24,
+        p: 4,
+        borderRadius: 2,
+    };
     return (
         <>
-            {
-                load == false ?
-                    <>
-                        <form onSubmit={(e) => { e.preventDefault(); findbus() }}>
+            <form onSubmit={(e) => { e.preventDefault(); findbus() }}>
 
-                            <div className="d-flex align-items-center justify-content-center mt-5">
-                                <div className="d-flex ">
-                                    <select className="form-select" aria-label="Default select example" required onChange={(e) => { setsrc(e.target.value) }} style={{ backgroundColor: "white" }}>
-                                        <option style={{ textAlign: "center" }} selected>Select your source station</option>
-                                        {
-                                            data.map((item, ind) => (
-                                                <option key={ind} style={{ textAlign: "center" }} >{item.bus_name}</option>
-                                            ))
-                                        }
-                                    </select>
-                                    {erroInSrc ? <label className="mt-0" style={{ color: "red" }}>{messerroInSrc}</label> : ""}
-                                </div>
-                                <div className="d-flex ">
-                                    <div className="input-group date" id="datepicker">
-                                        <input type="date" className="form-control" value={date} min={minDate()} onChange={(e) => { setdate(e.target.value) }} required id="date" />
-                                    </div>
-                                    {errordate ? <label className="mt-0" style={{ color: "red" }}>{messerrordate}</label> : ""}
-                                </div>
-                                <div className="d-flex d-flex justify-content-center mx-1">
-                                    <button type="submit" className="btn btn-primary btn-block " disabled={disabled}  >{button}</button>
-                                </div>
-                            </div>
-
-                        </form>
-                        <div className="container mt-5 my-5">
+                <div className="d-flex align-items-center justify-content-center mt-5">
+                    <div className="d-flex ">
+                        <select className="form-select" aria-label="Default select example" required onChange={(e) => { setsrc(e.target.value) }} style={{ backgroundColor: "white" }}>
+                            <option style={{ textAlign: "center" }} selected>Select your source station</option>
                             {
-                                bus.length != 0 ?
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">PNR No</th>
-                                                <th scope="col">Pay</th>
-                                                <th scope="col">src</th>
-                                                <th scope="col">dist</th>
-                                                <th scope="col">Passenger Name</th>
-                                                <th scope="col">seat_no</th>
-                                                <th scope="col">total_distance</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                bus.map((item, ind) => (
-                                                    <tr>
-                                                        <th scope="row">{item.PNR_No}</th>
-                                                        <td>₹{item.Pay}</td>
-                                                        <td>{item.src}</td>
-                                                        <td>{item.dist}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.seat_no}</td>
-                                                        <td>{item.total_distance} km</td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </table>
-                                    : <p className="d-flex align-items-center justify-content-center mt-5">Result Not Found</p>
+                                data?.map((item, ind) => (
+                                    <option key={ind} style={{ textAlign: "center" }} >{item.bus_name}</option>
+                                ))
                             }
+                        </select>
+                    </div>
+                    <div className="d-flex ">
+                        <div className="input-group date" id="datepicker">
+                            <input type="date" className="form-control" value={date} onChange={(e) => { setdate(e.target.value) }} required id="date" />
                         </div>
-                    </>
-                    : <FullPageLoader open={load} />
-            }
+                    </div>
+                    <div className="d-flex d-flex justify-content-center mx-1">
+                        <button
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                            disabled={load}
+                        >
+                            {load ? 'Wait Finding...' : 'Find Bus'}
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+            <div className="container mt-0 p-5 my-5">
+                <div className="flex justify-end items-center">
+                    <input
+                        className="p-2.5 mb-3 bg-gray-100 rounded-md outline-green-300"
+                        placeholder="Enter Id number"
+                        value={id}
+                        onChange={(e) => { setId(e.target.value) }}
+                    />
+                </div>
+                {
+                    memoBus.length != 0 ?
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th className="text-center" scope="col">ID No</th>
+                                    <th className="text-center" scope="col">Src</th>
+                                    <th className="text-center" scope="col">Dist</th>
+                                    <th className="text-center" scope="col">Pay</th>
+                                    <th className="text-center" scope="col">Total Distance</th>
+                                    <th className="text-center" scope="col">View</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    memoBus.map((item, ind) => (
+                                        <tr>
+                                            <td className="text-center">{item._id}</td>
+                                            <td className="text-center">{item.src}</td>
+                                            <td className="text-center">{item.dist}</td>
+                                            <td className="text-center">₹{item.total_money}</td>
+                                            <td className="text-center">{item.total_distance} km</td>
+                                            <td className="text-center">
+                                                <button
+                                                    className="p-2 bg-orange-500 hover:bg-orange-600 rounded-md text-sm text-white"
+                                                    onClick={() => {
+                                                        setOpenPassangerModal(true);
+                                                        setBookingData(item);
+                                                    }}
+                                                >
+                                                    view
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                        : <p className="d-flex align-items-center justify-content-center mt-5">Result not found 😥</p>
+                }
+            </div>
+            <Modal
+                open={openPassangerModal}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+            >
+                <Box
+                    sx={style}
+                >
+                    <IconButton
+                        onClick={handleClose}
+                        sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+
+                    <Typography variant="body1" className="text-center mb-3">
+                        <strong>Seats and Passengers</strong>
+                    </Typography>
+                    <ul>
+                        {bookingData?.seat_record?.map((seat, index) => (
+                            <li key={index} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
+                                <span>Seat {seat}</span>
+                                <span>{bookingData?.person?.[index]}</span>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <Box textAlign="center" mt={2}>
+                        <button
+                            className="p-2 bg-blue-500 hover:bg-blue-600 rounded-md text-sm text-white"
+                            style={{ textTransform: 'none' }}
+                            onClick={handleClose}
+                        >
+                            Close
+                        </button>
+                    </Box>
+                </Box>
+            </Modal>
+            <FullPageLoader open={load} />
         </>
     )
 }

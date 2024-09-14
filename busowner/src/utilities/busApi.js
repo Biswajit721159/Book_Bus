@@ -75,9 +75,48 @@ const getBusById = async (id) => {
     }
 }
 
+const getBussByEmail = async () => {
+    try {
+        const userinfo = JSON.parse(localStorage.getItem('user'));
+        let res = await fetch(`${api}/businfo/getBussByEmail`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userinfo.auth}`
+            },
+        }).then(responce => responce.json());
+        return res;
+    } catch (e) {
+        throw new Error(e?.message);
+    }
+}
+
+const getBookingStatus = async (date, id) => {
+    try {
+        const userinfo = JSON.parse(localStorage.getItem('user'));
+        let res = await fetch(`${api}/businfo/getBookingStatus`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userinfo.auth}`
+            },
+            body: JSON.stringify({
+                date: date,
+                bus_id: id
+            })
+        }).then(response => response.json());
+        return res;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
 export {
     getBuses,
     findBusByFilter,
     AddBus,
     getBusById,
+    getBussByEmail,
+    getBookingStatus
 }

@@ -1,3 +1,4 @@
+const Bus_detail = require('../models/Bus_detail_models.js');
 let BusOwnerDataBase = require('../models/BusOwnerDataBase')
 let { ApiResponse } = require("../utils/ApiResponse.js");
 
@@ -149,6 +150,17 @@ const findBussByFilter = async (req, res) => {
     }
 };
 
+const getBussByEmail = async (req, res) => {
+    try {
+        if (!req.user.email) {
+            return res.status(400).json(new ApiResponse(400, null, 'Email not found!'));
+        }
+        let buss = await Bus_detail.find({ email: req.user.email }).select('+_id +bus_name -Total_seat -createdAt -station_data -updatedAt -__v -email');
+        let bussLen = buss.length;
+        res.status(200).json(new ApiResponse(200, buss, `Total ${bussLen} bus${bussLen === 0 ? '' : 's'} found.`));
+    } catch (e) {
+        res.status(500).json(new ApiResponse(500, [], "Server down!"));
+    }
+}
 
-
-module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter }
+module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter, getBussByEmail }
