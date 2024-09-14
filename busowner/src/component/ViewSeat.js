@@ -144,7 +144,7 @@ const ViewSeat = () => {
                     <div className="d-flex d-flex justify-content-center mx-1">
                         <button
                             type="submit"
-                            className="btn btn-primary btn-block"
+                            className="p-2 bg-green-500 hover:bg-green-600 rounded-md text-white"
                             disabled={load}
                         >
                             {load ? 'Wait Finding...' : 'Find Bus'}

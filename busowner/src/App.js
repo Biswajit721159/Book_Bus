@@ -6,7 +6,7 @@ import Login from './component/Login'
 import Register from './component/Register'
 import Error from './component/Error'
 import SuperAdminpanel from './component/SuperAdminpanel'
-import Home from "./component/Home";
+import Adminpanel from "./component/Adminpanel";
 import View_Bus from "./component/View_Bus"
 import ViewSeat from "./component/ViewSeat"
 import { toast, ToastContainer } from 'react-toastify';
@@ -51,7 +51,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<WelcomePage />}></Route>
-          <Route path="/Adminpanel" element={<Home />}></Route>
+          <Route path="/Adminpanel" element={<Adminpanel />}></Route>
           <Route path="/BusAdder" element={<Bus_adder />}></Route>
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/Register" element={<Register />}></Route>

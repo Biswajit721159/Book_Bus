@@ -41,20 +41,16 @@ const Navbar = () => {
                     <div className="flex space-x-8">
                         <ul className="flex space-x-6">
                             <li>
-                                {
-                                    otherUserinfo.role !== '' ?
-                                        <Link className="text-white-500 hover:text-white-600" to="/">Home</Link>
-                                        : ''
-                                }
+                                <button className="text-sm bg-blue-600 text-white py-2 px-2 rounded-lg hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 shadow-lg transform transition-transform hover:scale-105" onClick={() => navigate('/')}>Home</button>
                             </li>
                             {
                                 userinfo == null ?
                                     <>
                                         <li>
-                                            <Link className="text-white-600 hover:text-white-500" to="/Login">Login</Link>
+                                            <button className="text-sm p-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 text-white-600 hover:text-white-500 transform transition-transform hover:scale-105" onClick={() => navigate('/Login')}>Login</button>
                                         </li>
                                         <li>
-                                            <Link className="text-white-500 hover:text-white-600" to="/Register">Register</Link>
+                                            <button className="text-sm p-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 text-white-500 hover:text-white-600 transform transition-transform hover:scale-105" onClick={() => navigate('/Register')} >Register</button>
                                         </li>
                                     </>
                                     :
@@ -62,15 +58,15 @@ const Navbar = () => {
                                         {otherUserinfo.role === '100' ?
                                             <>
                                                 <li>
-                                                    <Link className="text-white-500 hover:text-white-600" to="/BusAdder">
+                                                    <button className="text-sm p-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 text-white-500 hover:text-white-600 transform transition-transform hover:scale-105" onClick={() => navigate('/BusAdder')} to="/BusAdder">
                                                         Add Bus
-                                                    </Link>
+                                                    </button>
                                                 </li>
                                                 <li>
 
-                                                    <Link className="text-white-500 hover:text-white-600" to="/ViewSeat">
+                                                    <button className="text-sm p-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 text-white-500 hover:text-white-600 transform transition-transform hover:scale-105" onClick={() => navigate('/ViewSeat')} to="/ViewSeat">
                                                         View Seat
-                                                    </Link>
+                                                    </button>
                                                 </li>
                                             </>
                                             :
@@ -83,7 +79,7 @@ const Navbar = () => {
                         {
                             userinfo &&
                             <button
-                                className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-sm focus:outline-none"
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm focus:outline transform transition-transform hover:scale-105"
                                 onClick={Logout}
                             >
                                 Logout  <i className="fa fa-sign-out ml-2" aria-hidden="true"></i>

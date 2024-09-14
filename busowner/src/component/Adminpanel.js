@@ -7,7 +7,7 @@ import { Pagination } from '@mui/material';
 import { getBuses } from '../utilities/busApi';
 import { useSelector } from 'react-redux'
 
-const Home = () => {
+const Adminpanel = () => {
     const [data, setdata] = useState([])
     const history = useNavigate();
     const userinfo = useSelector((state) => state.userAuth.user);
@@ -93,7 +93,7 @@ const Home = () => {
                     </tbody>
                 </table>
                 {totalPage ? <Pagination
-                    className='mt-5'
+                    className='mt-5 mb-5'
                     sx={{ display: 'flex', justifyContent: 'center' }}
                     count={totalPage}
                     onChange={onChangePage}
@@ -106,4 +106,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default Adminpanel

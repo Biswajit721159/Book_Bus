@@ -25,7 +25,9 @@ const getBusById = async (req, res) => {
 const getBuses = async (req, res) => {
     try {
         if (req.user.role === "200") {
-            return await getBusesForAdmin(req, res);
+            return res
+                .status(401)
+                .json(new ApiResponse(401, [], "Unauthorized"));
         } else {
             return await getBusesForBusOwner(req, res);
         }
