@@ -16,6 +16,7 @@ import { FullPageLoader } from "./component/FullPageLoader";
 import { logInByToken } from "./utilities/authApi";
 import { useSelector, useDispatch } from "react-redux";
 import { usermethod } from "./redux/userSlice";
+import WelcomePage from "./component/WelcomePage";
 
 function App() {
   const [load, setLoad] = useState(false);
@@ -49,7 +50,8 @@ function App() {
       {!load ? <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />}></Route>
+          <Route path="/" element={<WelcomePage />}></Route>
+          <Route path="/Adminpanel" element={<Home />}></Route>
           <Route path="/BusAdder" element={<Bus_adder />}></Route>
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/Register" element={<Register />}></Route>

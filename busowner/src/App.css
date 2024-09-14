@@ -55,31 +55,23 @@ html {
 
 
 
-
-
-
-
-
-.loader-container{
-  /* position: fixed; */
-  margin-left:0 ;
-  margin-right: 0;
-  top:0; left:0;
-  height:100vh; 
-  width:100%;
-  /* z-index: 10000; */
-  background:white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out;
 }
 
-.loader-container img{
-  width:25rem;
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slideUp {
+  animation: slideUp 0.8s ease-out;
+}
+.delay-1 {
+  animation-delay: 0.3s;
 }
 
-.loader-container.fade-out{
-  top:-110%;
-  opacity:0;
-}
+

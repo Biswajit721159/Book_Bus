@@ -38,7 +38,6 @@ const Footer=()=>{
                     <li className="head1"><Link to="/BookBus" style={{ textDecoration: 'none' }}><FaBus /> Book Bus</Link></li>
                     <li className="head1"><Link to="/checkstatus" style={{ textDecoration: 'none' }}><CiCircleCheck /> Check Status</Link></li>
                     <li className="head1"><a href='https://busowner.vercel.app/' style={{ textDecoration: 'none' }} target="_blank" ><MdAddBusiness /> Bus Owner</a></li>
-                    <li className="head1"><a href='https://bus-booking-adminpanel.vercel.app/' style={{ textDecoration: 'none' }} target="_blank"><MdAdminPanelSettings /> adminpanel</a></li>
                 </div>
                 <div className="box">
                 <h4 className="head2">Contact Info</h4>

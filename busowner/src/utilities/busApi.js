@@ -36,7 +36,48 @@ const findBusByFilter = async (page, approved = true, pending = false, rejected 
     }
 }
 
+const AddBus = async (bus_name, seat, stationData) => {
+    try {
+        const userinfo = JSON.parse(localStorage.getItem('user'));
+        let res = await fetch(`${api}/businfo/addBus`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userinfo.auth}`
+            },
+            body: JSON.stringify({
+                email: userinfo.user.email,
+                bus_name: bus_name,
+                Total_seat: seat,
+                station_data: stationData,
+                status: 'pending',
+            })
+        }).then(response => response.json());
+        return res;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+const getBusById = async (id) => {
+    try {
+        let res = await fetch(`${api}/businfo/getBusById/${id}`, {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((data) => data.json());
+        return res;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
 export {
     getBuses,
     findBusByFilter,
+    AddBus,
+    getBusById,
 }

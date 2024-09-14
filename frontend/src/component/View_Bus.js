@@ -63,7 +63,7 @@ const View_Bus = () => {
                                             <div className="mt-2">
                                                 <h6>*{item?.station} - {item?.arrived_time} ({item?.Distance_from_Previous_Station} km)</h6>
                                             </div>
-                                            <div className="mx-2 mt-0 d-flex align-items-center justify-content-center mt-1">
+                                            <div className="mx-2 d-flex align-items-center justify-content-center mt-1">
                                                 {
                                                     (ind + 1) == data[0]?.station_data.length ?
                                                         ""

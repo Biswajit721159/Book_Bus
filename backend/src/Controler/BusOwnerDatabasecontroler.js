@@ -3,7 +3,8 @@ let { ApiResponse } = require("../utils/ApiResponse.js");
 
 const getBusById = async (req, res) => {
     try {
-        let result = await BusOwnerDataBase.find({ '_id': (req.params._id) })
+        let { id } = req.params;
+        let result = await BusOwnerDataBase.findOne({ _id: id })
         if (result) {
             res
                 .status(200)
