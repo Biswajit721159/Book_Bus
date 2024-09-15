@@ -112,11 +112,30 @@ const getBookingStatus = async (date, id) => {
     }
 }
 
+const editBus = async (data) => {
+    try {
+        const userinfo = JSON.parse(localStorage.getItem('user'));
+        let res = await fetch(`${api}/businfo/editBus`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userinfo.auth}`
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json());
+        return res;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
 export {
     getBuses,
     findBusByFilter,
     AddBus,
     getBusById,
     getBussByEmail,
-    getBookingStatus
+    getBookingStatus,
+    editBus,
 }

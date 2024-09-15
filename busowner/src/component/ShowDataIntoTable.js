@@ -1,7 +1,8 @@
-import { Typography } from '@mui/material';
 import { convertUtcToIst } from '../helpers/USTtoIST';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 const ShowDataIntoTable = ({ data }) => {
+    const history = useNavigate();
     return (
         <table className="container table mt-5">
             <thead>
@@ -27,7 +28,11 @@ const ShowDataIntoTable = ({ data }) => {
                             <th className='text-center'>*{item?.station_data[0]?.station} - {item?.station_data[(item?.station_data?.length) - 1]?.station}</th>
                             <td className='text-center' >{convertUtcToIst(item?.createdAt)}</td>
                             <td className='text-center' >
-                                <button className='px-3 p-1.5 bg-blue-500 rounded-md hover:bg-blue-600 text-white text-sm' disabled>{item?.status}</button>
+                                <button className={`px-3 p-1.5 bg-${item?.status === "pending" ? 'blue' : (item?.status === "approved" ? 'green' : 'red')}-500 rounded-md text-white text-sm`}
+                                    onClick={() => history('/EditBus', { state: { data: item, type: 'edit' } })}
+                                >
+                                    {item?.status}
+                                </button>
                             </td>
                             <td className='text-center' >
                                 <Link to={`/View_Bus/${item?._id}`}>
@@ -35,7 +40,12 @@ const ShowDataIntoTable = ({ data }) => {
                                 </Link>
                             </td>
                             <td className='text-center'>
-                                <button className='px-3 p-1.5 bg-sky-500 rounded-md hover:bg-sky-600 text-white text-sm' >Edit</button>
+                                <button
+                                    className='px-3 p-1.5 bg-sky-500 rounded-md hover:bg-sky-600 text-white text-sm'
+                                    onClick={() => history('/EditBus', { state: { data: item, type: 'edit' } })}
+                                >
+                                    Edit
+                                </button>
                             </td>
                             <td className='text-center'>
                                 <button className='px-3 p-1.5 bg-red-500 rounded-md hover:bg-red-600 text-white text-sm' >Delete</button>
@@ -55,7 +65,7 @@ const ShowDataIntoTable = ({ data }) => {
                     </tr>
                 }
             </tbody>
-        </table>
+        </table >
     )
 }
 

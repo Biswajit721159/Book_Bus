@@ -165,4 +165,19 @@ const getBussByEmail = async (req, res) => {
     }
 }
 
-module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter, getBussByEmail }
+const editBus = async (req, res) => {
+    try {
+        const { _id, bus_name, email, station_data, status, Total_seat } = req.body;
+        let bus = await BusOwnerDataBase.findById(_id);
+        bus.bus_name = bus_name;
+        bus.station_data = station_data;
+        bus.status = status;
+        bus.Total_seat = Total_seat;
+        await bus.save();
+        return res.status(200).json(new ApiResponse(200, bus, 'Bus data updated successfully'));
+    } catch (e) {
+        res.status(500).json(new ApiResponse(500, null, "Server down!"));
+    }
+};
+
+module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter, getBussByEmail, editBus }

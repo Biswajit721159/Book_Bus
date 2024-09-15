@@ -8,7 +8,6 @@ const cancelTicket = async (req, res) => {
     try {
         let { booking_id, index } = req.body;
         let booking = await Booking.findOne({ _id: booking_id });
-        console.log(booking);
         if (!booking) {
             return res.status(400).json(new ApiResponse(400, null, "Booking id not found"));
         } else if (index === undefined || index === null) {
@@ -291,45 +290,9 @@ const getBookingDatabyDate = async (req, res) => {
         let date = req.body.date;
         let bus_id = req.body.bus_id;
         let result = await Booking.find({ bus_id: bus_id, date: date });
-        // let ans = []
-        // for (let i = 0; i < result.length; i++) {
-        //     for (let j = 0; j < result[i].person.length; j++) {
-        //         let obj = {
-        //             "src": result[i].src,
-        //             "dist": result[i].dist,
-        //             "Pay": result[i].total_money / result[i].person.length,
-        //             "name": result[i].person[j],
-        //             "seat_no": result[i].seat_record[j],
-        //             "total_distance": result[i].total_distance,
-        //             "PNR_No": result[i]._id,
-        //         }
-        //         ans.push(obj)
-        //     }
-        // }
-
-        // ans.sort((a, b) => {
-        //     let fa = (a.seat_no)
-        //     let fb = (b.seat_no)
-
-        //     if (fa < fb) {
-        //         return -1;
-        //     }
-        //     if (fa > fb) {
-        //         return 1;
-        //     }
-        //     return 0;
-        // });
-
-        // if (ans) {
-            return res
-                .status(200)
-                .json(new ApiResponse(200, result, "success"));
-        // }
-        // else {
-        //     return res
-        //         .status(404)
-        //         .json(new ApiResponse(404, [], "Result not found !"));
-        // }
+        return res
+            .status(200)
+            .json(new ApiResponse(200, result, "success"));
     }
     catch {
         return res

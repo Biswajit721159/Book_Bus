@@ -17,6 +17,7 @@ import { logInByToken } from "./utilities/authApi";
 import { useSelector, useDispatch } from "react-redux";
 import { usermethod } from "./redux/userSlice";
 import WelcomePage from "./component/WelcomePage";
+import EditBus from "./component/EditBus";
 
 function App() {
   const [load, setLoad] = useState(false);
@@ -59,6 +60,7 @@ function App() {
           <Route path="*" element={<Error />}></Route>
           <Route path="/ViewSeat" element={<ViewSeat />}></Route>
           <Route path="/SuperAdminpanel" element={<SuperAdminpanel />}></Route>
+          <Route path="/EditBus" element={<EditBus />}></Route>
         </Routes>
       </Router> :
         <FullPageLoader open={load} />}
