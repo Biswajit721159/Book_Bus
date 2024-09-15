@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { Box, Modal, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { searchData } from "../helpers/searching";
+
 const ViewSeat = () => {
 
     const userinfo = useSelector((state) => state.userAuth.user);
@@ -156,15 +157,24 @@ const ViewSeat = () => {
             <div className="container mt-0 p-5 my-5">
                 <div className="flex justify-end items-center">
                     <input
-                        className="p-2.5 mb-3 bg-gray-100 rounded-md outline-green-300"
+                        className="mt-4 mb-2 ml-3 mr-3 px-3 py-2 border rounded placeholder-gray-500 outline-blue-400 "
                         placeholder="Enter Id number"
                         value={id}
                         onChange={(e) => { setId(e.target.value) }}
+                        spellCheck='false'
                     />
+
+                    {id.length ?
+                        <CloseIcon
+                            fontSize="small"
+                            className={`absolute mr-5 mt-3 w-0.5 h-0.5 text-sm cursor-pointer hover:bg-gray-200 rounded-lg`}
+                            onClick={() => setId('')}
+                        />
+                        : ''}
                 </div>
                 {
                     memoBus.length != 0 ?
-                        <table className="table">
+                        <table className="table border">
                             <thead>
                                 <tr>
                                     <th className="text-center" scope="col">ID No</th>

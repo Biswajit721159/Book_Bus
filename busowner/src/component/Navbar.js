@@ -47,10 +47,18 @@ const Navbar = () => {
                                 userinfo == null ?
                                     <>
                                         <li>
-                                            <button className="text-sm p-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 text-white-600 hover:text-white-500 transform transition-transform hover:scale-105" onClick={() => navigate('/Login')}>Login</button>
+                                            <button
+                                                className="text-sm p-2 bg-blue-600 text-white rounded-md hover:bg-blue-600 text-white-600 hover:text-white-500 transform transition-transform hover:scale-105"
+                                                onClick={() => navigate('/Login')}>
+                                                Login
+                                            </button>
                                         </li>
                                         <li>
-                                            <button className="text-sm p-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 text-white-500 hover:text-white-600 transform transition-transform hover:scale-105" onClick={() => navigate('/Register')} >Register</button>
+                                            <button
+                                                className="text-sm p-2 bg-blue-600 text-white rounded-md hover:bg-blue-600 text-white-500 hover:text-white-600 transform transition-transform hover:scale-105"
+                                                onClick={() => navigate('/Register')} >
+                                                Register
+                                            </button>
                                         </li>
                                     </>
                                     :
