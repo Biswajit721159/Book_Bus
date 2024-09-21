@@ -10,16 +10,17 @@ import { FullPageLoader } from './FullPageLoader';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { useSelector } from 'react-redux';
 
 const EditBus = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [data, setData] = useState(location.state?.data || {});
     const [load, setLoad] = useState(false);
+    const otherUserinfo = useSelector((state) => state.userAuth.otherUserinfo);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log("e.target", e.target);
         setData((prevData) => ({ ...prevData, [name]: value }));
     };
 
@@ -146,7 +147,7 @@ const EditBus = () => {
                                 size='small'
                             />
                         </Grid>
-                        <Grid className='mt-1' item xs={12} sm={4}>
+                        {otherUserinfo?.role === 200 ? <Grid className='mt-1' item xs={12} sm={4}>
                             <InputLabel id="demo-select-small-label">Status</InputLabel>
                             <Select
                                 className='flex flex-row gap-2 justify-start items-center text-sm'
@@ -177,7 +178,7 @@ const EditBus = () => {
                                     </div>
                                 </MenuItem>
                             </Select>
-                        </Grid>
+                        </Grid> : ''}
                         {data.station_data?.map((station, index) => (
                             <Grid item xs={12} key={index}>
                                 <Paper sx={{ p: 2, mb: 2 }}>

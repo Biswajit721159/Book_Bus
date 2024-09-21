@@ -59,6 +59,12 @@ const Bus_adder = () => {
         try {
             setLoad(true);
             let res = await AddBus(name, seat, data);
+            if (res.statusCode === 201) {
+                toast.success(res?.message);
+                history('/');
+            } else {
+                toast.warn(res?.message);
+            }
         } catch (e) {
             toast.warn(e.message);
         } finally {

@@ -137,7 +137,7 @@ const ViewSeat = () => {
                             }
                         </select>
                     </div>
-                    <div className="d-flex ">
+                    <div className="d-flex mx-2">
                         <div className="input-group date" id="datepicker">
                             <input type="date" className="form-control" value={date} onChange={(e) => { setdate(e.target.value) }} required id="date" />
                         </div>

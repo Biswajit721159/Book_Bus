@@ -31,8 +31,12 @@ function checkStationData(stations, res) {
         if (!station.arrived_time || !/^\d{2}:\d{2}$/.test(station.arrived_time)) {
             return res.status(400).json({ message: `Station at index ${index} must have a valid "arrived_time" in HH:MM format.` });
         }
-
-        if (typeof station.Distance_from_Previous_Station !== 'number') {
+        try {
+            let Distance_from_Previous_Station = parseInt(station.Distance_from_Previous_Station);
+            if (Distance_from_Previous_Station < 0) {
+                return res.status(400).json({ message: `Station at index ${index} must have a valid "Distance_from_Previous_Station" as a number and not negative.` });
+            }
+        } catch {
             return res.status(400).json({ message: `Station at index ${index} must have a valid "Distance_from_Previous_Station" as a number.` });
         }
     }
