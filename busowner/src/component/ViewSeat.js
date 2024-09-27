@@ -117,7 +117,7 @@ const ViewSeat = () => {
         transform: 'translate(-50%, -50%)',
         width: 350,
         bgcolor: 'background.paper',
-        border: '2px solid green',
+        border: '1px solid blue',
         boxShadow: 24,
         p: 4,
         borderRadius: 2,

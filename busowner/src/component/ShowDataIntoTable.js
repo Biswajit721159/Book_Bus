@@ -48,9 +48,12 @@ const ShowDataIntoTable = ({ data }) => {
                                     </button>
                                 </td> : ''}
                                 <td className='text-center' >
-                                    <Link to={`/View_Bus/${item?._id}`}>
-                                        <button className='px-3 p-1.5 bg-orange-500 rounded-md hover:bg-orange-600 text-white text-sm'>View</button>
-                                    </Link>
+                                    <button
+                                        className='px-3 p-1.5 bg-orange-500 rounded-md hover:bg-orange-600 text-white text-sm'
+                                        onClick={() => history(`/View_Bus/${item?._id}`, { state: { data: item, type: 'View_Bus' } })}
+                                    >
+                                        View
+                                    </button>
                                 </td>
                                 <td className='text-center'>
                                     <button

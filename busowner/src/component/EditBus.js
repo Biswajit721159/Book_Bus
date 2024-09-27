@@ -147,7 +147,7 @@ const EditBus = () => {
                                 size='small'
                             />
                         </Grid>
-                        {otherUserinfo?.role === 200 ? <Grid className='mt-1' item xs={12} sm={4}>
+                        {otherUserinfo?.role === '200' ? <Grid className='mt-1' item xs={12} sm={4}>
                             <InputLabel id="demo-select-small-label">Status</InputLabel>
                             <Select
                                 className='flex flex-row gap-2 justify-start items-center text-sm'

@@ -1,38 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { getBusById } from '../utilities/busApi';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
+// import { getBusById } from '../utilities/busApi';
 import { FullPageLoader } from './FullPageLoader';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 const View_Bus = () => {
 
-    const [data, setData] = useState({});
-    const [load, setload] = useState(true)
-    const { _id } = useParams();
-    const history = useNavigate();
+    const location = useLocation();
+    const [data, setData] = useState(location.state?.data || {});
+    // const [load, setload] = useState(false)
+    // const { _id } = useParams();
+    // const history = useNavigate();
 
-    async function loadBus() {
-        try {
-            setload(true);
-            let res = await getBusById(_id);
-            setData(res.data);
-        } catch (e) {
-            toast.warn(e.message);
-            history('*');
-        } finally {
-            setload(false);
-        }
+    // async function loadBus() {
+    //     try {
+    //         setload(true);
+    //         let res = await getBusById(_id);
+    //         setData(res.data);
+    //     } catch (e) {
+    //         toast.warn(e.message);
+    //         history('*');
+    //     } finally {
+    //         setload(false);
+    //     }
 
-    }
+    // }
 
-    useEffect(() => {
-        loadBus();
-    }, [])
+    // useEffect(() => {
+    //     loadBus();
+    // }, [])
 
 
     return (
         <>
             {
-                load === false ?
+                // load === false ?
                     <div className='container'>
                         <table className="table mt-5">
                             <thead>
@@ -73,7 +74,7 @@ const View_Bus = () => {
                             </div>
                         </div>
                     </div>
-                    : <FullPageLoader open={load} />
+                    // : <FullPageLoader open={load} />
             }
         </>
     )
