@@ -9,7 +9,7 @@ import ShowBookingData from "./ShowBookingData";
 const Booking = () => {
     const [data, setData] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [id, setId] = useState('');
     const [load, setLoad] = useState(false);
 
