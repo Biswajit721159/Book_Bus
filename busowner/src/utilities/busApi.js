@@ -130,6 +130,25 @@ const editBus = async (data) => {
     }
 }
 
+
+const getBookingForSuperAdmin = async (page) => {
+    try {
+        const userinfo = JSON.parse(localStorage.getItem('user'));
+        let res = await fetch(`${api}/Booking/pagination/${page}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userinfo.auth}`
+            },
+            // body: JSON.stringify(data)
+        }).then(response => response.json());
+        return res.data;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
 export {
     getBuses,
     findBusByFilter,
@@ -138,4 +157,5 @@ export {
     getBussByEmail,
     getBookingStatus,
     editBus,
+    getBookingForSuperAdmin,
 }

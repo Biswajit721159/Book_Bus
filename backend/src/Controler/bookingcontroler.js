@@ -339,4 +339,49 @@ async function TransfromData(createdAtString) {
     return formattedDate
 }
 
-module.exports = { addAndRemoveFromWishList, getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser, cancelTicket }
+const getBookingData = async (req, res) => {
+    try {
+        if (!req.user || req.user.role !== '200') {
+            return res.status(403).json(new ApiResponse(403, null, 'Unauthorized'));
+        }
+
+        let limit = 15;
+        let { page } = req.params;
+        page = page ? parseInt(page) : 1;
+        let skip = (page - 1) * limit;
+        let sortFilter = { updatedAt: -1 };
+
+        let pipeline = [
+            {
+                $lookup: {
+                    from: "bus_details",
+                    localField: "bus_id",
+                    foreignField: "_id",
+                    as: "bus"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$bus",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            { $sort: sortFilter },
+            { $skip: skip },
+            { $limit: limit },
+        ];
+
+        let bookingData = await Booking.aggregate(pipeline);
+
+        let totalRecord = await Booking.countDocuments({});
+        let totalPage = Math.ceil(totalRecord / limit);
+
+        return res.status(200).json(new ApiResponse(200, { bookingData, totalPage }, 'success'));
+    } catch (error) {
+        console.error("Error fetching booking data:", error);
+        return res.status(500).json(new ApiResponse(500, null, 'Server down!'));
+    }
+};
+
+
+module.exports = { addAndRemoveFromWishList, getTicketByidFprAuthenticateUser, getTicketByEmail, get_Seat, GetTicketById, insertBooking, getBookingDatabyDate, getTicketForUnAuthUser, cancelTicket, getBookingData }

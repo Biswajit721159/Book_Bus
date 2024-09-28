@@ -182,7 +182,7 @@ const ViewSeat = () => {
                                     <th className="text-center" scope="col">Dist</th>
                                     <th className="text-center" scope="col">Pay</th>
                                     <th className="text-center" scope="col">Total Distance</th>
-                                    <th className="text-center" scope="col">View</th>
+                                    <th className="text-center" scope="col">Passengers Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -202,7 +202,7 @@ const ViewSeat = () => {
                                                         setBookingData(item);
                                                     }}
                                                 >
-                                                    view
+                                                    view seat
                                                 </button>
                                             </td>
                                         </tr>
@@ -243,16 +243,6 @@ const ViewSeat = () => {
                             </li>
                         ))}
                     </ul>
-
-                    <Box textAlign="center" mt={2}>
-                        <button
-                            className="p-2 bg-blue-500 hover:bg-blue-600 rounded-md text-sm text-white"
-                            style={{ textTransform: 'none' }}
-                            onClick={handleClose}
-                        >
-                            Close
-                        </button>
-                    </Box>
                 </Box>
             </Modal>
             <FullPageLoader open={load} />

@@ -24,7 +24,6 @@ let bus = require('./src/Router/Bus_detailRouter')
 let booking = require('./src/Router/BookingRouter')
 let businfo = require('./src/Router/BusOwnerUserRouter')
 let Adminpanel = require('./src/Router/Adminpanel_userRouter')
-let sendMessage = require('./src/Router/sendMessageRoute')
 let Verification = require('./src/Router/Verification_Router')
 let FavouriteJourney = require('./src/Router/FavouriteJourneyRoute')
 
@@ -35,7 +34,6 @@ app.use('/bus', bus)
 app.use('/Booking', booking)
 app.use('/businfo', businfo)
 app.use('/Adminpanel', Adminpanel)
-app.use('/sendMessage', sendMessage)
 app.use('/FavouriteJourney', FavouriteJourney)
 
 app.get('/', async (req, res) => {

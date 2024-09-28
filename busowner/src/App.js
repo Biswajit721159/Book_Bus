@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { usermethod } from "./redux/userSlice";
 import WelcomePage from "./component/WelcomePage";
 import EditBus from "./component/EditBus";
+import Booking from "./component/Booking";
 
 function App() {
   const [load, setLoad] = useState(false);
@@ -61,6 +62,7 @@ function App() {
           <Route path="/ViewSeat" element={<ViewSeat />}></Route>
           <Route path="/SuperAdminpanel" element={<SuperAdminpanel />}></Route>
           <Route path="/EditBus" element={<EditBus />}></Route>
+          <Route path="/Booking" element={<Booking />}></Route>
         </Routes>
       </Router> :
         <FullPageLoader open={load} />}

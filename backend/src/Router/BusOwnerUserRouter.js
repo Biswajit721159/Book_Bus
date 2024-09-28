@@ -1,14 +1,10 @@
 let Router = require("express");
 const router = Router();
-
-let { login, register } = require('../Controler/BusOwnerUsercontrolter')
 let { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter, getBussByEmail, editBus } = require('../Controler/BusOwnerDatabasecontroler');
 let { getBookingDatabyDate } = require('../Controler/bookingcontroler')
 const verifytoken = require("../Middelware/TokenVerification");
 const { editBusValidation, addBusValidation } = require("../helpers/busDataValidation");
 
-router.route('/login').post(login);
-router.route('/register').post(register);
 router.route('/getBusById/:id').get(getBusById);
 router.route('/getBuses').get(verifytoken, getBuses);
 router.route('/addBus').post(verifytoken, addBusValidation, AddBusInBusOwnerDataBase);

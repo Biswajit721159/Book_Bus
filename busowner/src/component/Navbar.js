@@ -78,7 +78,16 @@ const Navbar = () => {
                                                 </li>
                                             </>
                                             :
-                                            ''
+                                            <>
+                                                <li>
+                                                    <button
+                                                        className="text-sm p-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 text-white-500 hover:text-white-600 transform transition-transform hover:scale-105"
+                                                        onClick={() => navigate('/Booking')}
+                                                    >
+                                                        Booking
+                                                    </button>
+                                                </li>
+                                            </>
                                         }
 
                                     </>

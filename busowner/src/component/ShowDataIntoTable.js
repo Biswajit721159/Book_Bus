@@ -102,19 +102,19 @@ const ShowDataIntoTable = ({ data }) => {
                     <p className="text-gray-600 mb-6">Are you sure you want to delete this bus? This action cannot be undone.</p>
                     <div className="flex justify-evenly">
                         <button
+                            variant="outlined"
+                            onClick={handleClose}
+                            className="p-2 rounded-md bg-gray-500 text-white border-gray-300"
+                        >
+                            Cancel
+                        </button>
+                        <button
                             variant="contained"
                             color="error"
                             className="p-2 rounded-md text-white bg-red-600 hover:bg-red-700"
                             onClick={handleDelete}
                         >
-                            delete
-                        </button>
-                        <button
-                            variant="outlined"
-                            onClick={handleClose}
-                            className="p-2 rounded-md bg-gray-500 text-white border-gray-300"
-                        >
-                            cancel
+                            Delete
                         </button>
                     </div>
                 </Box>
