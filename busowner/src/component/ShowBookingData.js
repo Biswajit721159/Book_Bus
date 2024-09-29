@@ -8,10 +8,11 @@ import { useNavigate } from "react-router-dom";
 
 const ShowBookingData = ({ data }) => {
     const [bookingData, setBookingData] = useState({});
-    const [openPassangerModal, setOpenPassangerModal] = useState(false);
+    const [openPassengerModal, setOpenPassengerModal] = useState(false);
     const history = useNavigate();
+
     const handleClose = () => {
-        setOpenPassangerModal(false);
+        setOpenPassengerModal(false);
         setBookingData({});
     };
 
@@ -20,125 +21,130 @@ const ShowBookingData = ({ data }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 350,
+        width: 400,
         bgcolor: 'background.paper',
-        border: '1px solid blue',
+        border: '2px solid #3b82f6', // blue color border
         boxShadow: 24,
         p: 4,
-        borderRadius: 2,
+        borderRadius: '10px', // smooth border radius
     };
+
     return (
         <>
-            {
-                data?.length != 0 ?
-                    <div className="overflow-scroll">
-                        <table className="table border bg-slate-50">
-                            <thead>
-                                <tr>
-                                    <th className="text-center" scope="col">id no/email</th>
-                                    <th className="text-center" scope="col">createdAt-updatedAt</th>
-                                    <th className="text-center" scope="col">bus name</th>
-                                    <th className="text-center" scope="col">src-dist</th>
-                                    <th className="text-center" scope="col">booking date</th>
-                                    <th className="text-center" scope="col">pay</th>
-                                    <th className="text-center" scope="col">total distance</th>
-                                    <th className="text-center" scope="col">passengers detail</th>
+            {data?.length !== 0 ? (
+                <div className="overflow-auto rounded-lg shadow-lg">
+                    <table className="table-auto w-full bg-white text-sm text-left border-collapse">
+                        <thead className="bg-blue-600 text-white uppercase">
+                            <tr>
+                                <th className="py-2 px-4 text-center">ID No / Email</th>
+                                <th className="py-2 px-4 text-center">Created At / Updated At</th>
+                                <th className="py-2 px-4 text-center">Bus Name</th>
+                                <th className="py-2 px-4 text-center">Src - Dist</th>
+                                <th className="py-2 px-4 text-center">Booking Date</th>
+                                <th className="py-2 px-4 text-center">Payment</th>
+                                <th className="py-2 px-4 text-center">Distance</th>
+                                <th className="py-2 px-4 text-center">Passengers Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.map((item, index) => (
+                                <tr key={index} className="border-b hover:bg-gray-100">
+                                    <td className="py-3 px-4 text-center">
+                                        <div className="flex flex-col items-center">
+                                            <p className="text-gray-800">{item._id}</p>
+                                            <p className="text-blue-500">{item.useremail}</p>
+                                        </div>
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                        <div className="flex flex-col">
+                                            <p><strong>Create:</strong> {convertUtcToIst(item.createdAt)}</p>
+                                            <p><strong>Last Update:</strong> {convertUtcToIst(item.updatedAt)}</p>
+                                        </div>
+                                    </td>
+                                    <td
+                                        className="py-3 px-4 text-center cursor-pointer text-blue-600 hover:underline flex items-center justify-center"
+                                        onClick={() => history(`/View_Bus/${item?.bus_id}`)}
+                                    >
+                                        {item?.bus?.bus_name}
+                                        <NorthEastOutlinedIcon className="ml-1" fontSize="small" />
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                        <div>
+                                            <p>{item.src}</p>
+                                            <KeyboardDoubleArrowDownIcon className="text-blue-700" fontSize="small" />
+                                            <p>{item.dist}</p>
+                                        </div>
+                                    </td>
+                                    <td className="py-3 px-4 text-center">{convertUtcToIst(item.date)}</td>
+                                    <td className="py-3 px-4 text-center">₹{item.total_money}</td>
+                                    <td className="py-3 px-4 text-center">{item.total_distance} km</td>
+                                    <td className="py-3 px-4 text-center">
+                                        <button
+                                            className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-md"
+                                            onClick={() => {
+                                                setOpenPassengerModal(true);
+                                                setBookingData(item);
+                                            }}
+                                        >
+                                            View Seats
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    data?.map((item, ind) => (
-                                        <tr>
-                                            <td className="text-center">
-                                                <div className="flex flex-col justify-center gap-1 rounded-lg">
-                                                    <p className="text-black">{item._id}</p>
-                                                    <p className="text-blue-500">{item.useremail}</p>
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                <div className="flex flex-col">
-                                                    <p><strong>create-</strong>{convertUtcToIst(item.createdAt)}</p>
-                                                    <p><strong>last update-</strong>{convertUtcToIst(item.updatedAt)}</p>
-                                                </div>
-                                            </td>
-                                            <td
-                                                className="text-center cursor-pointer"
-                                                onClick={() => {
-                                                    history(`/View_Bus/${item?.bus_id}`)
-                                                }}
-                                            >
-                                                {item?.bus?.bus_name}<NorthEastOutlinedIcon className="text-blue-700" fontSize="small" />
-                                            </td>
-                                            <td className="text-center">
-                                                <div>
-                                                    <p>{item.src}</p>
-                                                    <KeyboardDoubleArrowDownIcon className="text-blue-700" fontSize="small" />
-                                                    <p>{item.dist}</p>
-                                                </div>
-                                            </td>
-                                            <td className="text-center">{convertUtcToIst(item.date)}</td>
-                                            <td className="text-center">₹{item.total_money}</td>
-                                            <td className="text-center">{item.total_distance} km</td>
-                                            <td className="text-center">
-                                                <button
-                                                    className="p-2 bg-orange-500 hover:bg-orange-600 rounded-md text-sm text-white"
-                                                    onClick={() => {
-                                                        setOpenPassangerModal(true);
-                                                        setBookingData(item);
-                                                    }}
-                                                >
-                                                    view seat
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                        <Modal
-                            open={openPassangerModal}
-                            onClose={handleClose}
-                            aria-labelledby="modal-title"
-                        >
-                            <Box
-                                sx={style}
-                            >
-                                <IconButton
-                                    onClick={handleClose}
-                                    sx={{
-                                        position: 'absolute',
-                                        top: 8,
-                                        right: 8,
-                                    }}
-                                >
-                                    <CloseIcon />
-                                </IconButton>
+                            ))}
+                        </tbody>
+                    </table>
 
-                                <Typography variant="body1" className="text-center mb-3">
-                                    <strong>Seats and Passengers</strong>
-                                </Typography>
-                                <ul>
-                                    {bookingData?.seat_record?.map((seat, index) => (
-                                        <li key={index} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
-                                            <span>Seat {seat}</span>
-                                            <span>{bookingData?.person?.[index]}</span>
-                                            <span>
-                                                {
-                                                    bookingData?.status?.[index] === true ?
-                                                        <p className="p-1 rounded-md text-sm text-gray-100 bg-green-500">Booked</p> :
-                                                        <p className="p-1 m-1 rounded-md text-sm text-gray-100 bg-red-500">Cancel</p>
-                                                }
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </Box>
-                        </Modal>
-                    </div>
-                    : <p className="d-flex align-items-center justify-content-center mt-5">Result not found 😥</p>
-            }
+                    <Modal
+                        open={openPassengerModal}
+                        onClose={handleClose}
+                        aria-labelledby="modal-title"
+                    >
+                        <Box sx={style}>
+                            <IconButton
+                                onClick={handleClose}
+                                sx={{
+                                    position: 'absolute',
+                                    top: 8,
+                                    right: 8,
+                                }}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+
+                            <Typography variant="h6" className="text-center mb-3">
+                                Seats and Passengers
+                            </Typography>
+
+                            <ul className="space-y-2">
+                                {bookingData?.seat_record?.map((seat, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex justify-between items-center bg-gray-100 p-2 rounded-md shadow-sm"
+                                    >
+                                        <span className="font-medium">Seat {seat}</span>
+                                        <span>{bookingData?.person?.[index]}</span>
+                                        <span>
+                                            {bookingData?.status?.[index] ? (
+                                                <p className="px-2 py-1 bg-green-500 text-white rounded-md text-xs">
+                                                    Booked
+                                                </p>
+                                            ) : (
+                                                <p className="px-2 py-1 bg-red-500 text-white rounded-md text-xs">
+                                                    Cancelled
+                                                </p>
+                                            )}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Box>
+                    </Modal>
+                </div>
+            ) : (
+                <p className="flex items-center justify-center mt-5 text-gray-500">No results found 😥</p>
+            )}
         </>
-    )
-}
+    );
+};
 
 export default ShowBookingData;
