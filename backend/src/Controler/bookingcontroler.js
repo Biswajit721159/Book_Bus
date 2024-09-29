@@ -2,6 +2,7 @@ const Booking = require('../models/Booking_models')
 const Bus_detail = require('../models/Bus_detail_models')
 let FavouriteJourney = require('../models/FavouriteJourney_models')
 let { ApiResponse } = require("../utils/ApiResponse.js");
+let mongoose = require('mongoose');
 
 
 const cancelTicket = async (req, res) => {
@@ -346,38 +347,72 @@ const getBookingData = async (req, res) => {
         }
 
         let limit = 15;
-        let { page } = req.query;
-        console.log(req.query);
+        let { page, Email, Src, Dist, BookingDate, BusName } = req.query;
         page = page ? parseInt(page) : 1;
         let skip = (page - 1) * limit;
         let sortFilter = { updatedAt: -1 };
+        let matchConditions = {};
 
-        let pipeline = [
-            {
-                $lookup: {
-                    from: "bus_details",
-                    localField: "bus_id",
-                    foreignField: "_id",
-                    as: "bus"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$bus",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            { $sort: sortFilter },
-            { $skip: skip },
-            { $limit: limit },
-        ];
+        if (Email) {
+            matchConditions.useremail = { $regex: Email, $options: "i" };
+        }
+        if (Src) {
+            matchConditions.src = { $regex: Src, $options: "i" };
+        }
+        if (Dist) {
+            matchConditions.dist = { $regex: Dist, $options: "i" };
+        }
+        if (BookingDate) {
+            matchConditions.date = { $regex: BookingDate, $options: "i" };
+        }
 
-        let bookingData = await Booking.aggregate(pipeline);
+        const createPipeline = (skip, limit, sortFilter) => {
+            let pipeline = [
+                {
+                    $lookup: {
+                        from: "bus_details",
+                        localField: "bus_id",
+                        foreignField: "_id",
+                        as: "bus"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$bus",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $match: matchConditions
+                },
+                ...(BusName ? [{
+                    $match: {
+                        "bus.bus_name": { $regex: BusName, $options: "i" }
+                    }
+                }] : []),
+            ];
 
-        let totalRecord = await Booking.countDocuments({});
+            if (sortFilter) {
+                pipeline.push({ $sort: sortFilter });
+            }
+            if (typeof skip !== 'undefined' && typeof limit !== 'undefined') {
+                pipeline.push({ $skip: skip }, { $limit: limit });
+            }
+
+            return pipeline;
+        };
+
+        let dataPipeline = createPipeline(skip, limit, sortFilter);
+        let countPipeline = createPipeline();
+
+        let totalRecordResult = await Booking.aggregate([...countPipeline, { $count: "total" }]);
+        let totalRecord = totalRecordResult.length > 0 ? totalRecordResult[0].total : 0;
+
+        let bookingData = await Booking.aggregate(dataPipeline);
         let totalPage = Math.ceil(totalRecord / limit);
 
         return res.status(200).json(new ApiResponse(200, { bookingData, totalPage }, 'success'));
+
     } catch (error) {
         console.error("Error fetching booking data:", error);
         return res.status(500).json(new ApiResponse(500, null, 'Server down!'));

@@ -23,7 +23,7 @@ const ShowBookingData = ({ data }) => {
         transform: 'translate(-50%, -50%)',
         width: 400,
         bgcolor: 'background.paper',
-        border: '2px solid #3b82f6', // blue color border
+        border: '1px solid #3b82f6', // blue color border
         boxShadow: 24,
         p: 2,
         borderRadius: '10px', // smooth border radius
@@ -40,7 +40,7 @@ const ShowBookingData = ({ data }) => {
                                 <th className="py-2 px-4 text-center">Created At / Updated At</th>
                                 <th className="py-2 px-4 text-center">Bus Name</th>
                                 <th className="py-2 px-4 text-center">Src - Dist</th>
-                                <th className="py-2 px-4 text-center">Booking Date</th>
+                                <th className="py-2 px-4 text-center">Journey Date</th>
                                 <th className="py-2 px-4 text-center">Payment</th>
                                 <th className="py-2 px-4 text-center">Distance</th>
                                 <th className="py-2 px-4 text-center">Passengers Detail</th>

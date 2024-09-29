@@ -1,31 +1,38 @@
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch } from "react-redux";
-import { addEmail, addId, addBookingDate, addBusName } from "../redux/bookingApiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addEmail, addSrc, addDist, addBookingDate, addBusName } from "../redux/bookingApiSlice";
 const SearchingInput = () => {
+    const { Email, Src, Dist, BookingDate, BusName, currentPage } = useSelector((state) => state.booking);
     const [state, setState] = useState([
-        {
-            name: 'Email',
-            placeholder: 'Enter Eamil',
-            value: '',
-            type: 'text'
-        },
-        {
-            name: 'Id',
-            placeholder: 'Enter Id',
-            value: '',
-            type: 'text'
-        },
         {
             name: 'BookingDate',
             placeholder: 'Enter booking date',
-            value: new Date(),
+            value: BookingDate,
             type: 'date'
+        },
+        {
+            name: 'Src',
+            placeholder: 'Enter Src',
+            value: Src,
+            type: 'text'
+        },
+        {
+            name: 'Dist',
+            placeholder: 'Enter Dist',
+            value: Dist,
+            type: 'text'
+        },
+        {
+            name: 'Email',
+            placeholder: 'Enter Eamil',
+            value: Email,
+            type: 'text'
         },
         {
             name: 'BusName',
             placeholder: 'Enter bus bame',
-            value: '',
+            value: BusName,
             type: 'text'
         },
     ])
@@ -37,8 +44,10 @@ const SearchingInput = () => {
         let name = e.target.name;
         if (name === "Email") {
             dispatch(addEmail(value));
-        } else if (name === "Id") {
-            dispatch(addId(value));
+        } else if (name === "Src") {
+            dispatch(addSrc(value));
+        } else if (name === "Dist") {
+            dispatch(addDist(value));
         } else if (name === "BookingDate") {
             dispatch(addBookingDate(value));
         } else if (name === "BusName") {

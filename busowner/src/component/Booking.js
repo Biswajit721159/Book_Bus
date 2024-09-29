@@ -5,24 +5,31 @@ import ShowBookingData from "./ShowBookingData";
 import { FullPageLoader } from "./FullPageLoader";
 import { toast } from "react-toastify";
 import SearchingInput from "../Booking/SearchingInput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { debounce } from 'lodash';
+import { setCurrentPage } from '../redux/bookingApiSlice'
+import useDebounce from "../helpers/useDebounce";
 
 const Booking = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const { Email, Id, BookingDate, BusName } = useSelector((state) => state.booking);
-    const [queryParams, setQueryParams] = useState({ currentPage, Email, Id, BookingDate, BusName });
+    const { Email, Src, Dist, BookingDate, BusName, currentPage } = useSelector((state) => state.booking);
+    const [queryParams, setQueryParams] = useState({ currentPage, Email, Src, Dist, BookingDate, BusName });
+    const dispatch = useDispatch();
 
-    const updateQueryParams = debounce((newParams) => {
+    const updateQueryParams = useDebounce((newParams) => {
         setQueryParams(newParams);
-    }, 100);
+    }, 500);
 
     useEffect(() => {
-        updateQueryParams({ currentPage, Email, Id, BookingDate, BusName });
-    }, [currentPage, Email, Id, BookingDate, BusName]);
+        setCurrentPage(1);
+        dispatch(setCurrentPage(1));
+        updateQueryParams({ currentPage: 1, Email, Src, Dist, BookingDate, BusName });
+    }, [Email, Src, Dist, BookingDate, BusName]);
+
+    useEffect(() => {
+        updateQueryParams({ currentPage, Email, Src, Dist, BookingDate, BusName });
+    }, [currentPage])
 
     const { data, error, isLoading, isFetching } = useGetBookingsQuery(queryParams);
-
     const bookingData = data?.data?.bookingData;
     const totalPage = data?.data?.totalPage;
 
@@ -33,7 +40,7 @@ const Booking = () => {
     }, [error]);
 
     const onChangePage = (e, page) => {
-        setCurrentPage(page);
+        dispatch(setCurrentPage(page));
     };
 
     return (

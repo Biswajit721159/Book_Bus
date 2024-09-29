@@ -5,9 +5,11 @@ const api = process.env.REACT_APP_API;
 
 const initialState = {
     'Email': '',
-    'Id': '',
+    'Src': '',
+    'Dist': '',
     'BookingDate': '',
     'BusName': '',
+    'currentPage': 1
 };
 
 const bookingSlice = createSlice({
@@ -17,8 +19,11 @@ const bookingSlice = createSlice({
         addEmail: (state, action) => {
             state.Email = action.payload;
         },
-        addId: (state, action) => {
-            state.Id = action.payload;
+        addSrc: (state, action) => {
+            state.Src = action.payload;
+        },
+        addDist: (state, action) => {
+            state.Dist = action.payload;
         },
         addBookingDate: (state, action) => {
             state.BookingDate = action.payload;
@@ -26,6 +31,9 @@ const bookingSlice = createSlice({
         addBusName: (state, action) => {
             state.BusName = action.payload;
         },
+        setCurrentPage: (state, action) => {
+            state.currentPage = action.payload;
+        }
     },
 });
 
@@ -46,7 +54,7 @@ export const bookingApiSlice = createApi({
     endpoints: (builder) => ({
         getBookings: builder.query({
             query: (data) => ({
-                url: `Booking/pagination/?page=${data.currentPage}&Email=${data.Email}&Id=${data.Id}&BookingDate=${data.BookingDate}&BusName=${data.BusName}`,
+                url: `Booking/pagination/?page=${data.currentPage}&Email=${data.Email}&Src=${data.Src}&Dist=${data.Dist}&BookingDate=${data.BookingDate}&BusName=${data.BusName}`,
                 method: 'POST',
                 body: JSON.stringify(data),
             }),
@@ -55,5 +63,5 @@ export const bookingApiSlice = createApi({
 });
 
 export const { useGetBookingsQuery } = bookingApiSlice;
-export const { addEmail, addId, addBookingDate, addBusName } = bookingSlice.actions;
+export const { addEmail, addSrc, addDist, addBookingDate, addBusName, setCurrentPage } = bookingSlice.actions;
 export const bookingReducer = bookingSlice.reducer;
