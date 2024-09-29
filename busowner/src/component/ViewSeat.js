@@ -237,11 +237,25 @@ const ViewSeat = () => {
                     <Typography variant="body1" className="text-center mb-3">
                         <strong>Seats and Passengers</strong>
                     </Typography>
-                    <ul>
+                    <ul className="space-y-2">
                         {bookingData?.seat_record?.map((seat, index) => (
-                            <li key={index} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
-                                <span>Seat {seat}</span>
+                            <li
+                                key={index}
+                                className="flex justify-between items-center bg-gray-100 p-2 rounded-md shadow-sm"
+                            >
+                                <span className="font-medium">Seat {seat}</span>
                                 <span>{bookingData?.person?.[index]}</span>
+                                <span>
+                                    {bookingData?.status?.[index] ? (
+                                        <p className="px-2 py-1 bg-green-500 text-white rounded-md text-xs">
+                                            Booked
+                                        </p>
+                                    ) : (
+                                        <p className="px-2 py-1 bg-red-500 text-white rounded-md text-xs">
+                                            Cancelled
+                                        </p>
+                                    )}
+                                </span>
                             </li>
                         ))}
                     </ul>
