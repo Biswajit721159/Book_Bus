@@ -174,42 +174,44 @@ const ViewSeat = () => {
                 </div>
                 {
                     memoBus.length != 0 ?
-                        <table className="table border">
-                            <thead>
-                                <tr>
-                                    <th className="text-center" scope="col">ID No</th>
-                                    <th className="text-center" scope="col">Src</th>
-                                    <th className="text-center" scope="col">Dist</th>
-                                    <th className="text-center" scope="col">Pay</th>
-                                    <th className="text-center" scope="col">Total Distance</th>
-                                    <th className="text-center" scope="col">Passengers Detail</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    memoBus.map((item, ind) => (
-                                        <tr>
-                                            <td className="text-center">{item._id}</td>
-                                            <td className="text-center">{item.src}</td>
-                                            <td className="text-center">{item.dist}</td>
-                                            <td className="text-center">₹{item.total_money}</td>
-                                            <td className="text-center">{item.total_distance} km</td>
-                                            <td className="text-center">
-                                                <button
-                                                    className="p-2 bg-orange-500 hover:bg-orange-600 rounded-md text-sm text-white"
-                                                    onClick={() => {
-                                                        setOpenPassangerModal(true);
-                                                        setBookingData(item);
-                                                    }}
-                                                >
-                                                    view seat
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
+                        <div className="overflow-auto rounded-lg shadow-lg">
+                            <table className="table border">
+                                <thead className="bg-blue-600 text-white uppercase">
+                                    <tr>
+                                        <th className="text-center" scope="col">ID No</th>
+                                        <th className="text-center" scope="col">Src</th>
+                                        <th className="text-center" scope="col">Dist</th>
+                                        <th className="text-center" scope="col">Pay</th>
+                                        <th className="text-center" scope="col">Total Distance</th>
+                                        <th className="text-center" scope="col">Passengers Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        memoBus.map((item, ind) => (
+                                            <tr>
+                                                <td className="text-center">{item._id}</td>
+                                                <td className="text-center">{item.src}</td>
+                                                <td className="text-center">{item.dist}</td>
+                                                <td className="text-center">₹{item.total_money}</td>
+                                                <td className="text-center">{item.total_distance} km</td>
+                                                <td className="text-center">
+                                                    <button
+                                                        className="p-2 bg-orange-500 hover:bg-orange-600 rounded-md text-sm text-white"
+                                                        onClick={() => {
+                                                            setOpenPassangerModal(true);
+                                                            setBookingData(item);
+                                                        }}
+                                                    >
+                                                        view seat
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         : <p className="d-flex align-items-center justify-content-center mt-5">Result not found 😥</p>
                 }
             </div>
