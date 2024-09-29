@@ -25,7 +25,7 @@ const ShowBookingData = ({ data }) => {
         bgcolor: 'background.paper',
         border: '2px solid #3b82f6', // blue color border
         boxShadow: 24,
-        p: 4,
+        p: 2,
         borderRadius: '10px', // smooth border radius
     };
 

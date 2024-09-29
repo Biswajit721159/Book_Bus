@@ -1,61 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { getBookingForSuperAdmin } from "../utilities/busApi";
-import CloseIcon from '@mui/icons-material/Close';
-import { FullPageLoader } from "./FullPageLoader";
-import { toast } from "react-toastify";
+import { useGetBookingsQuery } from "../redux/bookingApiSlice";
 import { Pagination } from '@mui/material';
 import ShowBookingData from "./ShowBookingData";
+import { FullPageLoader } from "./FullPageLoader";
+import { toast } from "react-toastify";
+import SearchingInput from "../Booking/SearchingInput";
+import { useSelector } from "react-redux";
+import { debounce } from 'lodash';
 
 const Booking = () => {
-    const [data, setData] = useState([]);
-    const [totalPage, setTotalPage] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const [id, setId] = useState('');
-    const [load, setLoad] = useState(false);
+    const { Email, Id, BookingDate, BusName } = useSelector((state) => state.booking);
+    const [queryParams, setQueryParams] = useState({ currentPage, Email, Id, BookingDate, BusName });
 
-    const loadData = async (page = 1) => {
-        setLoad(true);
-        try {
-            let res = await getBookingForSuperAdmin(page);
-            setData(res.bookingData);
-            setTotalPage(res.totalPage);
-        } catch (e) {
-            toast.warn(e.message);
-        } finally {
-            setLoad(false);
+    const updateQueryParams = debounce((newParams) => {
+        setQueryParams(newParams);
+    }, 100);
+
+    useEffect(() => {
+        updateQueryParams({ currentPage, Email, Id, BookingDate, BusName });
+    }, [currentPage, Email, Id, BookingDate, BusName]);
+
+    const { data, error, isLoading, isFetching } = useGetBookingsQuery(queryParams);
+
+    const bookingData = data?.data?.bookingData;
+    const totalPage = data?.data?.totalPage;
+
+    useEffect(() => {
+        if (error) {
+            toast.warn(error.message || "An error occurred while fetching bookings");
         }
-    }
+    }, [error]);
 
     const onChangePage = (e, page) => {
         setCurrentPage(page);
-        loadData(page);
-    }
-    useEffect(() => {
-        loadData();
-    }, [])
+    };
+
     return (
         <>
             <div className="container mt-0 p-2 my-5">
-                <div className="flex justify-end items-center">
-                    <input
-                        className="mt-4 mb-2 ml-3 mr-3 px-3 py-2 border rounded placeholder-gray-500 outline-blue-400 "
-                        placeholder="Enter Id number"
-                        value={id}
-                        onChange={(e) => { setId(e.target.value) }}
-                        spellCheck='false'
-                    />
-
-                    {id.length ?
-                        <CloseIcon
-                            fontSize="small"
-                            className={`absolute mr-5 mt-3 w-0.5 h-0.5 text-sm cursor-pointer hover:bg-gray-200 rounded-lg`}
-                            onClick={() => setId('')}
-                        />
-                        : ''}
-                </div>
-                <ShowBookingData data={data} />
+                <SearchingInput />
+                {bookingData ? <ShowBookingData data={bookingData} /> : null}
             </div>
-            {totalPage ?
+            {totalPage > 0 && (
                 <Pagination
                     className='mt-5 mb-5'
                     sx={{ display: 'flex', justifyContent: 'center' }}
@@ -63,10 +50,11 @@ const Booking = () => {
                     onChange={onChangePage}
                     page={currentPage}
                     color="primary"
-                /> :
-                ""}
-            <FullPageLoader open={load} />
+                />
+            )}
+            <FullPageLoader open={isFetching} />
         </>
-    )
-}
+    );
+};
+
 export default Booking;

@@ -11,7 +11,7 @@ router.route('/getTicket/:email/:page').get(verifytoken, getTicketByEmail);
 router.route('/get_Seat').patch(get_Seat);
 router.route('/').post(verifytoken, insertBooking);
 router.route('/cancelTicket').patch(verifytoken, cancelTicket);
-router.route('/pagination/:page').post(verifytoken, getBookingData);
+router.route('/pagination').post(verifytoken, getBookingData);
 
 
 module.exports = router;

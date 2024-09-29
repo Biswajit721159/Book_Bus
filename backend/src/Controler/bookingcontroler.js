@@ -346,7 +346,8 @@ const getBookingData = async (req, res) => {
         }
 
         let limit = 15;
-        let { page } = req.params;
+        let { page } = req.query;
+        console.log(req.query);
         page = page ? parseInt(page) : 1;
         let skip = (page - 1) * limit;
         let sortFilter = { updatedAt: -1 };
