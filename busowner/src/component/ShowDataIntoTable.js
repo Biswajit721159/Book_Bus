@@ -25,7 +25,7 @@ const ShowDataIntoTable = ({ data }) => {
                         <th className='text-center text-gray-500' scope="col">Total Seat</th>
                         <th className='text-center text-gray-500' scope="col">Src To Dist</th>
                         <th className='text-center text-gray-500' scope="col">Create At</th>
-                        {otherUserinfo?.role === "200" ? <th className='text-center text-gray-500' scope="col">Action Taken</th> : ''}
+                        {otherUserinfo?.role === "200" ? <th className='text-center text-gray-500' scope="col">Status</th> : ''}
                         <th className='text-center text-gray-500' >view</th>
                         <th className='text-center text-gray-500' >edit</th>
                         <th className='text-center text-gray-500' >delete</th>
