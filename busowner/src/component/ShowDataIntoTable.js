@@ -3,6 +3,7 @@ import { convertUtcToIst } from '../helpers/USTtoIST';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Modal, Button, Box } from '@mui/material';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const ShowDataIntoTable = ({ data }) => {
     const history = useNavigate();
@@ -98,7 +99,7 @@ const ShowDataIntoTable = ({ data }) => {
                 aria-describedby="modal-modal-description"
             >
                 <Box className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto my-20 text-center">
-                    <h2 className="text-xl font-semibold mb-4">Confirm Bus Deletion</h2>
+                    <h2 className="text-xl font-semibold mb-4">Confirm Bus Deletion <QuestionMarkIcon className='text-red-500' /></h2>
                     <p className="text-gray-600 mb-6">Are you sure you want to delete this bus? This action cannot be undone.</p>
                     <div className="flex justify-evenly">
                         <button
@@ -106,7 +107,7 @@ const ShowDataIntoTable = ({ data }) => {
                             onClick={handleClose}
                             className="p-2 rounded-md bg-gray-500 text-white border-gray-300"
                         >
-                            Cancel
+                            cancel
                         </button>
                         <button
                             variant="contained"
@@ -114,7 +115,7 @@ const ShowDataIntoTable = ({ data }) => {
                             className="p-2 rounded-md text-white bg-red-600 hover:bg-red-700"
                             onClick={handleDelete}
                         >
-                            Delete
+                            delete
                         </button>
                     </div>
                 </Box>

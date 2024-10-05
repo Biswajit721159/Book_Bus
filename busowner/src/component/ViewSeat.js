@@ -227,8 +227,8 @@ const ViewSeat = () => {
                         onClick={handleClose}
                         sx={{
                             position: 'absolute',
-                            top: 8,
-                            right: 8,
+                            top: 5,
+                            right: 5,
                         }}
                     >
                         <CloseIcon />
