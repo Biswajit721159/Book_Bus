@@ -25,15 +25,15 @@ const Homepage2 = () => {
     
                     <div className="row1 mt-5">
                         <div className="col1 shadow p-2 mb-5 bg-white rounded" >
-                            <FaBus className='icon' />
+                            <FaBus className='icon mb-3' />
                             <span className='headline1'>On Time </span>
                         </div>
                         <div className="col1 shadow p-2 mb-5 bg-white rounded" >
-                            <FaRupeeSign className='icon' />
+                            <FaRupeeSign className='icon mb-3' />
                             <span className='headline1'>Easy Payments</span>
                         </div>
                         <div className="col1 shadow p-2 mb-5 bg-white rounded" >
-                            <AiFillPhone className='icon' />
+                            <AiFillPhone className='icon mb-3' />
                             <span className='headline1'>24/7 Service</span>
                         </div>
                     </div>
