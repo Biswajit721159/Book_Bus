@@ -173,11 +173,27 @@ const editBus = async (req, res) => {
         bus.station_data = station_data;
         bus.status = status;
         bus.Total_seat = Total_seat;
+        if (status === "approved") {
+            await addbusIntoBus_detailDataBase(req.body);
+        }
         await bus.save();
         return res.status(200).json(new ApiResponse(200, bus, 'Bus data updated successfully'));
     } catch (e) {
         res.status(500).json(new ApiResponse(500, null, "Server down!"));
     }
 };
+
+const addbusIntoBus_detailDataBase = async (data) => {
+    try {
+        let bus = await Bus_detail.create({
+            email: data.email,
+            bus_name: data.bus_name,
+            Total_seat: data.Total_seat,
+            station_data: data.station_data
+        });
+    } catch (e) {
+        console.log("something went wrong in addbusIntoBus_detailDataBase function", e.message)
+    }
+}
 
 module.exports = { getBusById, getBuses, AddBusInBusOwnerDataBase, findBussByFilter, getBussByEmail, editBus }

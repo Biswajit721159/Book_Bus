@@ -10,6 +10,7 @@ const Bus_detailSchema = new Schema(
         },
         bus_name: {
             type: String,
+            unique: true,
             required: true,
         },
         Total_seat: {

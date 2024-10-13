@@ -6,6 +6,7 @@ import { Modal, Button, Box } from '@mui/material';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const ShowDataIntoTable = ({ data }) => {
+
     const history = useNavigate();
     const otherUserinfo = useSelector((state) => state.userAuth.otherUserinfo);
     const [isDeleted, setIsDeleted] = useState(false);
@@ -39,15 +40,16 @@ const ShowDataIntoTable = ({ data }) => {
                                 <th className='text-center' scope="row">{ind + 1}</th>
                                 <td className='text-center'>{item?.bus_name}</td>
                                 <td className='text-center' >{item?.Total_seat}</td>
-                                <th className='text-center'>*{item?.station_data[0]?.station} - {item?.station_data[(item?.station_data?.length) - 1]?.station}</th>
+                                <th className='text-center'>*{item?.station_data?.[0]?.station} - {item?.station_data?.[(item?.station_data?.length) - 1]?.station}</th>
                                 <td className='text-center' >{convertUtcToIst(item?.createdAt)}</td>
-                                {otherUserinfo?.role === "200" ? <td className='text-center' >
+                                <td className='text-center' >
                                     <button className={`px-3 p-1.5 bg-${item?.status === "pending" ? 'blue' : (item?.status === "approved" ? 'green' : 'red')}-500 rounded-md text-white text-sm`}
                                         onClick={() => history('/EditBus', { state: { data: item, type: 'edit' } })}
+                                        disabled={otherUserinfo?.role === "200" ? false : true}
                                     >
                                         {item?.status}
                                     </button>
-                                </td> : ''}
+                                </td>
                                 <td className='text-center' >
                                     <button
                                         className='px-3 p-1.5 bg-orange-500 rounded-md hover:bg-orange-600 text-white text-sm'

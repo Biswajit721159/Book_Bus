@@ -15,9 +15,13 @@ const Adminpanel = () => {
     const [load, setLoad] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
+    const { otherUserinfo } = useSelector((state) => state.userAuth);
+    
     useEffect(() => {
         if (userinfo === null) {
             history('/Login')
+        } else if (otherUserinfo.role !== '100') {
+            history('/')
         }
         else {
             if (userinfo) loadData();

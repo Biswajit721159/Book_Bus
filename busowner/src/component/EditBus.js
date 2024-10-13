@@ -11,6 +11,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useSelector } from 'react-redux';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const EditBus = () => {
     const location = useLocation();
@@ -69,7 +70,7 @@ const EditBus = () => {
         <Box p={3} className="mx-20 mr-20">
             <Paper elevation={3} sx={{ p: 3 }}>
                 <Typography variant="p" className='text-blue-500 cursor-pointer' onClick={() => navigate(-1)}>
-                    Back
+                    <ArrowBackIosNewIcon sx={{ fontSize: '10px' }} className='' /> Back
                 </Typography>
                 <Typography variant="h5" className='text-center mb-5' gutterBottom>
                     Edit Bus
