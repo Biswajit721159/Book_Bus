@@ -182,12 +182,12 @@ function ResponsiveAppBar() {
               </Menu>
             </Box> :
             <Box sx={{ display: 'flex' }}>
-              <Link to='/Login' style={{ textDecoration: 'none', color: 'black' }}>
+              <Link to='/Login' style={{ textDecoration: 'none', color: 'white' }}>
                 <MenuItem key={loginRegisterPage[0]} >
                   <Typography textAlign="center">{loginRegisterPage[0]}</Typography>
                 </MenuItem>
               </Link>
-              <Link to='/Register' style={{ textDecoration: 'none', color: 'black' }}>
+              <Link to='/Register' style={{ textDecoration: 'none', color: 'white' }}>
                 <MenuItem key={loginRegisterPage[1]} >
                   <Typography textAlign="center">{loginRegisterPage[1]}</Typography>
                 </MenuItem>
