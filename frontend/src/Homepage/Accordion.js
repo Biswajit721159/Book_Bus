@@ -2,13 +2,13 @@ import React from 'react';
 
 const Accordion = () => {
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+        <div style={{ maxWidth: '1500px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
             <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>FAQs - Bus Booking</h2>
             <div id="accordionFlushExample" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '8px', backgroundColor: '#fff' }}>
                 <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
                     <h2 className="accordion-header" id="flush-headingOne">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-                            style={{ backgroundColor: '#007bff', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer', borderRadius: '8px 8px 0 0' }}>
+                            style={{ backgroundColor: '#8592f5', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer', borderRadius: '8px 8px 0 0' }}>
                             Can I track the location of my booked bus online? #1
                         </button>
                     </h2>
@@ -23,7 +23,7 @@ const Accordion = () => {
                 <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
                     <h2 className="accordion-header" id="flush-headingTwo">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-                            style={{ backgroundColor: '#007bff', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
+                            style={{ backgroundColor: '#8592f5', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
                             What are the advantages of purchasing a bus ticket with blueBus? #2
                         </button>
                     </h2>
@@ -41,7 +41,7 @@ const Accordion = () => {
                 <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
                     <h2 className="accordion-header" id="flush-headingThree">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-                            style={{ backgroundColor: '#007bff', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
+                            style={{ backgroundColor: '#8592f5', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
                             Why book bus tickets online on blueBus? #3
                         </button>
                     </h2>
@@ -56,7 +56,7 @@ const Accordion = () => {
                 <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
                     <h2 className="accordion-header" id="flush-headingFour">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-                            style={{ backgroundColor: '#007bff', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
+                            style={{ backgroundColor: '#8592f5', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
                             Do I need to create an account on the blueBus site to book my bus ticket? #4
                         </button>
                     </h2>
@@ -75,7 +75,7 @@ const Accordion = () => {
                 <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
                     <h2 className="accordion-header" id="flush-headingFive">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-                            style={{ backgroundColor: '#007bff', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
+                            style={{ backgroundColor: '#8592f5', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
                             Does bus booking online cost me more? #5
                         </button>
                     </h2>
@@ -90,7 +90,7 @@ const Accordion = () => {
                 <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
                     <h2 className="accordion-header" id="flush-headingSix">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-                            style={{ backgroundColor: '#007bff', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
+                            style={{ backgroundColor: '#8592f5', color: '#fff', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
                             How can I get the discounts on the bus booking? #6
                         </button>
                     </h2>
