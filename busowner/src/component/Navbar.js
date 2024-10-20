@@ -49,7 +49,9 @@ const Navbar = () => {
                         />
                     </ListItemButton>
                 </ListItem>
+
                 <Divider />
+
                 <ListItem onClick={() => history('/')}>
                     <ListItemButton>
                         <ListItemIcon>
@@ -178,6 +180,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav >
+            
             {userinfo ? <Drawer
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}

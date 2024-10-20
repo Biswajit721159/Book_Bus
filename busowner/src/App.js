@@ -19,6 +19,7 @@ import { usermethod } from "./redux/userSlice";
 import WelcomePage from "./component/WelcomePage";
 import EditBus from "./component/EditBus";
 import Booking from "./component/Booking";
+import UserTable from "./ManageUser/UserTable";
 
 function App() {
   const [load, setLoad] = useState(false);
@@ -63,6 +64,7 @@ function App() {
           <Route path="/SuperAdminpanel" element={<SuperAdminpanel />}></Route>
           <Route path="/EditBus" element={<EditBus />}></Route>
           <Route path="/Booking" element={<Booking />}></Route>
+          <Route path="/ManageUser" element={<UserTable />}></Route>
         </Routes>
       </Router> :
         <FullPageLoader open={load} />}

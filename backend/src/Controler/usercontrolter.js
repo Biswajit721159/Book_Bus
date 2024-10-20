@@ -185,4 +185,49 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = { login, register, DeleteByEmail, UpdateByEmail, getByEmail }
+const getUserByPage = async (req, res) => {
+    try {
+        let { page = 1, name, email } = req.query;
+        let limit = 10;
+        let skip = (page - 1) * limit;
+        let sortFilter = { updatedAt: -1 };
+        let filter = {
+            $or: [
+                { email: { $regex: email, $options: "i" } },
+                { name: { $regex: name, $options: "i" } }
+            ]
+        }
+        let pipeline = [
+            { $match: filter },
+            { $sort: sortFilter },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $project: {
+                    password: 0,
+                }
+            }
+        ];
+
+        const countResult = await User.aggregate([
+            { $match: filter },
+            { $count: "totalCount" }
+        ]);
+
+        let result = await User.aggregate(pipeline);
+
+        const totalCount = countResult.length > 0 ? countResult[0].totalCount : 0;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        res.status(200).json(new ApiResponse(200, {
+            result: result,
+            totalPage: totalPages
+        }, "success"));
+    } catch {
+        res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+module.exports = { login, register, DeleteByEmail, UpdateByEmail, getByEmail, getUserByPage }
