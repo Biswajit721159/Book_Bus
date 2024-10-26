@@ -59,4 +59,25 @@ const logInByToken = async (token) => {
     }
 }
 
-export { register, login, forgotPassword, logInByToken }
+const updateUser = async ({ email, name }) => {
+    try {
+        const userinfo = JSON.parse(localStorage.getItem('user'));
+        let res = await fetch(`${api}/user/updateUser`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userinfo.auth}`
+            },
+            body: JSON.stringify({
+                email: email,
+                name: name
+            })
+        }).then(response => response.json());
+        return res;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export { register, login, forgotPassword, logInByToken, updateUser }

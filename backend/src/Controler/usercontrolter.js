@@ -230,4 +230,16 @@ const getUserByPage = async (req, res) => {
     }
 }
 
-module.exports = { login, register, DeleteByEmail, UpdateByEmail, getByEmail, getUserByPage }
+const updateUser = async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        await User.findOneAndUpdate({ email: email }, { name: name });
+        res.status(200).json(new ApiResponse(200, null, "success"));
+    } catch (e) {
+        res
+            .status(500)
+            .json(new ApiResponse(500, null, "Server down !"));
+    }
+}
+
+module.exports = { login, register, DeleteByEmail, UpdateByEmail, getByEmail, getUserByPage, updateUser }

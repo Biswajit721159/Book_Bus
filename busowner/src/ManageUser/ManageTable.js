@@ -1,21 +1,39 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip } from '@mui/material';
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip,
+    Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { convertUtcToIst } from '../helpers/USTtoIST';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import { convertUtcToIst2 } from '../helpers/USTtoIST';
+import { toast } from 'react-toastify';
+import { updateUser } from '../utilities/authApi';
 
 const ManageTable = ({ data, setData }) => {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editedUser, setEditedUser] = useState({ name: '', email: '' });
 
-    const handleDelete = () => {
-
+    const handleEdit = (user) => {
+        setEditedUser({ name: user.name, email: user.email });
+        setEditDialogOpen(true);
     };
 
-    const openDeleteDialog = (index) => {
-        setSelectedUser(index);
-        setDeleteDialogOpen(true);
+    const handleClose = () => {
+        setEditDialogOpen(false);
+    };
+
+    const handleSave = async () => {
+        try {
+            let data = await updateUser(editedUser);
+            handleClose();
+            toast.success('Successfully update');
+        } catch (e) {
+            toast.warn(e.message);
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEditedUser(prevState => ({ ...prevState, [name]: value }));
     };
 
     return (
@@ -30,71 +48,62 @@ const ManageTable = ({ data, setData }) => {
                             <TableCell className="text-lg font-semibold text-white text-center">Register Date</TableCell>
                             <TableCell className="text-lg font-semibold text-white text-center">Last Update</TableCell>
                             <TableCell className="text-lg font-semibold text-white text-center">Edit</TableCell>
-                            <TableCell className="text-lg font-semibold text-white text-center">Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {
-                            data?.map((el, index) => (
-                                <TableRow key={index}>
-                                    <TableCell className="text-center">{el.name}</TableCell>
-                                    <TableCell className="text-center">
-                                        <p className='text-blue-500'>{el.email}</p>
-                                    </TableCell>
-                                    <TableCell className="text-center">{convertUtcToIst(el.createdAt)}</TableCell>
-                                    <TableCell className="text-center">{convertUtcToIst(el.updatedAt)}</TableCell>
-                                    <TableCell className="text-center">
-                                        <Tooltip title='Edit'>
-                                            <EditIcon
-                                                className='rounded-lg text-blue-500 cursor-pointer'
-                                            />
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        <Tooltip title='Delete'>
-                                            <DeleteIcon
-                                                className='text-red-500 cursor-pointer'
-                                                onClick={() => openDeleteDialog(index)}
-                                            />
-                                        </Tooltip>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        }
+                        {data?.map((el, index) => (
+                            <TableRow key={index} className="hover:bg-gray-100">
+                                <TableCell className="text-center">{el.name}</TableCell>
+                                <TableCell className="text-center">
+                                    <p className='text-blue-500'>{el.email}</p>
+                                </TableCell>
+                                <TableCell className="text-center">{convertUtcToIst2(el.createdAt)}</TableCell>
+                                <TableCell className="text-center">{convertUtcToIst2(el.updatedAt)}</TableCell>
+                                <TableCell className="text-center">
+                                    <Tooltip title='Edit'>
+                                        <EditIcon
+                                            className='rounded-lg text-blue-500 cursor-pointer'
+                                            onClick={() => handleEdit(el)}
+                                        />
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            <Dialog
-                open={deleteDialogOpen}
-                onClose={() => setDeleteDialogOpen(false)}
-                aria-labelledby="delete-dialog-title"
-                aria-describedby="delete-dialog-description"
-            >
-                <DialogTitle id="delete-dialog-title" className="text-xl font-bold">
-                    Confirm Deletion
-                </DialogTitle>
+            <Dialog open={editDialogOpen} onClose={handleClose}>
+                <DialogTitle>Edit User</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="delete-dialog-description" className="text-base">
-                        Are you sure you want to delete this user? This action cannot be undone.
-                    </DialogContentText>
+                    <TextField
+                        margin="dense"
+                        name="email"
+                        label="Email"
+                        type="email"
+                        fullWidth
+                        value={editedUser.email}
+                        onChange={handleChange}
+                        size='small'
+                        spellCheck={false}
+                        disabled={true}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        name="name"
+                        label="Full Name"
+                        type="text"
+                        fullWidth
+                        value={editedUser.name}
+                        onChange={handleChange}
+                        size='small'
+                        spellCheck={false}
+                    />
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={() => setDeleteDialogOpen(false)}
-                        className="text-gray-500 bg-gray-500 hover:text-gray-700"
-                        sx={{ textTransform: 'none' }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleDelete}
-                        className="text-red-500 bg-red-500 hover:text-red-700"
-                        autoFocus
-                        sx={{ textTransform: 'none' }}
-                    >
-                        Delete
-                    </Button>
+                    <button className='p-2 text-white text-sm bg-red-500 rounded-md' onClick={handleClose} color="primary">cancel</button>
+                    <button className='p-2 text-white text-sm bg-blue-500 rounded-md' onClick={handleSave} color="primary">save</button>
                 </DialogActions>
             </Dialog>
         </>
@@ -102,3 +111,4 @@ const ManageTable = ({ data, setData }) => {
 };
 
 export default ManageTable;
+

@@ -8,8 +8,6 @@ const UserTable = () => {
     data = data?.data?.result || [];
     if (isLoading || isFetching) return <p>Loading...</p>;
     if (error) return <p>Error loading data</p>;
-
-    console.log("data is ", data);
     return (
         <>
             <ManageTable data={data} />
