@@ -1,61 +1,84 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 import '../stylesheet/CheckStatus.css'
+import ShowPreviousHistory from './ShowPreviousHistory';
+import { toast } from 'react-toastify';
 const api = process.env.REACT_APP_API
 
 const CheckStatus = () => {
-
-    const [idNumber, setidNumber] = useState(0)
-    const [wrongidNumber, setwrongidNumber] = useState(false)
-    const [messidNumber, setmessidNumber] = useState("")
-    const [button, setbutton] = useState("check status")
-    const [disabled, setdisabled] = useState(false)
-    const [data, setdata] = useState()
-    const [key_value, setkey_value] = useState([])
-    const history = useNavigate()
-
-
+    const [idNumber, setidNumber] = useState('');
+    const [data, setdata] = useState();
+    const [key_value, setkey_value] = useState([]);
+    const [searchHistory, setSearchHistory] = useState(JSON.parse(localStorage.getItem('searchHistory')) || []);
+    const [loading, setLoading] = useState(false);
 
     function submit() {
         if (!idNumber) return;
-        setdata()
-        setwrongidNumber(false)
-        setmessidNumber("")
-        setbutton("please wait ...")
-        setdisabled(true)
-
+        setLoading(true);
         fetch(`${api}/Booking/getTicketForUnAuthUser/${idNumber}`).then(responce => responce.json()).then((res) => {
             if (res != undefined && res?.statusCode === 200) {
-                setdata(res?.data)
-                setkey_value(res?.data?.seat_record)
-                setbutton("check status")
-                setdisabled(false)
+                setdata(res?.data);
+                setkey_value(res?.data?.seat_record);
+                toast.success('Ticket Successfully Found');
+                addRemoveSearchHistory(idNumber);
             }
             else {
-                setwrongidNumber(true)
-                setmessidNumber("Invalid value")
-                setbutton("check status")
-                setdisabled(false)
+                toast.warn('Invalid value');
             }
+            setLoading(false);
         }, (error) => {
-            setwrongidNumber(true)
-            setmessidNumber("Invalid value")
-            setbutton("check status")
-            setdisabled(false)
-            history('*')
+            toast.warn('Invalid value');
+            setLoading(false);
         })
     }
 
+    const addRemoveSearchHistory = (idNumber) => {
+        let newSearchHistory = searchHistory?.filter((el) => {
+            return el !== idNumber;
+        });
+        newSearchHistory.unshift(idNumber);
+        setSearchHistory(newSearchHistory);
+        localStorage.setItem('searchHistory', JSON.stringify(newSearchHistory));
+    };
+
+    const deletePreviousHistory = (Id) => {
+        const newSearchHistory = searchHistory && searchHistory?.filter((el) => {
+            return el !== Id;
+        })
+        setSearchHistory(newSearchHistory);
+        localStorage.setItem('searchHistory', JSON.stringify(newSearchHistory));
+    }
+
+    const onClickSearchHistory = (Id) => {
+        setidNumber(Id);
+    }
 
     return (
         <>
             <div className='checkstatus mt-3'>
                 <div className="form-group" style={{ display: 'flex', flexDirection: 'row' }}>
-                    <input type="text" onChange={(e) => { setidNumber(e.target.value) }} spellCheck='false' className="checkinputfrom" placeholder="Enter Id Number" required />
-                    <button className="btn btn-primary mx-1" id='checkbtn' disabled={disabled} onClick={submit}>{button}</button>
+                    <input type="text"
+                        onChange={(e) => { setidNumber(e.target.value) }}
+                        value={idNumber}
+                        spellCheck='false'
+                        className="checkinputfrom"
+                        placeholder="Enter Id Number"
+                        required
+                    />
+                    <button
+                        className="btn btn-primary mx-1"
+                        id='checkbtn'
+                        onClick={submit}
+                        disabled={loading}>
+                        {!loading ? "check status" : 'please wait..'}
+                    </button>
                 </div>
-                {wrongidNumber ? <label style={{ color: "red", marginTop: '2px' }}>{messidNumber}</label> : ""}
             </div>
+
+            <ShowPreviousHistory
+                searchHistory={searchHistory}
+                deletePreviousHistory={deletePreviousHistory}
+                onClickSearchHistory={onClickSearchHistory}
+            />
 
             {
                 data ?
