@@ -314,7 +314,8 @@ const getTicketForUnAuthUser = async (req, res) => {
                 dist: Ticket.dist,
                 booking_date: await TransfromData(Ticket.createdAt),
                 date: Ticket.date,
-                seat_record: Ticket.seat_record
+                seat_record: Ticket.seat_record,
+                status: Ticket.status,
             }
             return res
                 .status(200)

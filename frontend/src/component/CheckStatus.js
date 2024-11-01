@@ -7,28 +7,31 @@ const api = process.env.REACT_APP_API
 const CheckStatus = () => {
     const [idNumber, setidNumber] = useState('');
     const [data, setdata] = useState();
-    const [key_value, setkey_value] = useState([]);
     const [searchHistory, setSearchHistory] = useState(JSON.parse(localStorage.getItem('searchHistory')) || []);
     const [loading, setLoading] = useState(false);
 
     function submit() {
-        if (!idNumber) return;
+        if (!idNumber) {
+            toast.warn('Invalid Id');
+            return;
+        }
         setLoading(true);
-        fetch(`${api}/Booking/getTicketForUnAuthUser/${idNumber}`).then(responce => responce.json()).then((res) => {
-            if (res != undefined && res?.statusCode === 200) {
-                setdata(res?.data);
-                setkey_value(res?.data?.seat_record);
-                toast.success('Ticket Successfully Found');
-                addRemoveSearchHistory(idNumber);
-            }
-            else {
+        fetch(`${api}/Booking/getTicketForUnAuthUser/${idNumber}`)
+            .then(responce => responce.json())
+            .then((res) => {
+                if (res != undefined && res?.statusCode === 200) {
+                    setdata(res?.data);
+                    toast.success('Ticket Successfully Found');
+                    addRemoveSearchHistory(idNumber);
+                }
+                else {
+                    toast.warn('Invalid value');
+                }
+                setLoading(false);
+            }, (error) => {
                 toast.warn('Invalid value');
-            }
-            setLoading(false);
-        }, (error) => {
-            toast.warn('Invalid value');
-            setLoading(false);
-        })
+                setLoading(false);
+            })
     }
 
     const addRemoveSearchHistory = (idNumber) => {
@@ -60,7 +63,7 @@ const CheckStatus = () => {
                         onChange={(e) => { setidNumber(e.target.value) }}
                         value={idNumber}
                         spellCheck='false'
-                        className="checkinputfrom"
+                        className="checkinputfrom p-4"
                         placeholder="Enter Id Number"
                         required
                     />
@@ -86,28 +89,36 @@ const CheckStatus = () => {
                         < table className="table" >
                             <thead>
                                 <tr>
-                                    <th scope="col">Bus Name : {data?.bus_name}</th>
-                                    <th scope="col">Booking Date : {data?.booking_date}</th>
-                                    <th scope="col">Total Distance : {data?.total_distance} km</th>
-                                    <th scope="col">{data?.src}  -  {data?.dist}</th>
+                                    <th className='text-center' scope="col">Bus Name : {data?.bus_name}</th>
+                                    <th className='text-center' scope="col">Booking Date : {data?.booking_date}</th>
+                                    <th className='text-center' scope="col">Total Distance : {data?.total_distance} km</th>
+                                    <th className='text-center' scope="col">{data?.src}  -  {data?.dist}</th>
                                 </tr>
                             </thead>
                             <thead >
                                 <tr className='mt-5'>
-                                    <th scope="col">SL No.</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Seat No.</th>
-                                    <th scope="col">Date</th>
+                                    <th className='text-center' scope="col">SL No.</th>
+                                    <th className='text-center' scope="col">Name</th>
+                                    <th className='text-center' scope="col">Seat No.</th>
+                                    <th className='text-center' scope="col">Date</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    key_value?.map((item, ind) => (
+                                    data?.seat_record?.map((item, ind) => (
                                         <tr key={ind}>
-                                            <th scope="row">{ind + 1}</th>
-                                            <td>passanger {ind + 1}</td>
-                                            <td>{item}</td>
-                                            <td>{data?.date}</td>
+                                            <th className='text-center' scope="row">{ind + 1}</th>
+                                            <td className='text-center'>passanger {ind + 1}</td>
+                                            {data?.status?.[ind] ?
+                                                <td className='text-center'>
+                                                    {item}
+                                                </td>
+                                                :
+                                                <td className='text-center' style={{ color: 'red' }}>
+                                                    can
+                                                </td>
+                                            }
+                                            <td className='text-center'>{data?.date}</td>
                                         </tr>
                                     ))
                                 }

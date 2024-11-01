@@ -2,9 +2,6 @@ import * as React from 'react';
 import Chip from '@mui/material/Chip';
 
 const ShowPreviousHistory = ({ searchHistory, deletePreviousHistory, onClickSearchHistory }) => {
-    const handleClick = (data) => {
-
-    }
     return (
         <div className="d-flex justify-content-center flex-wrap mt-4 px-5">
             {
