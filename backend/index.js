@@ -26,6 +26,7 @@ let businfo = require('./src/Router/BusOwnerUserRouter')
 let Adminpanel = require('./src/Router/Adminpanel_userRouter')
 let Verification = require('./src/Router/Verification_Router')
 let FavouriteJourney = require('./src/Router/FavouriteJourneyRoute')
+const Message = require('./src/Router/MessageRoute')
 
 app.use('/Verification', Verification)
 app.use('/user', user)
@@ -35,6 +36,7 @@ app.use('/Booking', booking)
 app.use('/businfo', businfo)
 app.use('/Adminpanel', Adminpanel)
 app.use('/FavouriteJourney', FavouriteJourney)
+app.use('/Message', Message);
 
 app.get('/', async (req, res) => {
   res.send("Server is Running clearly")
