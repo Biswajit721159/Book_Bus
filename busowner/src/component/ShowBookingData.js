@@ -1,91 +1,139 @@
 import React, { useState } from "react";
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, Modal, Typography, IconButton } from "@mui/material";
 import { convertUtcToIst } from "../helpers/USTtoIST";
-import NorthEastOutlinedIcon from '@mui/icons-material/NorthEastOutlined';
 import { useNavigate } from "react-router-dom";
 
+const PassengerModal = ({ open, onClose, bookingData }) => {
+    if (!open) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative bg-white rounded-2xl shadow-modal w-full max-w-sm animate-fade-in">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                    <h3 className="font-semibold text-slate-800">Seats & Passengers</h3>
+                    <button onClick={onClose} className="btn-icon text-slate-400">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div className="p-5 space-y-2 max-h-80 overflow-y-auto">
+                    {bookingData?.seat_record?.length ? (
+                        bookingData.seat_record.map((seat, index) => (
+                            <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+                                        <span className="text-xs font-bold text-primary-700">{seat}</span>
+                                    </div>
+                                    <span className="text-sm font-medium text-slate-700">
+                                        {bookingData?.person?.[index] || '—'}
+                                    </span>
+                                </div>
+                                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                    bookingData?.status?.[index]
+                                        ? 'bg-emerald-100 text-emerald-700'
+                                        : 'bg-red-100 text-red-700'
+                                }`}>
+                                    {bookingData?.status?.[index] ? 'Booked' : 'Cancelled'}
+                                </span>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-slate-400 text-center py-4">No seat data available</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ShowBookingData = ({ data }) => {
-    const [bookingData, setBookingData] = useState({});
-    const [openPassengerModal, setOpenPassengerModal] = useState(false);
-    const history = useNavigate();
+    const [modal, setModal] = useState({ open: false, data: {} });
+    const navigate = useNavigate();
 
-    const handleClose = () => {
-        setOpenPassengerModal(false);
-        setBookingData({});
-    };
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '1px solid #3b82f6', // blue color border
-        boxShadow: 24,
-        p: 2,
-        borderRadius: '10px', // smooth border radius
-    };
+    if (!data?.length) {
+        return (
+            <div className="card p-12 text-center mt-4">
+                <div className="flex flex-col items-center gap-2 text-slate-400">
+                    <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <p className="text-sm font-medium">No bookings found</p>
+                    <p className="text-xs">Try adjusting your search filters</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
-            {data?.length !== 0 ? (
-                <div className="overflow-auto rounded-lg shadow-lg">
-                    <table className="table-auto w-full bg-white text-sm text-left border-collapse">
-                        <thead className="bg-blue-600 text-white uppercase">
+            <div className="card overflow-hidden mt-4">
+                <div className="overflow-x-auto">
+                    <table className="data-table">
+                        <thead>
                             <tr>
-                                <th className="py-2 px-4 text-center">ID No / Email</th>
-                                <th className="py-2 px-4 text-center">Created At / Updated At</th>
-                                <th className="py-2 px-4 text-center">Bus Name</th>
-                                <th className="py-2 px-4 text-center">Src - Dist</th>
-                                <th className="py-2 px-4 text-center">Journey Date</th>
-                                <th className="py-2 px-4 text-center">Payment</th>
-                                <th className="py-2 px-4 text-center">Distance</th>
-                                <th className="py-2 px-4 text-center">Passengers Detail</th>
+                                <th>Booking ID / Email</th>
+                                <th>Timestamps</th>
+                                <th>Bus</th>
+                                <th>Route</th>
+                                <th>Journey Date</th>
+                                <th>Payment</th>
+                                <th>Distance</th>
+                                <th className="text-center">Passengers</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.map((item, index) => (
-                                <tr key={index} className="border-b hover:bg-gray-100">
-                                    <td className="py-3 px-4 text-center">
-                                        <div className="flex flex-col items-center">
-                                            <p className="text-gray-800">{item._id}</p>
-                                            <p className="text-blue-500">{item.useremail}</p>
-                                        </div>
+                            {data.map((item, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <p className="font-mono text-xs text-slate-500 truncate max-w-[120px]">{item._id}</p>
+                                        <p className="text-xs text-primary-600 mt-0.5">{item.useremail}</p>
                                     </td>
-                                    <td className="py-3 px-4 text-center">
-                                        <div className="flex flex-col">
-                                            <p><strong>Create:</strong> {convertUtcToIst(item.createdAt)}</p>
-                                            <p><strong>Last Update:</strong> {convertUtcToIst(item.updatedAt)}</p>
-                                        </div>
+                                    <td>
+                                        <p className="text-xs text-slate-500">
+                                            <span className="font-medium text-slate-600">Created:</span> {convertUtcToIst(item.createdAt)}
+                                        </p>
+                                        <p className="text-xs text-slate-500 mt-0.5">
+                                            <span className="font-medium text-slate-600">Updated:</span> {convertUtcToIst(item.updatedAt)}
+                                        </p>
                                     </td>
-                                    <td
-                                        className="py-3 px-4 text-center cursor-pointer text-blue-600 hover:underline flex items-center justify-center"
-                                        onClick={() => history(`/View_Bus/${item?.bus_id}`)}
-                                    >
-                                        {item?.bus?.bus_name}
-                                        <NorthEastOutlinedIcon className="ml-1" fontSize="small" />
-                                    </td>
-                                    <td className="py-3 px-4 text-center">
-                                        <div>
-                                            <p>{item.src}</p>
-                                            <KeyboardDoubleArrowDownIcon className="text-blue-700" fontSize="small" />
-                                            <p>{item.dist}</p>
-                                        </div>
-                                    </td>
-                                    <td className="py-3 px-4 text-center">{convertUtcToIst(item.date)}</td>
-                                    <td className="py-3 px-4 text-center">₹{item.total_money}</td>
-                                    <td className="py-3 px-4 text-center">{item.total_distance} km</td>
-                                    <td className="py-3 px-4 text-center">
+                                    <td>
                                         <button
-                                            className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-md"
-                                            onClick={() => {
-                                                setOpenPassengerModal(true);
-                                                setBookingData(item);
-                                            }}
+                                            onClick={() => navigate(`/View_Bus/${item?.bus_id}`)}
+                                            className="flex items-center gap-1 text-primary-600 hover:text-primary-700 font-medium text-sm hover:underline"
                                         >
+                                            {item?.bus?.bus_name}
+                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div className="flex flex-col items-start gap-0.5">
+                                            <span className="text-xs font-medium text-slate-700">{item.src}</span>
+                                            <svg className="w-3 h-3 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                            <span className="text-xs font-medium text-slate-700">{item.dist}</span>
+                                        </div>
+                                    </td>
+                                    <td className="text-sm text-slate-600">{convertUtcToIst(item.date)}</td>
+                                    <td>
+                                        <span className="font-semibold text-emerald-600">₹{item.total_money}</span>
+                                    </td>
+                                    <td className="text-slate-500 text-sm">{item.total_distance} km</td>
+                                    <td className="text-center">
+                                        <button
+                                            onClick={() => setModal({ open: true, data: item })}
+                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
+                                        >
+                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
                                             View Seats
                                         </button>
                                     </td>
@@ -93,56 +141,14 @@ const ShowBookingData = ({ data }) => {
                             ))}
                         </tbody>
                     </table>
-
-                    <Modal
-                        open={openPassengerModal}
-                        onClose={handleClose}
-                        aria-labelledby="modal-title"
-                    >
-                        <Box sx={style}>
-                            <IconButton
-                                onClick={handleClose}
-                                sx={{
-                                    position: 'absolute',
-                                    top: 8,
-                                    right: 8,
-                                }}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-
-                            <Typography variant="h6" className="text-center mb-3">
-                                Seats and Passengers
-                            </Typography>
-
-                            <ul className="space-y-2">
-                                {bookingData?.seat_record?.map((seat, index) => (
-                                    <li
-                                        key={index}
-                                        className="flex justify-between items-center bg-gray-100 p-2 rounded-md shadow-sm"
-                                    >
-                                        <span className="font-medium">Seat {seat}</span>
-                                        <span>{bookingData?.person?.[index]}</span>
-                                        <span>
-                                            {bookingData?.status?.[index] ? (
-                                                <p className="px-2 py-1 bg-green-500 text-white rounded-md text-xs">
-                                                    Booked
-                                                </p>
-                                            ) : (
-                                                <p className="px-2 py-1 bg-red-500 text-white rounded-md text-xs">
-                                                    Cancelled
-                                                </p>
-                                            )}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Box>
-                    </Modal>
                 </div>
-            ) : (
-                <p className="flex items-center justify-center mt-5 text-gray-500">No results found 😥</p>
-            )}
+            </div>
+
+            <PassengerModal
+                open={modal.open}
+                onClose={() => setModal({ open: false, data: {} })}
+                bookingData={modal.data}
+            />
         </>
     );
 };

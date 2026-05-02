@@ -1,269 +1,257 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { FullPageLoader } from "./FullPageLoader";
 import { useSelector } from "react-redux";
 import { getBussByEmail, getBookingStatus } from "../utilities/busApi";
 import { toast } from "react-toastify";
-import { Box, Modal, Typography, Button, IconButton } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
 import { searchData } from "../helpers/searching";
 
+const today = new Date().toISOString().split('T')[0];
+
+const PassengerModal = ({ open, onClose, bookingData }) => {
+    if (!open) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative bg-white rounded-2xl shadow-modal w-full max-w-sm animate-fade-in">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                    <h3 className="font-semibold text-slate-800">Seats & Passengers</h3>
+                    <button onClick={onClose} className="btn-icon text-slate-400">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div className="p-5 space-y-2 max-h-80 overflow-y-auto">
+                    {bookingData?.seat_record?.map((seat, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+                                    <span className="text-xs font-bold text-primary-700">{seat}</span>
+                                </div>
+                                <span className="text-sm font-medium text-slate-700">{bookingData?.person?.[index]}</span>
+                            </div>
+                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                bookingData?.status?.[index]
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : 'bg-red-100 text-red-700'
+                            }`}>
+                                {bookingData?.status?.[index] ? 'Booked' : 'Cancelled'}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ViewSeat = () => {
-
     const userinfo = useSelector((state) => state.userAuth.user);
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
+    const navigate = useNavigate();
+    const [busData, setBusData] = useState([]);
+    const [load, setLoad] = useState(true);
+    const [date, setDate] = useState(today);
+    const [selectedBus, setSelectedBus] = useState("");
+    const [bookings, setBookings] = useState([]);
+    const [filteredBookings, setFilteredBookings] = useState([]);
+    const [searchId, setSearchId] = useState('');
+    const [passengerModal, setPassengerModal] = useState({ open: false, data: {} });
 
-    today = yyyy + '-' + mm + '-' + dd;
+    useEffect(() => {
+        if (!userinfo) { navigate('/Login'); return; }
+        loadBuses();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const [data, setdata] = useState([])
-    const history = useNavigate()
-    const [load, setload] = useState(true)
-    const [date, setdate] = useState(today)
+    useEffect(() => {
+        const filtered = searchId ? searchData(bookings, searchId, '_id') : bookings;
+        setFilteredBookings(filtered);
+    }, [searchId, bookings]);
 
-    const [src, setsrc] = useState("");
-
-    const [bus, setbus] = useState([]);
-    const [memoBus, setMemoBus] = useState([]);
-    const [openPassangerModal, setOpenPassangerModal] = useState(false);
-    const [bookingData, setBookingData] = useState({});
-    const [id, setId] = useState('');
-
-
-    function FindError() {
-        if (src === "Select Your Source Station" || src.length === 0) {
-            toast.warn('Select s station');
-            return false
-        }
-        if (date.length === 0) {
-            toast.warn('Select A Date');
-            return false;
-        }
-        return true;
-    }
-
-    async function loadBus() {
+    async function loadBuses() {
         try {
-            setload(true)
-            let res = await getBussByEmail();
-            if (res?.data) setdata(res.data);
+            setLoad(true);
+            const res = await getBussByEmail();
+            if (res?.data) setBusData(res.data);
         } catch (e) {
             toast.warn(e.message);
-            history('*');
         } finally {
-            setload(false);
+            setLoad(false);
         }
     }
 
-    useEffect(() => {
-        if (!userinfo) {
-            history('Login')
-        }
-        else {
-            loadBus();
-        }
-    }, [])
-
-    const minDate = () => {
-        const today = new Date().toISOString().split('T')[0];
-        return today;
-    };
-
-    function findBusId() {
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].bus_name === src) {
-                return data[i]._id
-            }
-        }
-        return null
-    }
-
-    async function findbus() {
+    async function findBookings(e) {
+        e.preventDefault();
+        if (!selectedBus) { toast.warn("Please select a bus."); return; }
+        if (!date) { toast.warn("Please select a date."); return; }
+        const busId = busData.find((b) => b.bus_name === selectedBus)?._id;
+        if (!busId) { toast.warn("Bus not found."); return; }
         try {
-            if (FindError()) {
-                setload(true);
-                let id = findBusId()
-                let res = await getBookingStatus(date, id);
-                if (res.data) {
-                    setbus(res.data);
-                    setMemoBus(res.data);
-                }
+            setLoad(true);
+            const res = await getBookingStatus(date, busId);
+            if (res.data) {
+                setBookings(res.data);
+                setFilteredBookings(res.data);
+            } else {
+                setBookings([]);
+                setFilteredBookings([]);
             }
-        }
-        catch (e) {
+        } catch (e) {
             toast.warn(e.message);
-        }
-        finally {
-            setload(false);
+        } finally {
+            setLoad(false);
         }
     }
 
-    useEffect(() => {
-        let filterData = searchData(bus, id, '_id');
-        setMemoBus([...filterData])
-    }, [id])
-
-    const handleClose = () => {
-        setOpenPassangerModal(false);
-        setBookingData({});
-    };
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 350,
-        bgcolor: 'background.paper',
-        border: '1px solid blue',
-        boxShadow: 24,
-        p: 4,
-        borderRadius: 2,
-    };
     return (
-        <>
-            <form onSubmit={(e) => { e.preventDefault(); findbus() }}>
+        <div className="page-container">
+            {/* Header */}
+            <div className="mb-6">
+                <h1 className="page-title">View Seat Availability</h1>
+                <p className="text-sm text-slate-500 mt-0.5">Search bookings by bus and date</p>
+            </div>
 
-                <div className="d-flex align-items-center justify-content-center mt-5">
-                    <div className="d-flex ">
-                        <select className="form-select" aria-label="Default select example" required onChange={(e) => { setsrc(e.target.value) }} style={{ backgroundColor: "white" }}>
-                            <option style={{ textAlign: "center" }} selected>Select your source station</option>
-                            {
-                                data?.map((item, ind) => (
-                                    <option key={ind} style={{ textAlign: "center" }} >{item.bus_name}</option>
-                                ))
-                            }
+            {/* Search Form */}
+            <div className="card p-5 mb-6">
+                <form onSubmit={findBookings} className="flex flex-col sm:flex-row gap-3 items-end">
+                    <div className="flex-1">
+                        <label className="input-label">Select Bus</label>
+                        <select
+                            className="input-field"
+                            value={selectedBus}
+                            onChange={(e) => setSelectedBus(e.target.value)}
+                            required
+                        >
+                            <option value="">Choose a bus...</option>
+                            {busData.map((item, i) => (
+                                <option key={i} value={item.bus_name}>{item.bus_name}</option>
+                            ))}
                         </select>
                     </div>
-                    <div className="d-flex mx-2">
-                        <div className="input-group date" id="datepicker">
-                            <input type="date" className="form-control" value={date} onChange={(e) => { setdate(e.target.value) }} required id="date" />
+                    <div className="flex-1">
+                        <label className="input-label">Journey Date</label>
+                        <input
+                            type="date"
+                            className="input-field"
+                            value={date}
+                            min={today}
+                            onChange={(e) => setDate(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn-primary h-[42px] px-6" disabled={load}>
+                        {load ? (
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <>
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Search
+                            </>
+                        )}
+                    </button>
+                </form>
+            </div>
+
+            {/* Results */}
+            {filteredBookings.length > 0 && (
+                <div className="space-y-4">
+                    {/* Search Filter */}
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm text-slate-500">{filteredBookings.length} booking{filteredBookings.length !== 1 ? 's' : ''} found</p>
+                        <div className="relative">
+                            <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input
+                                type="text"
+                                className="input-field pl-9 w-56"
+                                placeholder="Filter by booking ID..."
+                                value={searchId}
+                                onChange={(e) => setSearchId(e.target.value)}
+                            />
+                            {searchId && (
+                                <button
+                                    onClick={() => setSearchId('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            )}
                         </div>
                     </div>
-                    <div className="d-flex d-flex justify-content-center mx-1">
-                        <button
-                            type="submit"
-                            className="p-2 bg-green-500 hover:bg-green-600 rounded-md text-white"
-                            disabled={load}
-                        >
-                            {load ? 'Wait Finding...' : 'Find Bus'}
-                        </button>
-                    </div>
-                </div>
 
-            </form>
-            <div className="container mt-0 p-5 my-5">
-                <div className="flex justify-end items-center">
-                    <input
-                        className="mt-4 mb-2 ml-3 mr-3 px-3 py-2 border rounded placeholder-gray-500 outline-blue-400 "
-                        placeholder="Enter Id number"
-                        value={id}
-                        onChange={(e) => { setId(e.target.value) }}
-                        spellCheck='false'
-                    />
-
-                    {id.length ?
-                        <CloseIcon
-                            fontSize="small"
-                            className={`absolute mr-5 mt-3 w-0.5 h-0.5 text-sm cursor-pointer hover:bg-gray-200 rounded-lg`}
-                            onClick={() => setId('')}
-                        />
-                        : ''}
-                </div>
-                {
-                    memoBus.length != 0 ?
-                        <div className="overflow-auto rounded-lg shadow-lg">
-                            <table className="table border">
-                                <thead className="bg-blue-600 text-white uppercase">
+                    <div className="card overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="data-table">
+                                <thead>
                                     <tr>
-                                        <th className="text-center" scope="col">ID No</th>
-                                        <th className="text-center" scope="col">Src</th>
-                                        <th className="text-center" scope="col">Dist</th>
-                                        <th className="text-center" scope="col">Pay</th>
-                                        <th className="text-center" scope="col">Total Distance</th>
-                                        <th className="text-center" scope="col">Passengers Detail</th>
+                                        <th>Booking ID</th>
+                                        <th>Source</th>
+                                        <th>Destination</th>
+                                        <th>Payment</th>
+                                        <th>Distance</th>
+                                        <th className="text-center">Passengers</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {
-                                        memoBus.map((item, ind) => (
-                                            <tr>
-                                                <td className="text-center">{item._id}</td>
-                                                <td className="text-center">{item.src}</td>
-                                                <td className="text-center">{item.dist}</td>
-                                                <td className="text-center">₹{item.total_money}</td>
-                                                <td className="text-center">{item.total_distance} km</td>
-                                                <td className="text-center">
-                                                    <button
-                                                        className="p-2 bg-orange-500 hover:bg-orange-600 rounded-md text-sm text-white"
-                                                        onClick={() => {
-                                                            setOpenPassangerModal(true);
-                                                            setBookingData(item);
-                                                        }}
-                                                    >
-                                                        view seat
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
+                                    {filteredBookings.map((item, ind) => (
+                                        <tr key={ind}>
+                                            <td className="font-mono text-xs text-slate-500">{item._id}</td>
+                                            <td className="font-medium text-slate-700">{item.src}</td>
+                                            <td className="font-medium text-slate-700">{item.dist}</td>
+                                            <td>
+                                                <span className="font-semibold text-emerald-600">₹{item.total_money}</span>
+                                            </td>
+                                            <td className="text-slate-500">{item.total_distance} km</td>
+                                            <td className="text-center">
+                                                <button
+                                                    onClick={() => setPassengerModal({ open: true, data: item })}
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
+                                                >
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    View Seats
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
-                        : <p className="d-flex align-items-center justify-content-center mt-5">Result not found 😥</p>
-                }
-            </div>
-            <Modal
-                open={openPassangerModal}
-                onClose={handleClose}
-                aria-labelledby="modal-title"
-            >
-                <Box
-                    sx={style}
-                >
-                    <IconButton
-                        onClick={handleClose}
-                        sx={{
-                            position: 'absolute',
-                            top: 5,
-                            right: 5,
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
+                    </div>
+                </div>
+            )}
 
-                    <Typography variant="body1" className="text-center mb-3">
-                        <strong>Seats and Passengers</strong>
-                    </Typography>
-                    <ul className="space-y-2">
-                        {bookingData?.seat_record?.map((seat, index) => (
-                            <li
-                                key={index}
-                                className="flex justify-between items-center bg-gray-100 p-2 rounded-md shadow-sm"
-                            >
-                                <span className="font-medium">Seat {seat}</span>
-                                <span>{bookingData?.person?.[index]}</span>
-                                <span>
-                                    {bookingData?.status?.[index] ? (
-                                        <p className="px-2 py-1 bg-green-500 text-white rounded-md text-xs">
-                                            Booked
-                                        </p>
-                                    ) : (
-                                        <p className="px-2 py-1 bg-red-500 text-white rounded-md text-xs">
-                                            Cancelled
-                                        </p>
-                                    )}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </Box>
-            </Modal>
+            {filteredBookings.length === 0 && bookings.length === 0 && !load && selectedBus && (
+                <div className="card p-12 text-center">
+                    <div className="flex flex-col items-center gap-2 text-slate-400">
+                        <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <p className="text-sm font-medium">No bookings found for this date</p>
+                    </div>
+                </div>
+            )}
+
+            <PassengerModal
+                open={passengerModal.open}
+                onClose={() => setPassengerModal({ open: false, data: {} })}
+                bookingData={passengerModal.data}
+            />
             <FullPageLoader open={load} />
-        </>
-    )
-}
+        </div>
+    );
+};
 
-export default ViewSeat
+export default ViewSeat;

@@ -2,16 +2,17 @@
 
 const searchData = (data, searchInput, searchField) => {
     try {
-        let newData = data.filter((item) => {
-            if (item[searchField].match(searchInput)) {
-                return item;
+        return data.filter((item) => {
+            try {
+                return item[searchField].match(searchInput);
+            } catch {
+                return false;
             }
-        })
-        return newData;
+        });
     } catch {
-        return []
+        return [];
     }
-}
+};
 
 export {
     searchData

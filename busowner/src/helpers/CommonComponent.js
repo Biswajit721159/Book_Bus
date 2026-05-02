@@ -1,12 +1,13 @@
 import { logo } from "../utilities/logo";
 
-export const  ImageComponent = () => {
+export const ImageComponent = ({ className = '' }) => {
     return (
         <img
-            className="h-30 w-40"
+            className={`h-16 w-20 object-contain rounded-lg ${className}`}
             src={logo}
-            alt="loading..." />
-    )
-}
+            alt="Bus Schedule Manager"
+        />
+    );
+};
 
-export const commonClass="outline-blue-800 rounded-md bg-gray-100 font-medium w-full"
+export const commonClass = "input-field";

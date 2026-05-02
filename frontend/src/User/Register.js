@@ -1,655 +1,364 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { GoXCircleFill } from "react-icons/go";
-import { HiCheckCircle } from "react-icons/hi";
-import swal from 'sweetalert'
-import '../stylesheet/Auth.css'
-const api = process.env.REACT_APP_API
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+const api = process.env.REACT_APP_API;
+
+const ValidationItem = ({ valid, text }) => (
+  <div className={`validation-item ${valid ? 'validation-pass' : 'validation-fail'}`}>
+    {valid ? (
+      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+      </svg>
+    ) : (
+      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+      </svg>
+    )}
+    <span>{text}</span>
+  </div>
+);
+
 const Register = () => {
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1); // 1=form, 2=otp
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [resendTimeout, setResendTimeout] = useState(0);
+  const [touched, setTouched] = useState({});
 
-  const [name, setname] = useState("")
-  const [email, setemail] = useState("")
-  const [password, setpassword] = useState("")
-  const history = useNavigate();
-
-
-  const [disabled, setdisabled] = useState(false)
-  const [resent, setresent] = useState(false)
-
-  const [wronginformation, setwronginformation] = useState(false);
-  const [messwronginformation, setmesswronginformation] = useState("");
-  const [confirmpassword, setconfirmpassword] = useState("");
-  const [registerandloginlink, setregisterandloginlink] = useState(true)
-
-  const [namecontrol, setnamecontrol] = useState({
-    charcter: false,
-    word: false,
-    lenWord: false,
-    len: false,
-    specialCharacters: false,
-    shownamefrom: false,
-    show_name_error_text: false
-  })
-
-  const [emailcontrol, setemailcontrol] = useState({
-    wrongemail: false,
-    showemailfrom: false,
-    show_email_error_text: false
-  })
-
-  const [passwordcontrol, setpasswordcontrol] = useState({
-    uppercase: false,
-    lowercase: false,
-    digit: false,
-    specialCharacters: false,
-    len: false,
-    showpasswordfrom: false,
-    show_password_error_text: false
-  })
-
-  const [confirmpasswordcontrol, setconfirmpasswordcontrol] = useState({
-    isPasswordandconfirmPasswordIsSame: false,
-    showconfirmpasswordfrom: false,
-    show_confirmpassword_error_text: false
-  })
-
-  const [otp, setotp] = useState({
-    showOtpfrom: false,
-    otpFromdata: "",
-    showOtpButton: false,
-    disabledOtpForm: false,
-    loginbutton: false,
-  })
-
-
+  const [nameV, setNameV] = useState({ noNumber: false, twoWords: false, wordLen: false, len: false, noSpecial: false });
+  const [emailV, setEmailV] = useState(false);
+  const [pwdV, setPwdV] = useState({ upper: false, lower: false, digit: false, special: false, len: false });
+  const [confirmV, setConfirmV] = useState(false);
 
   useEffect(() => {
-    const auth = localStorage.getItem('user')
-    if (auth) {
-      history('/')
-    }
-  }, [])
+    const auth = localStorage.getItem('user');
+    if (auth) navigate('/');
+  }, [navigate]);
 
-  function onErrorText(text) {
-    setnamecontrol((prevUserData) => ({
-      ...prevUserData,
-      show_name_error_text: false
-    }));
-    setemailcontrol((prevUserData) => ({
-      ...prevUserData,
-      show_email_error_text: false
-    }));
-    setpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      show_password_error_text: false
-    }));
-    setconfirmpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      show_confirmpassword_error_text: false
-    }));
-    if (text == "name") {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        show_name_error_text: true
-      }));
+  useEffect(() => {
+    if (resendTimeout > 0) {
+      const t = setTimeout(() => setResendTimeout(resendTimeout - 1), 1000);
+      return () => clearTimeout(t);
     }
-    else if (text == "email") {
-      setemailcontrol((prevUserData) => ({
-        ...prevUserData,
-        show_email_error_text: true
-      }));
-    }
-    else if (text == "password") {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        show_password_error_text: true
-      }));
-    }
-    else if (text == "confirmpassword") {
-      setconfirmpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        show_confirmpassword_error_text: true
-      }));
-    }
-  }
+  }, [resendTimeout]);
 
-  //name section
-  function containsNumber(inputString) {
-    return /\d/.test(inputString);
-  }
-
-  function checkforname(e) {
-    onErrorText("name")
-    setwronginformation(false);
-    let s = e.target.value;
+  const handleNameChange = (s) => {
     s = s.replace(/\s+/g, ' ');
-    setname(s)
-    let a = containsNumber(s);
-    if (s.length == 0) {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        charcter: false,
-        word: false,
-        lenWord: false,
-        len: false,
-        specialCharacters: false
-      }));
-      return
-    }
-    if (a) {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        charcter: false,
-      }));
-    }
-    else {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        charcter: true,
-      }));
-    }
-    const wordsArray = s.trim().split(/\s+/);
-
-    if (wordsArray.length <= 1) {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        word: false,
-      }));
-    }
-    else {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        word: true,
-      }));
-    }
-    let count = 0;
-    wordsArray.forEach(element => {
-      if (element.length <= 1) {
-        count++;
-        setnamecontrol((prevUserData) => ({
-          ...prevUserData,
-          lenWord: false,
-        }));
-      }
+    setName(s);
+    const words = s.trim().split(/\s+/);
+    setNameV({
+      noNumber: !/\d/.test(s),
+      twoWords: words.length >= 2,
+      wordLen: words.every(w => w.length > 1),
+      len: s.length >= 6 && s.length <= 20,
+      noSpecial: /^[a-zA-Z ]+$/.test(s),
     });
-    if (count == 0) {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        lenWord: true,
-      }));
-    }
+    setErrorMsg('');
+  };
 
-    if (s.length >= 6 && s.length <= 20) {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        len: true,
-      }));
-    }
-    else {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        len: false,
-      }));
-    }
-    count = 0
-    let arr = s.split('')
-    arr.forEach((data) => {
-      if ((data >= 'a' && data <= 'z') || (data >= 'A' && data <= 'Z') || data == ' ') {
-
-      }
-      else {
-        count++;
-      }
-    })
-    if (count == 0) {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        specialCharacters: true,
-      }));
-    } else {
-      setnamecontrol((prevUserData) => ({
-        ...prevUserData,
-        specialCharacters: false,
-      }));
-    }
-
-
-    // let s=e.target.value
-    // var regex = /^[a-zA-Z ]{2,30}$/;
-    // let a= regex.test(s);
-    // if(a==false)
-    // {
-    //   setwrongname(true)
-    //   setmessname("Name must be only string and should not contain symbols or numbers")
-    // }
-    // setwrongname(!a)
-    // return a;
-  }
-
-  //email section 
-
-  function checkforemailid(s) {
-    onErrorText("email")
-    setwronginformation(false);
+  const handleEmailChange = (s) => {
     s = s.replace(/\s+/g, '');
-    setemail(s);
-    if (s.length == 0) {
-      setemailcontrol((prevUserData) => ({
-        ...prevUserData,
-        wrongemail: false,
-      }));
-      return
-    }
-    var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    let a = regex.test(s);
-    if (a) {
-      setemailcontrol((prevUserData) => ({
-        ...prevUserData,
-        wrongemail: true,
-      }));
-    }
-    else {
-      setemailcontrol((prevUserData) => ({
-        ...prevUserData,
-        wrongemail: false,
-      }));
-    }
-  }
+    setEmail(s);
+    setEmailV(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(s));
+    setErrorMsg('');
+  };
 
-  //password section
-
-  function containsUppercase(str) {
-    return /[A-Z]/.test(str);
-  }
-
-  function containsLowercase(str) {
-    return /[a-z]/.test(str);
-  }
-
-  function containsDigit(str) {
-    return /\d/.test(str);
-  }
-
-  function containsSpecialCharacter(str) {
-    return /[^\w\d]/.test(str);
-  }
-
-  function checkpassword(s) {
-    onErrorText("password")
-    setwronginformation(false);
+  const handlePasswordChange = (s) => {
     s = s.replace(/\s+/g, '');
-    setpassword(s);
-    checkconfirmpasswordIsEqualPassword(confirmpassword, s);
-    if (s.length == 0) {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        uppercase: false,
-        lowercase: false,
-        digit: false,
-        specialCharacters: false,
-        len: false
-      }));
-      return
-    }
+    setPassword(s);
+    setPwdV({ upper: /[A-Z]/.test(s), lower: /[a-z]/.test(s), digit: /\d/.test(s), special: /[^\w\d]/.test(s), len: s.length >= 8 && s.length <= 15 });
+    setConfirmV(confirmPassword.length > 0 && confirmPassword === s);
+    setErrorMsg('');
+  };
 
-    if (containsUppercase(s) == true) {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        uppercase: true,
-      }));
-    } else {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        uppercase: false,
-      }));
-    }
+  const handleConfirmChange = (s) => {
+    setConfirmPassword(s);
+    setConfirmV(s.length > 0 && s === password);
+    setErrorMsg('');
+  };
 
-    if (containsLowercase(s) == true) {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        lowercase: true,
-      }));
-    } else {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        lowercase: false,
-      }));
-    }
+  const nameAllValid = Object.values(nameV).every(Boolean);
+  const pwdAllValid = Object.values(pwdV).every(Boolean);
+  const allValid = nameAllValid && emailV && pwdAllValid && confirmV;
 
-    if (containsDigit(s) == true) {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        digit: true,
-      }));
-    } else {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        digit: false,
-      }));
-    }
-
-    if (containsSpecialCharacter(s) == true) {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        specialCharacters: true,
-      }));
-    } else {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        specialCharacters: false,
-      }));
-    }
-
-    if (s.length >= 8 && s.length <= 15) {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        len: true,
-      }));
-    } else {
-      setpasswordcontrol((prevUserData) => ({
-        ...prevUserData,
-        len: false,
-      }));
-    }
-  }
-
-  //address section
-
-  function extractMobileNumber(inputString) {
-    const regex = /\b\d{10}\b/g;
-    const matches = inputString.match(regex);
-    if (matches && matches.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  function inableconfirmpassword() {
-    setconfirmpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      isPasswordandconfirmPasswordIsSame: false
-    }));
-  }
-
-  function disabledconfirmpassword() {
-    setconfirmpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      isPasswordandconfirmPasswordIsSame: true
-    }));
-  }
-
-  //check confirm password
-
-  function checkconfirmpasswordIsEqualPassword(confirmpassword, password) {
-    if (confirmpassword.length == 0) {
-      inableconfirmpassword()
-    }
-    else if (confirmpassword == password) {
-      disabledconfirmpassword()
-    }
-    else {
-      inableconfirmpassword()
-    }
-  }
-
-  function checkconfirmpassword(data) {
-    onErrorText("confirmpassword")
-    setwronginformation(false);
-    setconfirmpassword(data)
-    checkconfirmpasswordIsEqualPassword(data, password)
-  }
-
-  //validate OTP
-
-  function checkotp(data) {
-    setotp((prevUserData) => ({
-      ...prevUserData,
-      otpFromdata: data,
-    }));
-  }
-
-  function checkAllInputfield() {
-    return (namecontrol.charcter && namecontrol.word && namecontrol.lenWord && namecontrol.len && namecontrol.specialCharacters
-      && emailcontrol.wrongemail && passwordcontrol.uppercase && passwordcontrol.lowercase && passwordcontrol.digit && passwordcontrol.len && passwordcontrol.specialCharacters &&
-      confirmpasswordcontrol.isPasswordandconfirmPasswordIsSame)
-
-  }
-
-  function disabledinputfrom() {
-    setnamecontrol((prevUserData) => ({
-      ...prevUserData,
-      shownamefrom: true
-    }));
-    setemailcontrol((prevUserData) => ({
-      ...prevUserData,
-      showemailfrom: true
-    }));
-    setpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      showpasswordfrom: true
-    }));
-    setconfirmpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      showconfirmpasswordfrom: true
-    }));
-  }
-
-  function inableinputfrom() {
-    setnamecontrol((prevUserData) => ({
-      ...prevUserData,
-      shownamefrom: false
-    }));
-    setemailcontrol((prevUserData) => ({
-      ...prevUserData,
-      showemailfrom: false
-    }));
-    setpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      showpasswordfrom: false
-    }));
-    setconfirmpasswordcontrol((prevUserData) => ({
-      ...prevUserData,
-      showconfirmpasswordfrom: false
-    }));
-  }
-
-  function inableotpcontrol() {
-    setotp((prevUserData) => ({
-      ...prevUserData,
-      disabledOtpForm: false,
-      loginbutton: false,
-    }));
-    setresent(false)
-  }
-
-  function disableotpcontrol() {
-    setresent(true)
-    setotp((prevUserData) => ({
-      ...prevUserData,
-      disabledOtpForm: true,
-      loginbutton: true,
-    }));
-  }
-
-  function OTPVerified() {
-    setwronginformation(false)
-    if (checkAllInputfield() == false || otp.otpFromdata == 0) {
-      swal("Please Fill Input Form")
-      return;
-    }
-    disableotpcontrol()
-    fetch(`${api}/Verification/VerifyOTP`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        otp: otp.otpFromdata,
-        name: name,
-        email: email,
-        password: password,
-      })
-    })
-      .then(response => response.json())
-      .then((result) => {
-        if (result.statusCode == 200 || result.statusCode == 201) {
-          swal("SuccessFully Register")
-          history('/Login')
-        }
-        else {
-          inableotpcontrol()
-          setwronginformation(true)
-          setmesswronginformation(result.message)
-        }
-      }, (error) => {
-        inableotpcontrol()
-        setwronginformation(true)
-        setmesswronginformation("Some Error is Found")
-      })
-  }
-
-  function SendOTP() {
-    onErrorText("")
-    if (checkAllInputfield()) {
-      setwronginformation(false)
-      disabledinputfrom()
-      setdisabled(true)
-      disableotpcontrol()
-      fetch(`${api}/Verification/otp-send`, {
+  const handleSendOtp = async () => {
+    setTouched({ name: true, email: true, password: true, confirm: true });
+    if (!allValid) { setErrorMsg('Please fix all validation errors before continuing.'); return; }
+    try {
+      setLoading(true);
+      setErrorMsg('');
+      const res = await fetch(`${api}/Verification/otp-send`, {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-        })
-      })
-        .then(response => response.json())
-        .then((result) => {
-          if (result.statusCode == 200) {
-            setregisterandloginlink(false)
-            swal(result.message)
-            setotp((prevUserData) => ({
-              ...prevUserData,
-              showOtpfrom: true,
-              showOtpButton: true,
-              disabledOtpForm: false,
-              loginbutton: false,
-            }));
-            setresent(false)
-          }
-          else {
-            inableinputfrom()
-            setwronginformation(true);
-            setmesswronginformation(result.message)
-            setresent(false)
-            setdisabled(false)
-          }
-        }).catch(() => {
-          inableinputfrom()
-          setwronginformation(true);
-          setmesswronginformation("we find some error Please Try Again Later")
-          setresent(false)
-          setdisabled(false)
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.statusCode === 200) {
+        setStep(2);
+        setResendTimeout(60);
+        toast.success(data.message || 'OTP sent to your email');
+      } else {
+        setErrorMsg(data.message);
+      }
+    } catch {
+      setLoading(false);
+      setErrorMsg('Something went wrong. Please try again.');
     }
-    else {
-      swal("Please Fill All the filed using The Description")
+  };
+
+  const handleResend = async () => {
+    if (resendTimeout > 0) return;
+    try {
+      setLoading(true);
+      const res = await fetch(`${api}/Verification/otp-send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.statusCode === 200) {
+        setResendTimeout(60);
+        toast.success('OTP resent');
+      } else {
+        setErrorMsg(data.message);
+      }
+    } catch {
+      setLoading(false);
+      setErrorMsg('Something went wrong.');
     }
-  }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e?.preventDefault();
+    if (!otp) { setErrorMsg('Please enter the OTP'); return; }
+    try {
+      setLoading(true);
+      setErrorMsg('');
+      const res = await fetch(`${api}/Verification/VerifyOTP`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ otp, name, email, password }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.statusCode === 200 || data.statusCode === 201) {
+        toast.success('Registration successful!');
+        navigate('/Login');
+      } else {
+        setErrorMsg(data.message);
+      }
+    } catch {
+      setLoading(false);
+      setErrorMsg('Something went wrong. Please try again.');
+    }
+  };
 
   return (
-    <div className="authform">
-      <h4 >Register</h4>
-
-      <div className="">
-        <input type="text" value={name} onChange={(e) => checkforname(e)} disabled={namecontrol.shownamefrom} className="inputreglog" placeholder="Enter Full Name" required />
-        {namecontrol.charcter && namecontrol.word && namecontrol.lenWord && namecontrol.len && namecontrol.specialCharacters && <HiCheckCircle style={{ color: 'green' }} />}
-      </div>
-      {namecontrol.show_name_error_text == true &&
-        <div>
-          <div className="authform">
-            <>
-              <label className="wrongtext">{namecontrol.charcter == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />} FullName Must not be Contain Number</label>
-              <label className="wrongtext">{namecontrol.word == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  FullName Must be Minimum Two Word</label>
-              <label className="wrongtext">{namecontrol.lenWord == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Length of Each word Greater then one</label>
-              <label className="wrongtext">{namecontrol.len == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Length of FullName in Between 6 to 20</label>
-              <label className="wrongtext">{namecontrol.specialCharacters == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Avoid Numbers and Special Characters</label>
-            </>
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 bg-surface-50">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-100 rounded-2xl mb-4">
+            <svg className="w-7 h-7 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
           </div>
+          <h1 className="text-2xl font-bold text-surface-900">Create an account</h1>
+          <p className="text-surface-500 text-sm mt-1">Join BlueBus and start booking today</p>
         </div>
-      }
 
-
-      <div className="">
-        <input type="email" value={email} onChange={(e) => { checkforemailid(e.target.value) }} disabled={emailcontrol.showemailfrom} className="inputreglog" placeholder="Enter Email Id" required />
-        {emailcontrol.wrongemail && <HiCheckCircle style={{ color: 'green' }} />}
-      </div>
-      {emailcontrol.show_email_error_text == true &&
-        <div>
-          <>
-            <label className="wrongtext">{emailcontrol.wrongemail == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Email Address must be in valid formate with @ symbol</label>
-          </>
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          {[1, 2].map((s) => (
+            <React.Fragment key={s}>
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold transition-colors ${step >= s ? 'bg-primary-600 text-white' : 'bg-surface-200 text-surface-500'}`}>
+                {step > s ? (
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                ) : s}
+              </div>
+              {s < 2 && <div className={`flex-1 h-0.5 max-w-[60px] ${step > s ? 'bg-primary-600' : 'bg-surface-200'}`} />}
+            </React.Fragment>
+          ))}
         </div>
-      }
 
+        <div className="card p-8">
+          {step === 1 ? (
+            <div className="space-y-5">
+              {/* Name */}
+              <div>
+                <label className="label">Full Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  onBlur={() => setTouched(t => ({ ...t, name: true }))}
+                  className={`input-field ${touched.name && name && !nameAllValid ? 'input-error' : touched.name && nameAllValid ? 'input-success' : ''}`}
+                  placeholder="John Doe"
+                />
+                {touched.name && name && !nameAllValid && (
+                  <div className="mt-2 p-3 bg-surface-50 rounded-lg grid grid-cols-2 gap-1">
+                    <ValidationItem valid={nameV.noNumber} text="No numbers" />
+                    <ValidationItem valid={nameV.twoWords} text="At least 2 words" />
+                    <ValidationItem valid={nameV.wordLen} text="Each word > 1 char" />
+                    <ValidationItem valid={nameV.len} text="6–20 characters" />
+                    <ValidationItem valid={nameV.noSpecial} text="No special chars" />
+                  </div>
+                )}
+              </div>
 
-      <div className="">
-        <input type="password" value={password} onChange={(e) => { checkpassword(e.target.value) }} disabled={passwordcontrol.showpasswordfrom} className="inputreglog" placeholder="Enter Password" required />
-        {passwordcontrol.uppercase && passwordcontrol.lowercase && passwordcontrol.digit && passwordcontrol.len && passwordcontrol.specialCharacters && <HiCheckCircle style={{ color: 'green' }} />}
-      </div>
-      {passwordcontrol.show_password_error_text &&
-        <div>
-          <div className="authform">
-            <>
-              <label className="wrongtext">{passwordcontrol.uppercase == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />} Password Must be one Upper case Character</label>
-              <label className="wrongtext">{passwordcontrol.lowercase == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}   Password Must be one Lower case Character</label>
-              <label className="wrongtext">{passwordcontrol.digit == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Password Must be Contain one Digit Character</label>
-              <label className="wrongtext">{passwordcontrol.specialCharacters == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Password Must be  one Special Character </label>
-              <label className="wrongtext">{passwordcontrol.len == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />}  Length of Password at Least 8 to 15 Character</label>
-            </>
-          </div>
+              {/* Email */}
+              <div>
+                <label className="label">Email address</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  onBlur={() => setTouched(t => ({ ...t, email: true }))}
+                  className={`input-field ${touched.email && email && !emailV ? 'input-error' : touched.email && emailV ? 'input-success' : ''}`}
+                  placeholder="you@example.com"
+                />
+                {touched.email && email && !emailV && (
+                  <p className="mt-1.5 text-xs text-red-600">Please enter a valid email address</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="label">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    onBlur={() => setTouched(t => ({ ...t, password: true }))}
+                    className={`input-field pr-10 ${touched.password && password && !pwdAllValid ? 'input-error' : touched.password && pwdAllValid ? 'input-success' : ''}`}
+                    placeholder="Create a strong password"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600">
+                    {showPassword
+                      ? <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                      : <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    }
+                  </button>
+                </div>
+                {touched.password && password && (
+                  <div className="mt-2 p-3 bg-surface-50 rounded-lg grid grid-cols-2 gap-1">
+                    <ValidationItem valid={pwdV.upper} text="Uppercase letter" />
+                    <ValidationItem valid={pwdV.lower} text="Lowercase letter" />
+                    <ValidationItem valid={pwdV.digit} text="Number" />
+                    <ValidationItem valid={pwdV.special} text="Special character" />
+                    <ValidationItem valid={pwdV.len} text="8–15 characters" />
+                  </div>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="label">Confirm Password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirm ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => handleConfirmChange(e.target.value)}
+                    onBlur={() => setTouched(t => ({ ...t, confirm: true }))}
+                    className={`input-field pr-10 ${touched.confirm && confirmPassword && !confirmV ? 'input-error' : touched.confirm && confirmV ? 'input-success' : ''}`}
+                    placeholder="Repeat your password"
+                  />
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600">
+                    {showConfirm
+                      ? <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                      : <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    }
+                  </button>
+                </div>
+                {touched.confirm && confirmPassword && !confirmV && (
+                  <p className="mt-1.5 text-xs text-red-600">Passwords do not match</p>
+                )}
+              </div>
+
+              {errorMsg && (
+                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
+                  {errorMsg}
+                </div>
+              )}
+
+              <button onClick={handleSendOtp} disabled={loading} className="btn-primary w-full py-2.5">
+                {loading ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Sending OTP...</> : 'Continue'}
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-5">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-2xl mb-3">
+                  <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-sm text-surface-600">We sent a 4-digit OTP to</p>
+                <p className="font-semibold text-surface-900">{email}</p>
+              </div>
+
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div>
+                  <label className="label">Enter OTP</label>
+                  <input
+                    type="number"
+                    value={otp}
+                    onChange={(e) => { setOtp(e.target.value); setErrorMsg(''); }}
+                    className="input-field text-center text-2xl font-bold tracking-widest"
+                    placeholder="0000"
+                    maxLength={4}
+                  />
+                </div>
+
+                {errorMsg && (
+                  <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
+                    {errorMsg}
+                  </div>
+                )}
+
+                <button type="submit" disabled={loading} className="btn-primary w-full py-2.5">
+                  {loading ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Verifying...</> : 'Create Account'}
+                </button>
+              </form>
+
+              <div className="text-center text-sm text-surface-500">
+                {resendTimeout > 0 ? (
+                  <span>Resend OTP in <strong className="text-surface-700">{resendTimeout}s</strong></span>
+                ) : (
+                  <button onClick={handleResend} disabled={loading} className="text-primary-600 font-medium hover:text-primary-700">
+                    {loading ? 'Resending...' : 'Resend OTP'}
+                  </button>
+                )}
+              </div>
+
+              <button onClick={() => { setStep(1); setErrorMsg(''); }} className="btn-ghost w-full text-surface-500">
+                ← Back to form
+              </button>
+            </div>
+          )}
+
+          <p className="text-center text-sm text-surface-500 mt-6">
+            Already have an account?{' '}
+            <Link to="/Login" className="text-primary-600 font-medium hover:text-primary-700">Sign in</Link>
+          </p>
         </div>
-      }
-
-
-      <div className="">
-        <input type="password" value={confirmpassword} onChange={(e) => { checkconfirmpassword(e.target.value) }} disabled={confirmpasswordcontrol.showconfirmpasswordfrom} className="inputreglog" placeholder="Enter confirm Password" required />
-        {confirmpasswordcontrol.isPasswordandconfirmPasswordIsSame && <HiCheckCircle style={{ color: 'green' }} />}
       </div>
-
-      {confirmpasswordcontrol.show_confirmpassword_error_text == true &&
-        <div>
-          <div className="authform">
-            <>
-              <label className="wrongtext">{confirmpasswordcontrol.isPasswordandconfirmPasswordIsSame == false ? <GoXCircleFill style={{ color: 'red' }} /> : <HiCheckCircle style={{ color: 'green' }} />} Password and Confirmpassword Must be Same</label>
-            </>
-          </div>
-        </div>
-      }
-
-      <div className="">
-        {
-          otp.showOtpfrom &&
-          <>
-            <input type="number" value={otp.otpFromdata} onChange={(e) => { checkotp(e.target.value) }} style={{ width: "260px" }} disabled={otp.disabledOtpForm} className="inputreglog" placeholder="Enter OTP" required />
-            <button onClick={SendOTP} disabled={resent} className="btn btn-info btn-sm">Resent</button>
-          </>
-        }
-      </div>
-      {wronginformation && <label className="wrongtext" style={{ color: "red" }}><GoXCircleFill /> {messwronginformation}</label>}
-
-
-      {otp.showOtpButton == true ? <button className="btn btn-info btn-sm" disabled={otp.loginbutton} onClick={OTPVerified}>Register</button> :
-        <button className="btn btn-info btn-sm" disabled={disabled} onClick={SendOTP}>Send OTP</button>}
-
-      {registerandloginlink && <p className="mt-3">Already have an account? <Link style={{textDecoration:'none'}} to={'/Signin'}>Sing in</Link></p>}
     </div>
-  )
-}
+  );
+};
 
 export default Register;

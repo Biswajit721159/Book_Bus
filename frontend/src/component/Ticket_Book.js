@@ -1,372 +1,451 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import swal from 'sweetalert'
+import { useNavigate, useParams } from 'react-router-dom';
+import swal from 'sweetalert';
 import Loader from './Loader';
 import { useSelector, useDispatch } from 'react-redux';
-import { usermethod } from '../redux/UserSlice'
+import { usermethod } from '../redux/UserSlice';
 import { toast } from 'react-toastify';
-const api = process.env.REACT_APP_API
+
+const api = process.env.REACT_APP_API;
+
+const SeatLegend = () => (
+  <div className="flex items-center gap-4 flex-wrap">
+    {[
+      { color: 'bg-white border-surface-200', label: 'Available' },
+      { color: 'bg-primary-100 border-primary-500', label: 'Selected' },
+      { color: 'bg-red-50 border-red-200', label: 'Booked' },
+    ].map((l) => (
+      <div key={l.label} className="flex items-center gap-2">
+        <div className={`w-5 h-5 rounded border-2 ${l.color}`} />
+        <span className="text-xs text-surface-600">{l.label}</span>
+      </div>
+    ))}
+  </div>
+);
+
 const Ticket_Book = () => {
+  const dispatch = useDispatch();
+  const userinfo = useSelector((state) => state.user);
+  const history = useNavigate();
+  const { src, dist, date, bus_id } = useParams();
 
-    const dispatch = useDispatch()
-    const userinfo = useSelector((state) => state.user)
-    const history = useNavigate()
-    const { src } = useParams()
-    const { dist } = useParams()
-    const { date } = useParams()
-    const { bus_id } = useParams()
+  const [submitload, setSubmitload] = useState(false);
+  const [load, setLoad] = useState(true);
+  const [data, setData] = useState([]);
+  const [seatarr, setSeatarr] = useState([]);
+  const [MasterList, setMasterList] = useState([]);
+  const [checkbox, setCheckbox] = useState([]);
+  const [pay, setPay] = useState(0);
+  const [total_distance, setTotalDistance] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
 
-    const [submitload, setsubmitload] = useState(false)
-    const [load, setload] = useState(true)
-    // const [total_seat, settotal_seat] = useState(0)
-    const [data, setdata] = useState([])
-    const [seatarr, setseatarr] = useState([])
-    const [MasterList, setMasterList] = useState([])
-    const [checkbox, setcheckbox] = useState([])
-    let [pay, setpay] = useState(0);
-    let [total_distance, settotal_distance] = useState(0)
-
-
-    function markseat(id) {
-        if (data[id - 1].isbooked === "Both") {
-            for (let i = 0; i < seatarr.length; i++) {
-                if (seatarr[i] === id) {
-                    seatarr.splice(i, 1);
-                }
-            }
-            setseatarr([...seatarr]);
-            return true;
-        }
-        else {
-            if (seatarr.length >= 5) {
-                return false;
-            }
-            else if (seatarr.length >= MasterList.length) {
-                return false;
-            }
-            else {
-                seatarr.push(id)
-                setseatarr([...seatarr])
-                return true;
-            }
-        }
+  const markseat = (id) => {
+    if (data[id - 1].isbooked === 'Both') {
+      const newArr = seatarr.filter((s) => s !== id);
+      setSeatarr(newArr);
+      return true;
+    } else {
+      if (seatarr.length >= 5) return false;
+      if (seatarr.length >= MasterList.length) return false;
+      setSeatarr([...seatarr, id]);
+      return true;
     }
+  };
 
-    function Mark(id) {
-        if (markseat(id) === true) {
-            id = id - 1;
-            if (data[id].isbooked === false) {
-                data[id].isbooked = "Both";
-            }
-            else {
-                data[id].isbooked = false
-            }
-            setdata([...data])
-        }
-        else {
-            if (seatarr.length >= MasterList.length) {
-                swal(`Your MasterList Has ${MasterList.length} User `)
-            }
-            else swal('Sorry Maximum 5 Seat are Allow !')
-        }
+  const Mark = (id) => {
+    if (markseat(id)) {
+      const idx = id - 1;
+      const newData = [...data];
+      newData[idx] = { ...newData[idx], isbooked: newData[idx].isbooked === false ? 'Both' : false };
+      setData(newData);
+    } else {
+      if (seatarr.length >= MasterList.length) {
+        swal(`Your MasterList has ${MasterList.length} passenger(s)`);
+      } else {
+        swal('Sorry, maximum 5 seats are allowed!');
+      }
     }
+  };
 
-    function show_seat(_id) {
-        try {
-            setload(true)
-            fetch(`${api}/Booking/get_Seat`, {
-                method: 'PATCH',
+  const show_seat = () => {
+    setLoad(true);
+    fetch(`${api}/Booking/get_Seat`, {
+      method: 'PATCH',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ start_station: src, end_station: dist, date, bus_id }),
+    })
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.statusCode === 200) {
+          fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userinfo?.user?.auth}`,
+            },
+          })
+            .then((r) => r.json())
+            .then((result) => {
+              if (result?.statusCode === 200) {
+                setMasterList(result.data);
+                setLoad(false);
+                setData(res.data.BookingRecord);
+                setTotalDistance(res.data.total_distance);
+              } else if (result.statusCode === 498) {
+                dispatch(usermethod.Logout_User());
+                history('/Login');
+              } else {
+                history('*');
+              }
+            })
+            .catch(() => history('*'));
+        } else if (res.statusCode === 498) {
+          dispatch(usermethod.Logout_User());
+          history('/Login');
+        } else {
+          history('*');
+        }
+      })
+      .catch(() => history('*'));
+  };
+
+  const handleCheckboxChange = (name) => {
+    if (checkbox.includes(name)) {
+      setCheckbox(checkbox.filter((c) => c !== name));
+      setPay((p) => p - total_distance * 5);
+    } else if (checkbox.length >= seatarr.length) {
+      swal(`You selected ${seatarr.length} seat(s). Please select exactly that many passengers.`);
+    } else {
+      setCheckbox([...checkbox, name]);
+      setPay((p) => p + total_distance * 5);
+    }
+  };
+
+  const checkAlreadyGetOrNot = (nums) => {
+    for (let i = 0; i < seatarr.length; i++) {
+      if (nums[seatarr[i] - 1].isbooked === true) return true;
+    }
+    return false;
+  };
+
+  const checkAlreadyBoth = () => {
+    for (let i = 0; i < seatarr.length; i++) {
+      if (data[seatarr[i] - 1].isbooked !== 'Both') return false;
+    }
+    return true;
+  };
+
+  const submit = () => {
+    const trimmedSeatarr = seatarr.slice(0, checkbox.length);
+    if (checkAlreadyBoth() && checkbox.length === trimmedSeatarr.length) {
+      setSubmitload(true);
+      fetch(`${api}/Booking/get_Seat`, {
+        method: 'PATCH',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ start_station: src, end_station: dist, date, bus_id }),
+      })
+        .then((r) => r.json())
+        .then((comeres) => {
+          if (comeres?.statusCode === 200) {
+            if (!checkAlreadyGetOrNot(comeres.data.BookingRecord)) {
+              fetch(`${api}/Booking`, {
+                method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${userinfo?.user?.auth}`,
                 },
                 body: JSON.stringify({
-                    start_station: src,
-                    end_station: dist,
-                    date: date,
-                    bus_id: bus_id,
-                })
-            }).then(responce => responce.json()).then((res) => {
-                if (res != undefined && res.statusCode === 200) {
-                    fetch(`${api}/MasterList/${userinfo?.user?.user?._id}`, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${userinfo?.user?.auth}`
-                        }
-                    }).then(responce => responce.json()).then((result) => {
-                        if (result !== undefined && result.statusCode === 200) {
-                            setMasterList(result?.data)
-                            setload(false)
-                            // settotal_seat(res.data.total_seat)
-                            setdata(res.data.BookingRecord)
-                            settotal_distance(res.data.total_distance)
-                        }
-                        else if (result.statusCode === 498) {
-                            dispatch(usermethod.Logout_User())
-                            history('/Login')
-                        }
-                    }, (error) => {
-                        history('*')
-                    })
-
-                }
-                else if (res.statusCode === 498) {
-                    dispatch(usermethod.Logout_User())
-                    history('/Login')
-                } else {
+                  bus_id,
+                  src,
+                  dist,
+                  useremail: userinfo.user.user.email,
+                  total_money: pay,
+                  date,
+                  seat_record: trimmedSeatarr,
+                  person: checkbox,
+                  total_distance,
+                }),
+              })
+                .then((r) => r.json())
+                .then((res) => {
+                  if (res?.statusCode === 201) {
+                    history('/LastTransaction');
+                  } else if (res?.statusCode === 498) {
+                    dispatch(usermethod.Logout_User());
+                    history('/Login');
+                  } else {
+                    toast.warn(res?.message);
                     history('*');
-                }
-            }, (error) => {
-                history('*')
-            })
-        } catch (error) {
-            history('*');
-        }
-    }
-
-    function handleCheckboxChange(name) {
-
-        if (checkbox.includes(name) === true) {
-            let arr = []
-            for (let i = 0; i < checkbox.length; i++) {
-                if (checkbox[i] !== name) {
-                    arr.push(checkbox[i]);
-                }
-            }
-            pay -= ((total_distance * 5))
-            setpay(pay)
-            setcheckbox([...arr])
-        }
-        else if (checkbox.length >= seatarr.length) {
-            swal(`Sorry You Are Select ${seatarr.length} Seat`)
-        }
-        else {
-            pay += ((total_distance * 5))
-            setpay(pay)
-            checkbox.push(name)
-            setcheckbox([...checkbox])
-        }
-    }
-
-    function checkAlreadyGetOrNot(nums) {
-        for (let i = 0; i < seatarr.length; i++) {
-            if (nums[seatarr[i] - 1].isbooked === true) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function checkAlreadyBoth() {
-        for (let i = 0; i < seatarr.length; i++) {
-            if (data[seatarr[i] - 1].isbooked !== "Both") {
-                return false;
-            }
-        }
-        return true
-    }
-
-    function submit() {
-        while (checkbox.length < seatarr.length) {
-            seatarr.pop();
-        }
-        if (checkAlreadyBoth() && checkbox.length === seatarr.length) {
-            setsubmitload(true)
-            fetch(`${api}/Booking/get_Seat`, {
-                method: 'PATCH',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    start_station: src,
-                    end_station: dist,
-                    date: date,
-                    bus_id: bus_id,
+                  }
                 })
-            }).then(responce => responce.json()).then((comeres) => {
-                if (comeres != undefined && comeres.statusCode === 200) {
-                    if (checkAlreadyGetOrNot(comeres.data.BookingRecord) === false) {
-                        fetch(`${api}/Booking`, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${userinfo?.user?.auth}`
-                            },
-                            body: JSON.stringify({
-                                bus_id: bus_id,
-                                src: src,
-                                dist: dist,
-                                useremail: userinfo.user.user.email,
-                                total_money: pay,
-                                date: date,
-                                seat_record: seatarr,
-                                person: checkbox,
-                                total_distance: total_distance
-                            })
-                        }).then((responce => responce.json())).then((res) => {
-                            if (res != undefined && res.statusCode == 201) {
-                                history('/LastTransaction')
-                            }
-                            else if (res != undefined && res.statusCode == 498) {
-                                dispatch(usermethod.Logout_User())
-                                history('/Login')
-                            }
-                            else {
-                                toast.warn(res?.message)
-                                history('*')
-                            }
-                        }, (error) => {
-                            history('*')
-                        })
-                    }
-                    else {
-                        swal('Sorry Your Seat is already get by another user Please Select Different Seat')
-                        setsubmitload(false)
-                        show_seat()
-                        setcheckbox([])
-                        setseatarr([])
-                    }
-                }
-                else if (comeres?.statusCode === 498) {
-                    dispatch(usermethod.Logout_User())
-                    history('/Login')
-                }
-                else {
-                    setsubmitload(false)
-                    show_seat()
-                    setcheckbox([])
-                    setseatarr([])
-                    history('*')
-                }
-            }, (error) => {
-                history('/')
-            })
-        }
-        else {
-            swal('Sorry We find Some Error')
-            history('/')
-        }
-    }
-
-    useEffect(() => {
-        if (userinfo.user == null) {
-            history('/Login')
-        }
-        else {
-            show_seat()
-        }
-    }, [userinfo])
-
-    return (
-        <>
-            {
-                submitload === true ?
-                    <Loader />
-                    :
-                    load === false ?
-                        <div className='container align-items-center mt-4'>
-                            {
-                                <div className='row'>
-                                    {
-                                        data.map((item, ind) => (
-                                            <div className='col' key={ind}>
-                                                {
-                                                    item.isbooked === true ?
-                                                        <Link style={{ textDecoration: "none" }} >
-                                                            <div className="card" style={{ width: "3.5rem", height: "3.5rem", backgroundColor: "#F69F8C" }}>
-                                                                <div className="card-body">
-                                                                    <h6 className="card-title">{ind + 1}</h6>
-                                                                </div>
-                                                            </div>
-                                                        </Link>
-                                                        :
-                                                        item.isbooked == "Both" ?
-                                                            <Link style={{ textDecoration: "none" }} onClick={() => { Mark(ind + 1) }} >
-                                                                <div className="card" style={{ width: "3.5rem", height: "3.5rem", backgroundColor: "#98F980" }} >
-                                                                    <div className="card-body">
-                                                                        <h6 className="card-title">{ind + 1}</h6>
-                                                                    </div>
-                                                                </div>
-                                                            </Link>
-                                                            : <Link style={{ textDecoration: "none" }} onClick={() => { Mark(ind + 1) }} >
-                                                                <div className="card" style={{ width: "3.5rem", height: "3.5rem" }} >
-                                                                    <div className="card-body">
-                                                                        <h6 className="card-title">{ind + 1}</h6>
-                                                                    </div>
-                                                                </div>
-                                                            </Link>
-                                                }
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            }
-                            {
-                                seatarr.length >= 1 ?
-                                    <button className='btn btn-primary btn-sm mt-3 my-5' data-bs-toggle="modal" data-bs-target="#exampleModal">Process To Next Step</button>
-                                    : ""
-                            }
-                            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div className="modal-dialog">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="exampleModalLabel">Your MasterList</h5>
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div className="modal-body">
-                                            <table className="table mt-3">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">#</th>
-                                                        <th scope="col">Name</th>
-                                                        <th scope="col">Select</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        MasterList.map((item, ind) => (
-                                                            <tr key={ind}>
-                                                                <th >{ind + 1}</th>
-                                                                <td>{item.name}</td>
-                                                                <td>
-                                                                    {
-                                                                        checkbox.includes(item.name) == true ?
-                                                                            <div className="form-check">
-                                                                                <input type="checkbox" checked={true} onClick={() => handleCheckboxChange(item.name)} id="flexCheckDefault" />
-                                                                            </div>
-                                                                            :
-                                                                            <div className="form-check">
-                                                                                <input type="checkbox" checked={false} onClick={() => handleCheckboxChange(item.name)} id="flexCheckDefault" />
-                                                                            </div>
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    }
-                                                    <tr>
-                                                        <td style={{ color: "green" }}>*Total Price</td>
-                                                        <td><button className='btn btn-primary btn-sm' disabled={true}>{pay}</button></td>
-                                                        <td>No Payment</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={submit}>Submit</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        : <Loader />
-                        
+                .catch(() => history('*'));
+            } else {
+              swal('Sorry, your seat was taken by another user. Please select a different seat.');
+              setSubmitload(false);
+              show_seat();
+              setCheckbox([]);
+              setSeatarr([]);
             }
-        </>
-    )
-}
+          } else if (comeres?.statusCode === 498) {
+            dispatch(usermethod.Logout_User());
+            history('/Login');
+          } else {
+            setSubmitload(false);
+            show_seat();
+            setCheckbox([]);
+            setSeatarr([]);
+          }
+        })
+        .catch(() => history('/'));
+    } else {
+      swal('Please select passengers for all chosen seats.');
+    }
+  };
 
-export default Ticket_Book
+  useEffect(() => {
+    if (!userinfo.user) {
+      history('/Login');
+    } else {
+      show_seat();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userinfo]);
+
+  if (submitload) return <Loader text="Confirming your booking..." />;
+  if (load) return <Loader text="Loading seat map..." />;
+
+  const rows = [];
+  for (let i = 0; i < data.length; i += 4) {
+    rows.push(data.slice(i, i + 4));
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-64px)] bg-surface-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-surface-900">Select Your Seats</h1>
+          <p className="text-surface-500 text-sm mt-1">
+            {src} → {dist} &nbsp;·&nbsp; {date}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Seat Map */}
+          <div className="lg:col-span-2">
+            <div className="card p-6">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="font-semibold text-surface-900">Seat Map</h2>
+                <SeatLegend />
+              </div>
+
+              {/* Bus front indicator */}
+              <div className="flex items-center justify-center mb-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-surface-100 rounded-lg text-xs text-surface-500 font-medium">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 001 1h1a1 1 0 001-1v-1h8v1a1 1 0 001 1h1a1 1 0 001-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10z"/>
+                  </svg>
+                  Driver
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                {data.map((item, ind) => {
+                  const seatNum = ind + 1;
+                  const isBooked = item.isbooked === true;
+                  const isSelected = item.isbooked === 'Both';
+
+                  return (
+                    <button
+                      key={ind}
+                      onClick={() => !isBooked && Mark(seatNum)}
+                      disabled={isBooked}
+                      className={`
+                        relative flex flex-col items-center justify-center rounded-xl border-2 h-14 text-sm font-semibold
+                        transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-1
+                        ${isBooked
+                          ? 'seat-booked cursor-not-allowed'
+                          : isSelected
+                          ? 'seat-selected shadow-sm'
+                          : 'seat-available'
+                        }
+                      `}
+                      aria-label={`Seat ${seatNum} ${isBooked ? '(booked)' : isSelected ? '(selected)' : '(available)'}`}
+                    >
+                      <span>{seatNum}</span>
+                      {isBooked && (
+                        <svg className="w-3 h-3 mt-0.5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      {isSelected && (
+                        <svg className="w-3 h-3 mt-0.5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {seatarr.length > 0 && (
+                <div className="mt-6 pt-5 border-t border-surface-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-surface-600">
+                        <span className="font-semibold text-surface-900">{seatarr.length}</span> seat(s) selected
+                        <span className="mx-2 text-surface-300">·</span>
+                        Seats: <span className="font-medium text-primary-700">{seatarr.join(', ')}</span>
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setModalOpen(true)}
+                      className="btn-primary"
+                    >
+                      Continue
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Info Panel */}
+          <div className="space-y-4">
+            <div className="card p-5">
+              <h3 className="font-semibold text-surface-900 mb-4">Journey Details</h3>
+              <div className="space-y-3">
+                {[
+                  { label: 'From', value: src },
+                  { label: 'To', value: dist },
+                  { label: 'Date', value: date },
+                  { label: 'Distance', value: `${total_distance} km` },
+                  { label: 'Price/seat', value: `₹${total_distance * 5}` },
+                ].map((d) => (
+                  <div key={d.label} className="flex justify-between items-center">
+                    <span className="text-xs text-surface-500">{d.label}</span>
+                    <span className="text-sm font-medium text-surface-800">{d.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="card p-5">
+              <h3 className="font-semibold text-surface-900 mb-3">Passengers Available</h3>
+              {MasterList.length > 0 ? (
+                <div className="space-y-2">
+                  {MasterList.map((p, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-surface-700">
+                      <div className="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center text-xs font-bold text-primary-700">
+                        {p.name[0].toUpperCase()}
+                      </div>
+                      {p.name}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-surface-500">No passengers in your list. Add passengers in the Passengers section.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Passenger Selection Modal */}
+      {modalOpen && (
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setModalOpen(false)}>
+          <div className="modal-box p-0 overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
+              <div>
+                <h2 className="text-lg font-semibold text-surface-900">Assign Passengers</h2>
+                <p className="text-xs text-surface-500 mt-0.5">Select one passenger per seat</p>
+              </div>
+              <button
+                onClick={() => setModalOpen(false)}
+                className="w-8 h-8 rounded-lg hover:bg-surface-100 flex items-center justify-center text-surface-400 hover:text-surface-600 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="px-6 py-4">
+              <div className="table-container">
+                <table className="table-base">
+                  <thead className="table-head">
+                    <tr>
+                      <th className="table-th">#</th>
+                      <th className="table-th">Passenger Name</th>
+                      <th className="table-th">Select</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-surface-100">
+                    {MasterList.map((item, ind) => (
+                      <tr key={ind} className="table-row">
+                        <td className="table-td text-surface-500">{ind + 1}</td>
+                        <td className="table-td font-medium text-surface-800">{item.name}</td>
+                        <td className="table-td">
+                          <button
+                            onClick={() => handleCheckboxChange(item.name)}
+                            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-150 ${
+                              checkbox.includes(item.name)
+                                ? 'bg-primary-600 border-primary-600'
+                                : 'border-surface-300 hover:border-primary-400'
+                            }`}
+                          >
+                            {checkbox.includes(item.name) && (
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 p-4 bg-surface-50 rounded-xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-surface-500">Selected seats</p>
+                    <p className="text-sm font-semibold text-surface-900">{seatarr.length} seat(s)</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-surface-500">Passengers assigned</p>
+                    <p className="text-sm font-semibold text-surface-900">{checkbox.length}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-surface-500">Total amount</p>
+                    <p className="text-lg font-bold text-green-700">₹{pay}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 px-6 py-4 border-t border-surface-100">
+              <button onClick={() => setModalOpen(false)} className="btn-secondary flex-1">
+                Cancel
+              </button>
+              <button
+                onClick={submit}
+                disabled={checkbox.length === 0 || checkbox.length !== seatarr.length}
+                className="btn-primary flex-1"
+              >
+                Confirm Booking
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Ticket_Book;

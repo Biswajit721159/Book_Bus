@@ -70,7 +70,6 @@ function searchproduct(searchinput, bus) {
     }
     else {
         searchinput = searchinput.toLowerCase();
-        let n = searchinput.length;
         let newbus = [];
         for (let i = 0; i < bus.length; i++) {
             let s = bus[i].bus_name;
@@ -102,14 +101,14 @@ function check_All_Charcter(searchproduct, product_name) {
     let n = s.length;
     let m = patt.length;
     while (i < n && j < m) {
-        if (patt[j] == s[i]) {
+        if (patt[j] === s[i]) {
             i++; j++;
         }
         else {
             i++;
         }
     }
-    if (j == m) {
+    if (j === m) {
         return true;
     }
     return false;
@@ -290,14 +289,14 @@ function HourToMin(s) {
     let ans = 0;
     let i = 0;
     let n = s.length
-    while (i < n && s[i] != 'h') {
+    while (i < n && s[i] !== 'h') {
         count = count * 10 + (s[i] - '0');
         i++;
     }
     ans += (count * 60);
     i += 2;
     count = 0;
-    while (i < n && s[i] != 'm') {
+    while (i < n && s[i] !== 'm') {
         count = count * 10 + (s[i] - '0');
         i++;
     }

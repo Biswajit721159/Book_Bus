@@ -1,110 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+const faqs = [
+  {
+    q: 'Can I track the location of my booked bus online?',
+    a: 'Yes, you can track your bus online using our "Track My Bus" feature. This allows passengers and their families to follow the live bus location on a map, helping you plan your trip to the boarding point and ensuring safety for everyone.',
+  },
+  {
+    q: 'What are the advantages of purchasing a bus ticket with BlueBus?',
+    a: 'BlueBus lets you book from the comfort of your home, compare schedules and operators, access exclusive deals, and choose your seat. Payment security is guaranteed, and you get real-time updates on any schedule changes.',
+  },
+  {
+    q: 'Why book bus tickets online on BlueBus?',
+    a: 'Online booking is faster, more convenient, and often cheaper. You can compare prices, pick your preferred seat, and receive instant confirmation — all without standing in queues.',
+  },
+  {
+    q: 'Do I need to create an account to book a bus ticket?',
+    a: 'An account is required to book tickets, which allows us to securely store your booking history and passenger details. Registration is quick and only takes a minute.',
+  },
+  {
+    q: 'Does online bus booking cost more?',
+    a: 'Not at all! The ticket price is the same as at any bus counter. In fact, BlueBus often offers exclusive online discounts, making it a more cost-effective choice.',
+  },
+  {
+    q: 'How can I get discounts on bus bookings?',
+    a: 'Check our Primo Bus services for premium travel at competitive rates. We regularly offer promotional discounts and special deals for frequent travelers. Keep an eye on our homepage for the latest offers.',
+  },
+];
+
+const AccordionItem = ({ q, a, isOpen, onToggle }) => (
+  <div className={`border border-surface-200 rounded-xl overflow-hidden transition-all duration-200 ${isOpen ? 'shadow-card' : ''}`}>
+    <button
+      onClick={onToggle}
+      className="w-full flex items-center justify-between px-6 py-4 text-left bg-white hover:bg-surface-50 transition-colors duration-150"
+      aria-expanded={isOpen}
+    >
+      <span className={`text-sm font-medium pr-4 ${isOpen ? 'text-primary-700' : 'text-surface-800'}`}>{q}</span>
+      <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${isOpen ? 'bg-primary-100 rotate-180' : 'bg-surface-100'}`}>
+        <svg className={`w-3.5 h-3.5 ${isOpen ? 'text-primary-600' : 'text-surface-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </button>
+    {isOpen && (
+      <div className="px-6 pb-5 bg-white border-t border-surface-100 animate-fade-in">
+        <p className="text-sm text-surface-600 leading-relaxed pt-3">{a}</p>
+      </div>
+    )}
+  </div>
+);
 
 const Accordion = () => {
-    return (
-        <div style={{ maxWidth: '1500px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>FAQs - Bus Booking</h2>
-            <div id="accordionFlushExample" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '8px', backgroundColor: 'gray' }}>
-                <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
-                    <h2 className="accordion-header" id="flush-headingOne">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
-                            style={{ backgroundColor: 'white', color: 'gray', padding: '15px', width: '100%', border: 'none', cursor: 'pointer', borderRadius: '8px 8px 0 0' }}>
-                            Can I track the location of my booked bus online? #1
-                        </button>
-                    </h2>
-                    <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                        <div className="accordion-body" style={{ padding: '15px', backgroundColor: '#f1f1f1', borderRadius: '0 0 8px 8px' }}>
-                            Yes, you can track your bus online by using our bus tracking app feature called “Track My Bus”.
-                            This feature allows passengers and their families to track the live bus location. You may follow your bus on a map and use the information to plan your trip to the boarding point and to get off at the correct stop.
-                            Family and friends may also check the bus position to schedule pick-ups and ensure safety
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
-                    <h2 className="accordion-header" id="flush-headingTwo">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
-                            style={{ backgroundColor: 'white', color: 'gray', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
-                            What are the advantages of purchasing a bus ticket with whiteBus? #2
-                        </button>
-                    </h2>
-                    <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                        <div className="accordion-body" style={{ padding: '15px', backgroundColor: '#f1f1f1', borderRadius: '0 0 8px 8px' }}>
-                            Booking bus tickets online on whiteBus is increasingly becoming the preferred choice for travellers due to its numerous advantages over traditional methods.
-                            With whiteBus, customers can book their bus tickets effortlessly from the comfort of their homes, avoiding the inconvenience of standing in long lines at bus stations or travel agencies.
-                            Online bus booking offers the luxury of comparing different bus schedules and operators and presents various discount offers and exclusive deals, resulting in significant savings.
-                            Payment security is another notable feature of online booking, which ensures that your financial information is well-protected against fraud.
-                            Additionally, customers can pick their seats, providing a customized travel experience. Online bus booking platforms give real-time updates about any changes in the bus timetable, including delays or cancellations, enabling better planning.
-                            The convenience doesn't stop here; travellers can even compare onboard amenities like charging points or snacks, further enhancing the travel experience
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
-                    <h2 className="accordion-header" id="flush-headingThree">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-                            style={{ backgroundColor: 'white', color: 'gray', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
-                            Why book bus tickets online on whiteBus? #3
-                        </button>
-                    </h2>
-                    <div id="flush-collapseThree" className="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                        <div className="accordion-body" style={{ padding: '15px', backgroundColor: '#f1f1f1', borderRadius: '0 0 8px 8px' }}>
-                            No, you don't have to create an account on the whiteBus site to book your bus ticket.
-                            But it is advisable to make one to accelerate the process next time you want to book bus tickets.
-                            Also, whiteBus has many discounts and offers that you can easily access if you have an account with us.
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
-                    <h2 className="accordion-header" id="flush-headingFour">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour"
-                            style={{ backgroundColor: 'white', color: 'gray', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
-                            Do I need to create an account on the whiteBus site to book my bus ticket? #4
-                        </button>
-                    </h2>
-                    <div id="flush-collapseFour" className="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
-                        <div className="accordion-body" style={{ padding: '15px', backgroundColor: '#f1f1f1', borderRadius: '0 0 8px 8px' }}>
-                            Booking bus tickets online on whiteBus is increasingly becoming the preferred choice for travellers due to its numerous advantages over traditional methods.
-                            With whiteBus, customers can book their bus tickets effortlessly from the comfort of their homes, avoiding the inconvenience of standing in long lines at bus stations or travel agencies.
-                            Online bus booking offers the luxury of comparing different bus schedules and operators and presents various discount offers and exclusive deals, resulting in significant savings.
-                            Payment security is another notable feature of online booking, which ensures that your financial information is well-protected against fraud.
-                            Additionally, customers can pick their seats, providing a customized travel experience.
-                            Online bus booking platforms give real-time updates about any changes in the bus timetable, including delays or cancellations, enabling better planning.
-                            The convenience doesn't stop here; travellers can even compare onboard amenities like charging points or snacks, further enhancing the travel experience
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
-                    <h2 className="accordion-header" id="flush-headingFive">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive"
-                            style={{ backgroundColor: 'white', color: 'gray', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
-                            Does bus booking online cost me more? #5
-                        </button>
-                    </h2>
-                    <div id="flush-collapseFive" className="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                        <div className="accordion-body" style={{ padding: '15px', backgroundColor: '#f1f1f1', borderRadius: '0 0 8px 8px' }}>
-                            Not at all! The bus ticket price is the same as you would get from the bus operator/ counter of any bus ticket agency.
-                            whiteBus reduces the travel budget by comparing the bus ticket prices among various operators, making it a more cost-effective choice.
-                            Therefore, online bus booking is increasingly recognized as a more convenient, efficient, and economical mode of securing travel arrangements.
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item" style={{ borderBottom: '1px solid #ddd' }}>
-                    <h2 className="accordion-header" id="flush-headingSix">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix"
-                            style={{ backgroundColor: 'white', color: 'gray', padding: '15px', width: '100%', border: 'none', cursor: 'pointer' }}>
-                            How can I get the discounts on the bus booking? #6
-                        </button>
-                    </h2>
-                    <div id="flush-collapseSix" className="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
-                        <div className="accordion-body" style={{ padding: '15px', backgroundColor: '#f1f1f1', borderRadius: '0 0 8px 8px' }}>
-                            Primo Bus Ticket: whiteBus has launched Primo bus services, where passengers can enjoy travelling in high-rated buses with best-in-class services.
-                            While looking for bus tickets on the desired route, customers can check the Primo tag to choose this excellent service.
-                            From hygiene standards to on-time service and comfort, passengers can benefit from the online bus booking experience from Primo buses
-                        </div>
-                    </div>
-                </div>
-            </div>
+  const [openIndex, setOpenIndex] = useState(null);
+
+  return (
+    <section className="py-20 bg-white">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <span className="text-primary-600 text-sm font-semibold uppercase tracking-wider">FAQ</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-surface-900 mt-2 mb-4">Frequently Asked Questions</h2>
+          <p className="text-surface-500">Everything you need to know about booking with BlueBus.</p>
         </div>
-    );
+
+        <div className="space-y-3">
+          {faqs.map((faq, i) => (
+            <AccordionItem
+              key={i}
+              q={faq.q}
+              a={faq.a}
+              isOpen={openIndex === i}
+              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Accordion;

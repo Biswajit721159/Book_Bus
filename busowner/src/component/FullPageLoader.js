@@ -1,13 +1,18 @@
+import React from 'react';
 
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 export const FullPageLoader = ({ open }) => {
+    if (!open) return null;
     return (
-        <Backdrop
-            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-            open={open}
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ backgroundColor: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(2px)' }}
+            aria-label="Loading"
+            role="status"
         >
-            <CircularProgress color="primary" />
-        </Backdrop>
-    )
-}
+            <div className="flex flex-col items-center gap-3">
+                <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+                <span className="text-sm font-medium text-white">Loading...</span>
+            </div>
+        </div>
+    );
+};

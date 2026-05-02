@@ -31,9 +31,12 @@ function App() {
           <Route path="LastTransaction" element={<LastTransaction />}></Route>
           <Route path="/WishList" element={<WishList />}></Route>
           <Route path="/checkstatus" element={<CheckStatus />}></Route>
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Route path="/:bus_id/:src/:dist/:date" element={<Ticket_Book />}></Route>
           <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Route path="/:_id" element={<View_Ticket />}></Route>
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Route path="/View_Bus/:_id" element={<View_Bus />}></Route>
           <Route path="*" element={<Error />}></Route>
         </Routes>
